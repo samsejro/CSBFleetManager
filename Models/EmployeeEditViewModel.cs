@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using CSBFleetManager.Entity;
-using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-using System.Drawing;
+//using CSBFleetManager.Persistence;
 
 namespace CSBFleetManager.Models
 {
-    public class EmployeeCreateViewModel
+    public class EmployeeEditViewModel
     {
         [Required(ErrorMessage = "LASRRAID is required")]
         public string LASRRAID { get; set; }
         public string LAGID { get; set; }
         public string EmployeeNo { get; set; }
-       
+
         public EmployeeType EmploymentTypeName { get; set; }
 
         [Required(ErrorMessage = "Employment Type is required"), Display(Name = "Employment Type")]
-       
+
         public string EmployeeTypeId { get; set; }
 
         public MDA MDA { get; set; }
@@ -37,13 +37,7 @@ namespace CSBFleetManager.Models
         [Required(ErrorMessage = "SurName is required"), StringLength(50, MinimumLength = 2)]
         [RegularExpression(@"^[A-Z][a-zA-Z""'\s-]*$"), Display(Name = "Surname")]
         public string LastName { get; set; }
-        public string FullName
-        {
-            get
-            {
-                return FirstName + (string.IsNullOrEmpty(MiddleName) ? " " : (" " + (char?)MiddleName[0] + ". ").ToUpper()) + LastName;
-            }
-        }
+        
         public Image EmployeePhoto { get; set; }
         public string Photo { get; set; }
         public string Gender { get; set; }
@@ -74,9 +68,6 @@ namespace CSBFleetManager.Models
         public Relationship NextOfkinrelationship { get; set; }
 
         public string LGA { get; set; }
-
-
-
 
     }
 }

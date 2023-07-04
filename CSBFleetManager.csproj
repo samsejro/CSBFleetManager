@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\AdmLTE\pages\" />
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\CSBUsers\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -214,3 +214,9 @@ F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\CSBFl
 F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\ref\CSBFleetManager.dll
 F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\CSBFleetManager.pdb
 F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\CSBFleetManager.genruntimeconfig.cache
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\Detail.cshtml.g.cs
+F:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\Edit.cshtml.g.cs

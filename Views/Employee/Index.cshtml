@@ -13,7 +13,7 @@
                         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Employee List</li>
                     </ol>
-                </nav><br /><br />
+                </nav>
                 <div class="row">
                     <div class="col-md-12 table-responsive-md">
                         <a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"> New Employee</a>
@@ -21,11 +21,12 @@
                             <thead>
                                 <tr>
                                     <th>LASRRA/LAGID</th>
+                                    <th>Oracle No.</th>
                                     <th>Photo</th>
                                     <th>Name</th>
                                     <th>Gender</th>
-                                    @*<th>MDA</th>
-                                    <th>Designation</th>*@
+                                    @*<th>MDA</th>*@
+                                    @*<th>Designation</th>*@
                                     <th>Employment Type</th>
                                     <th class="text-warning">Actions</th>
                                 </tr>
@@ -33,31 +34,35 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            <a asp-action="Details" asp-route-id="@item.LASRRAID"></a>
-                                            @item.LASRRAID
-                                        </td>
-                                        <td>
-                                            <img alt="image" src="@Url.Content(item.ImageUrl)" />
-                                        </td>
-                                        <td>@item.FullName</td>
-                                        <td>@item.Gender</td>
-                                        @*<td>@item.MDA</td>
-                                        <td>@item.Designation</td>*@
-                                        <td>@item.EmploymentTypeName</td>
-                                        <td>
-                                            <a class="text-primary" asp-action="Edit" asp-route-id="@item.LASRRAID">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <a class="text-success" asp-action="Detail" asp-route-id="@item.LASRRAID">
-                                                <i class="fas fa-bars"></i> Detail
-                                            </a>
-                                            <a class="text-danger" asp-action="Delete" asp-route-id="@item.LASRRAID">
-                                                <i class="far fa-trash-alt"></i> Delete
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.LASRRAID"></a>
+                                        @item.LASRRAID
+                                    </td>
+                                    <td>
+                                        
+                                        @item.EmployeeNo
+                                    </td>
+                                    <td>
+                                        <img class="img-fluid" style="width:42px; height:56px" alt="image" src="@Url.Content(item.ImageUrl)" />
+                                    </td>
+                                    <td>@item.FullName</td>
+                                    <td>@item.Gender</td>
+                                    @*<td>@item.Ministry</td>*@
+                                    @*<td>@item.Designation</td>*@
+                                    <td>@item.EmploymentTypeName</td>
+                                    <td>
+                                        <a class="text-primary" asp-action="Edit" asp-route-id="@item.LASRRAID">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a class="text-success" asp-action="Detail" asp-route-id="@item.LASRRAID">
+                                            <i class="fas fa-bars"></i> Detail
+                                        </a>
+                                        <a class="text-danger" asp-action="Delete" asp-route-id="@item.LASRRAID">
+                                            <i class="far fa-trash-alt"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
 
                                 }
                             </tbody>
