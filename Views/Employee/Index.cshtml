@@ -52,12 +52,12 @@
                                     @*<td>@item.Designation</td>*@
                                     <td>@item.EmploymentTypeName</td>
                                     <td>
-                                        <a class="text-primary" asp-action="Edit" asp-route-id="@item.LASRRAID">
+                                        <a class="text-primary" id="EditLink"  asp-route-id="@item.LASRRAID">
                                             <i class="fas fa-edit"></i> Edit
-                                        </a>
+                                        </a> |
                                         <a class="text-success" asp-action="Detail" asp-route-id="@item.LASRRAID">
                                             <i class="fas fa-bars"></i> Detail
-                                        </a>
+                                        </a> |
                                         <a class="text-danger" asp-action="Delete" asp-route-id="@item.LASRRAID">
                                             <i class="far fa-trash-alt"></i> Delete
                                         </a>
@@ -90,3 +90,13 @@
 
 
 </div>
+<script type="text/jscript">
+    $('#EditLink').click(function () {
+      
+        var url = "/Employee/Edit";
+        /*var name = $('#Name').val();*/
+        $.get(url,null, function (data) {
+            $("#rData").html(data);
+        });
+    })
+</script>

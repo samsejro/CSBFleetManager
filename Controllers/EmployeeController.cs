@@ -264,7 +264,7 @@ namespace CSBFleetManager.Controllers
             return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
 
         }
-
+        [HttpGet]
         public IActionResult Detail(string LasrraID)
         {
             var employee = _employeeService.GetByLASRRAIDDetailView(LasrraID);
@@ -299,10 +299,11 @@ namespace CSBFleetManager.Controllers
 
             return View(model);
         }
-
+        [HttpGet]
         public IActionResult Edit(string LASRRAID)
         {
             var employee = _employeeService.GetByLASRRAId(LASRRAID);
+
 
             if (employee == null)
             {
