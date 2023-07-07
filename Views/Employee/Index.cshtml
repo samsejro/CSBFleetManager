@@ -36,8 +36,8 @@
                                 {
                                 <tr>
                                     <td>
-                                        <a asp-action="Details" asp-route-id="@item.LASRRAID"></a>
-                                        @item.LASRRAID
+                                        <a asp-action="Detail" asp-route-LasrraID="@item.LASRRAID"> @item.LASRRAID</a>
+                                       
                                     </td>
                                     <td>
                                         
@@ -52,13 +52,14 @@
                                     @*<td>@item.Designation</td>*@
                                     <td>@item.EmploymentTypeName</td>
                                     <td>
-                                        <a class="text-primary" id="EditLink"  asp-route-id="@item.LASRRAID">
+                                        <a class="text-primary" asp-controller="Employee"  asp-action="Edit" asp- asp-route-LasrraID="@item.LASRRAID">
                                             <i class="fas fa-edit"></i> Edit
                                         </a> |
-                                        <a class="text-success" asp-action="Detail" asp-route-id="@item.LASRRAID">
+                                        @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
+                                        <a class="text-success" asp-action="Detail" asp-route-LasrraID="@item.LASRRAID">
                                             <i class="fas fa-bars"></i> Detail
                                         </a> |
-                                        <a class="text-danger" asp-action="Delete" asp-route-id="@item.LASRRAID">
+                                        <a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
                                             <i class="far fa-trash-alt"></i> Delete
                                         </a>
                                     </td>
@@ -90,7 +91,7 @@
 
 
 </div>
-<script type="text/jscript">
+@*<script type="text/jscript">
     $('#EditLink').click(function () {
       
         var url = "/Employee/Edit";
@@ -99,4 +100,4 @@
             $("#rData").html(data);
         });
     })
-</script>
+</script>*@

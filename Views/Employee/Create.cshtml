@@ -231,7 +231,7 @@
                             {
                                 <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
                             }*@
-                        <select asp-for="EmployeeTypeId" class="form-control" asp-items="ViewBag.EmployeeType">
+                        <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
 
@@ -239,7 +239,7 @@
                     </div>
                     <div class="form-group col-md-6">
                         <div class="input-group">
-                            <input asp-for="EmployeeNo" class="form-control rounded-0" placeholder="Enter Oracle No" />
+                            <input asp-for="EmployeeNo" class="form-control rounded-0" id="EmployeeNo" placeholder="Enter Oracle No" />
                             @*<span class="input-group-append">
                                     <button type="button" class="btn btn-info btn-flat">Validate ID!</button>
                                     <button type="button" class="btn btn-info btn-flat">Get Info</button>
@@ -451,6 +451,43 @@
 
         })
     }
+</script>
+<script type="text/javascript">
+    //$("#EmployeeType").on("change", function () {
+    //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
+    //    alert(selectedEmployeeType);
+    //    if (selectedEmployeeType != "EMPT-01") {
+    //        $("#EmployeeNo").prop("disabled", true);
+
+    //    }
+    //});
+
+    //$('#EmployeeType').change(
+    //    function () {
+    //        alert(selectedEmployeeType);
+    //        if (selectedEmployeeType != "EMPT-01") {
+    //            $("#EmployeeNo").prop("disabled", true);
+
+    //        }
+    //        // Do something with val1 and val2 ...
+    //    }
+    //);
+
+    const select = document.getElementById("EmployeeType");
+    select.addEventListener('change', function handleChange(event) {
+        //console.log(event.target.value); // 👉️ get selected VALUE
+
+        //// 👇️ get selected VALUE even outside event handler
+        //console.log(select.options[select.selectedIndex].value);
+
+        //// 👇️ get selected TEXT in or outside event handler
+        //console.log(select.options[select.selectedIndex].text);
+
+        if (select.options[select.selectedIndex].text !="Oracle Staff") {
+            document.getElementById("EmployeeNo").disabled = true;
+        }
+    });
+
 </script>
 
 @*@section Scripts{

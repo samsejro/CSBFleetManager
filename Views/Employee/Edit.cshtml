@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <div class="input-group">
-                            <input asp-for="LASRRAID" id="txtLASRRAID" class="form-control rounded-0" readonly style="background-color: #293043" />
+                            <input asp-for="LASRRAID" id="txtLASRRAID" class="form-control rounded-0" readonly />
 
                             <div class="input-group-append">
                                 <button class="btn-sm btn-info btn-flat" type="button" id="btnValidateLASRRAID" disabled onclick="VerifyID()"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>
@@ -98,7 +98,7 @@
                         <label asp-for="LGA"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <select class="form-control" asp-for="LGA" id="LGA" disabled>
+                        <select class="form-control" asp-for="LGA" id="LGA" >
                             <option selected>Select LGA</option>
                             <option>AGBADO-OKEODO</option>
                             <option>AGBOYI-KETU</option>
@@ -177,7 +177,8 @@
                     <div class="form-group col-md-4">
                         @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
                         <img id="imgCapture" alt="Photo" />
-                        <input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />
+                        @*<input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />*@
+                        <img  src="@Url.Content(Model.ImageUrl)" alt="" />
                         @*<input class="form-control" id="Photo" />*@
                         <input asp-for="Photo" class="form-control" id="Photo" type="hidden" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
@@ -232,7 +233,7 @@
                             {
                                 <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
                             }*@
-                        <select asp-for="EmployeeTypeId" class="form-control" disabled asp-items="ViewBag.EmployeeType">
+                        <select asp-for="EmployeeTypeId" id="EmployeeType" class="form-control" disabled asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
 
@@ -265,7 +266,7 @@
                                 <select asp-for="MDA" class="form-control" asp-items="@ViewBag.MDA"></select>
 
                             }*@
-                        <select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA ">
+                        <select asp-for="MDAId" id="MDA" class="form-control" asp-items="ViewBag.MDA ">
                             <option selected>-----Select MDA-------</option>
                         </select>
                         <span asp-validation-for="MDAId" class="text-danger"></span>
@@ -339,3 +340,18 @@
             })
         }
     </script>*@
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#Gender").val('@Model.Gender');
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#MDA").val('@Model.MDAId');
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(() => {
+        $("#EmployeeType").val('@Model.EmployeeTypeId');
+    });
+</script>

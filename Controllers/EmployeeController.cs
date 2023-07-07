@@ -141,9 +141,9 @@ namespace CSBFleetManager.Controllers
                 {
                     LASRRAID = model.LASRRAID,
                     LAGID = model.LAGID,
-                    EmployeeNo = model.EmployeeNo,
+                    EmployeeTypeId = model.EmployeeTypeId,
+                    //EmployeeNo = model.EmployeeNo,
                     //EmploymentType = model.EmploymentTypeName,
-                    EmployeeTypeId=model.EmployeeTypeId,
                     MDAId = model.MDAId,
                     Designation = model.Designation,
                     LastName = model.LastName.ToUpper(),
@@ -165,6 +165,14 @@ namespace CSBFleetManager.Controllers
                     Email = model.Email,
 
                 };
+                if (!string.IsNullOrEmpty(model.EmployeeNo))
+                {
+                    employee.EmployeeNo = model.EmployeeNo;
+                }
+                else
+                {
+                    employee.EmployeeNo = model.LASRRAID;
+                }
                 if (model.Photo != null && model.Photo.Length > 0)
                 //if (!string.IsNullOrEmpty(form["imgCapture"].ToString()))
                 {
@@ -267,7 +275,18 @@ namespace CSBFleetManager.Controllers
         [HttpGet]
         public IActionResult Detail(string LasrraID)
         {
+            string text = LasrraID;
+
             var employee = _employeeService.GetByLASRRAIDDetailView(LasrraID);
+            //var employee2 = _employeeService.GetByLASRRAId(LasrraID);
+           // IQueryable<Employee> empList = _employeeService.GetEmployeeByLASRRAIDDetailView();
+            //if (empList==null)
+            //{
+            //    return NotFound();
+            //}
+            //var emp = empList.First(x => x.LASRRAID == LasrraID);
+
+            //var employee = _employeeService.GetByLASRRAId(LasrraID);
 
             if (employee == null)
             {
@@ -285,23 +304,48 @@ namespace CSBFleetManager.Controllers
                 Address = employee.Address,
                 LGA = employee.LGA,
                 ImageUrl = employee.ImageUrl,
-                EmploymentTypeName=employee.EmployeeTypeId,
+                EmploymentTypeName = employee.EmployeeTypeId,
                 Designation = employee.Designation,
                 Ministry = employee.MDAId,
                 EmployeeNo = employee.EmployeeNo,
-                DateofFirstAppointment=employee.DateofFirstAppointment,
+                DateofFirstAppointment = employee.DateofFirstAppointment,
                 NextofkinFullName = employee.NextofKinLastName.ToUpper() + " " + (string.IsNullOrEmpty(employee.NextofKinFirstName) ? " " : char.ToUpper(employee.NextofKinFirstName[0]) + employee.NextofKinFirstName.Substring(1)),
                 NextOfkinrelationship = employee.NextOfkinrelationship,
-                NextofKinPhone=employee.NextofKinPhone,
+                NextofKinPhone = employee.NextofKinPhone,
+                Email=employee.Email
 
 
             };
+            //EmployeeDetailViewModel model = new EmployeeDetailViewModel()
+            //{
+            //    LASRRAID = emp.LASRRAID,
+            //    Surname = emp.LastName,
+            //    FirstName = emp.FirstName,
+            //    MiddleName = emp.MiddleName,
+            //    Gender = emp.Gender,
+            //    DOB = emp.DOB,
+            //    ContactPhone = emp.Phone,
+            //    Address = emp.Address,
+            //    LGA = emp.LGA,
+            //    ImageUrl = emp.ImageUrl,
+            //    EmploymentTypeName = emp.EmployeeTypeId,
+            //    Designation = emp.Designation,
+            //    Ministry = emp.MDAId,
+            //    EmployeeNo = emp.EmployeeNo,
+            //    DateofFirstAppointment = emp.DateofFirstAppointment,
+            //    NextofkinFullName = emp.NextofKinLastName.ToUpper() + " " + (string.IsNullOrEmpty(emp.NextofKinFirstName) ? " " : char.ToUpper(emp.NextofKinFirstName[0]) + emp.NextofKinFirstName.Substring(1)),
+            //    NextOfkinrelationship = emp.NextOfkinrelationship,
+            //    NextofKinPhone = emp.NextofKinPhone,
+
+
+            //};
 
             return View(model);
         }
-        [HttpGet]
+      
         public IActionResult Edit(string LASRRAID)
         {
+            //var employee = _employeeService.GetByLASRRAIDDetailView(LASRRAID);
             var employee = _employeeService.GetByLASRRAId(LASRRAID);
 
 
@@ -317,6 +361,7 @@ namespace CSBFleetManager.Controllers
                 MiddleName = (string.IsNullOrEmpty(employee.MiddleName) ? "" : employee.MiddleName),
                 LastName = employee.LastName,
                 DOB = employee.DOB,
+                Gender=employee.Gender,
                 Address = employee.Address,
                 LGA = employee.LGA,
                 ImageUrl = employee.ImageUrl,
@@ -327,7 +372,8 @@ namespace CSBFleetManager.Controllers
                 NextofKinLastName = employee.NextofKinLastName,
                 NextofKinFirstName = employee.NextofKinFirstName,
                 NextofKinPhone = employee.NextofKinPhone,
-                NextOfkinrelationship = employee.NextOfkinrelationship
+                NextOfkinrelationship = employee.NextOfkinrelationship,
+                Email=employee.Email
 
 
             };
