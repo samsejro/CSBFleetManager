@@ -233,7 +233,7 @@
                             {
                                 <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
                             }*@
-                        <select asp-for="EmployeeTypeId" id="EmployeeType" class="form-control" disabled asp-items="ViewBag.EmployeeType">
+                        <select asp-for="EmployeeTypeId" id="EmployeeType" class="form-control"  asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
 
@@ -345,13 +345,33 @@
         $("#Gender").val('@Model.Gender');
     });
 </script>
-<script type="text/javascript">
+@*<script type="text/javascript">
     $(document).ready(() => {
-        $("#MDA").val('@Model.MDAId');
+        $("#MDA option:selected").text('@Model.Ministry');
     });
+</script>*@
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var text1 = @Model.EmploymentType;
+         $("#EmployeeType option").filter(function () {
+        //may want to use $.trim in here
+        return $(this).text() == text1;
+    }).prop('selected', true);
+
+
+    })
 </script>
 <script type="text/javascript">
-    $(document).ready(() => {
-        $("#EmployeeType").val('@Model.EmployeeTypeId');
-    });
+    $(document).ready(function () {
+        const selectMDA = document.getElementById("MDA");
+        const selectEmploymentType = document.getElementById("EmployeeType");
+
+        const selectedIndexMDA = select.selectedIndex;
+        const selectedValue = select.value;
+        const selectedText = select.options[selectedIndex].text;
+
+        document.getElementById("LGA").value = selectedText;
+
+    })
 </script>

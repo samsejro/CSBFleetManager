@@ -13,6 +13,7 @@ namespace CSBFleetManager.Models
         public string Gender { get; set; }
         public string ImageUrl { get; set; }
         public string MDA { get; set; }
+        public string MDAId { get; set; }
         public string Designation { get; set; }
         public DateTime DateofFirstAppointment { get; set; }
         public string LGA { get; set; }

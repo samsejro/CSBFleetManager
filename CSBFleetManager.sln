@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.33529.622
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSBFleetManager", "CSBFleetManager.csproj", "{908C7EE5-A0CE-42AB-B9A5-A271B8DD3288}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSBFleetManager", "CSBFleetManager.csproj", "{908C7EE5-A0CE-42AB-B9A5-A271B8DD3288}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSBFleetManager.Entity", "..\CSBFleetManager.Entity\CSBFleetManager.Entity.csproj", "{EAB6ECB5-A810-4898-B4AB-4CAE4803417B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSBFleetManager.Entity", "..\CSBFleetManager.Entity\CSBFleetManager.Entity.csproj", "{EAB6ECB5-A810-4898-B4AB-4CAE4803417B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSBFleetManager.Persistence", "..\CSBFleetManager.Persistence\CSBFleetManager.Persistence.csproj", "{BC5EC8BE-6E3F-4005-8FAB-842BAF939F64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSBFleetManager.Persistence", "..\CSBFleetManager.Persistence\CSBFleetManager.Persistence.csproj", "{BC5EC8BE-6E3F-4005-8FAB-842BAF939F64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSBFleetManager.Services", "..\CSBFleetManager.Services\CSBFleetManager.Services.csproj", "{46F6ABE7-C4D1-49CC-B494-ADC9692C7B60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSBFleetManager.Services", "..\CSBFleetManager.Services\CSBFleetManager.Services.csproj", "{46F6ABE7-C4D1-49CC-B494-ADC9692C7B60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

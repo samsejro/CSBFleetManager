@@ -39,28 +39,58 @@ namespace CSBFleetManager
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+
+                // Cookie settings
+                options.ConsentCookie.HttpOnly = true;
+                //options.ConsentCookie. = TimeSpan.FromMinutes(5);
             });
+
+            //web addition from tutoria
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+
+            //end of web addition from tutorial
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-               //AddDefaultUI(UIFramework.Bootstrap4)
-               .AddEntityFrameworkStores<ApplicationDbContext>()
-               .AddDefaultTokenProviders();
+            //services.AddDefaultIdentity<IdentityUser>(
+            //  options => options.SignIn.RequireConfirmedAccount = true)
+            //  .AddRoles<IdentityRole>()
+            //  .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true);
-            //    /*.AddEntityFrameworkStores<ApplicationDbContext>()*/;
-            ////services.AddControllersWithViews();
-
-            //services.AddDefaultIdentity<IdentityUser>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            //first and last 3rd row commentend out
+            services.AddIdentity<IdentityUser, IdentityRole>()
+               //AddDefaultUI(UIFramework.Bootstrap4)
+              .AddEntityFrameworkStores<ApplicationDbContext>();
+               //.AddDefaultTokenProviders();
+
+
+            //.AddEntityFrameworkStores<ApplicationDbContext>()
            
+
+            //services.AddDefaultIdentity<IdentityUser>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
+        //    services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        //.AddEntityFrameworkStores<ApplicationDbContext>();
+
+           
+
+
             //services.AddTransient<IEmailSender, EmailSender>();
 
             services.Configure<IdentityOptions>(options =>
@@ -76,7 +106,14 @@ namespace CSBFleetManager
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+
             });
+            services.AddHttpContextAccessor();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -86,6 +123,8 @@ namespace CSBFleetManager
             services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
             services.AddScoped<IValidationService, ValidationService>();
             services.AddScoped<IGetDetailsOnLASRRAIdService, GetDetailsOnLASRRAIdService>();
+            services.AddScoped<IGetDetailsOnOracleNumberService, GetDetailsOnOracleNumberService>();
+            services.AddScoped<IRegistrationStatistics, RegistrationStatistics>();
 
             //services.AddMvcCore(o=>
             //{
@@ -95,7 +134,7 @@ namespace CSBFleetManager
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, 
+        public void Configure(IApplicationBuilder app,
                                     IWebHostEnvironment env,
                                     UserManager<IdentityUser> userManager,
                                     RoleManager<IdentityRole> roleManager)
@@ -111,6 +150,7 @@ namespace CSBFleetManager
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            //app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -119,6 +159,7 @@ namespace CSBFleetManager
 
             app.UseAuthentication();
             app.UseAuthorization();
+
 
             DataSeedingInitializer.UserAndRoleSeedAsync(userManager, roleManager).Wait();
 

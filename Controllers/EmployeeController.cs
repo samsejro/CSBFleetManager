@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace CSBFleetManager.Controllers
 {
-    //[Authorize]
+  
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -29,13 +29,15 @@ namespace CSBFleetManager.Controllers
         private readonly IEmployeeTypeService _employeeTypeService;
         private readonly IValidationService _ivalidationService;
         private readonly IGetDetailsOnLASRRAIdService _getDetailsOnLASRRAIdService;
+        private readonly IGetDetailsOnOracleNumberService _getDetailsOnOracleNumberService;
+        private readonly IRegistrationStatistics _getRegistrationStatistics;
 
 
         //Image SignatureImage = null;
         Image ResidentfPicture = null;
         byte[] pictureByteArray = null;
         byte[] signatureByteArray = null;
-        public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService, IMDAService mDAService, IValidationService validationService, IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService, IWebHostEnvironment hostingEnvironment)
+        public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService, IMDAService mDAService, IValidationService validationService, IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService,IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,IRegistrationStatistics getRegistrationStatistics,   IWebHostEnvironment hostingEnvironment)
         {
             _employeeService = employeeService;
             _mdaService = mDAService;
@@ -43,6 +45,8 @@ namespace CSBFleetManager.Controllers
             _hostingEnvironment = hostingEnvironment;
             _ivalidationService = validationService;
             _getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
+            _getDetailsOnOracleNumberService = getDetailsOnOracleNumberService;
+            _getRegistrationStatistics = getRegistrationStatistics;
         }
         public static Image ResizeImage(Image image, Size size, bool preserveAspectRatio = true)
         {
@@ -90,7 +94,20 @@ namespace CSBFleetManager.Controllers
         }
         public IActionResult Index(int? pageNumber)
         {
-           
+            //int TotalReg = 0;
+            //int TotalRegMale = 0;
+            //int TotalRegeFemale = 0;
+            //int TotalRegToday = 0;
+
+            ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistration();
+
+            ViewBag.TotalRegMale = _getRegistrationStatistics.GetTotalRegistrationByGender("Male");
+
+            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotalRegistrationByGender("Female");
+
+            ViewBag.TotalRegToday = _getRegistrationStatistics.GetTotaRegistrationToday();
+
+
             var employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
             {
                 LASRRAID = employee.LASRRAID,
@@ -272,6 +289,35 @@ namespace CSBFleetManager.Controllers
             return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
 
         }
+        
+
+        public JsonResult GetOracleStaffRecord(string oracleNumber)
+        {
+            OracleStaffData oracleStaffObject = new OracleStaffData();
+
+            // IEnumerable<OracleStaffData> listOfStaff = _getDetailsOnOracleNumberService.GetAllOracleStaffList();
+            //var list1 = _employeeTypeService.GetAll();
+
+            //var list = _getDetailsOnOracleNumberService.GetAll();
+
+            var ExistingOracleStaff = _getDetailsOnOracleNumberService.GetDetailonEmployeeDetailView(oracleNumber);
+
+            if (ExistingOracleStaff ==null)
+            {
+                //return NotFound();
+            }
+          
+            string resultString = JsonConvert.SerializeObject(oracleStaffObject);
+
+            if (ModelState.IsValid==true)
+            {
+                //oracleStaffObject = _getDetailsOnOracleNumberService.GetDetailsOnEmployeeNo(oracleNumber);
+
+                oracleStaffObject = ExistingOracleStaff;
+            }
+            return Json(new { OracleNumber = oracleStaffObject.EmployeeNo, surname = oracleStaffObject.SurName, firstname = oracleStaffObject.FirstName, middlename = oracleStaffObject.MiddleName, gender = oracleStaffObject.Gender, name11 = oracleStaffObject.JobTitle, ministry = oracleStaffObject.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject.EmployeeCategory, dateofFirstappointment = oracleStaffObject.DateOfFirstAppointment, dueDate = oracleStaffObject.DueDate });
+
+        }
         [HttpGet]
         public IActionResult Detail(string LasrraID)
         {
@@ -345,9 +391,11 @@ namespace CSBFleetManager.Controllers
       
         public IActionResult Edit(string LASRRAID)
         {
-            //var employee = _employeeService.GetByLASRRAIDDetailView(LASRRAID);
-            var employee = _employeeService.GetByLASRRAId(LASRRAID);
+            var employee = _employeeService.GetByLASRRAIDDetailView(LASRRAID);
+            // var employee = _employeeService.GetByLASRRAId(LASRRAID);
 
+            ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
+            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
             if (employee == null)
             {
@@ -366,14 +414,18 @@ namespace CSBFleetManager.Controllers
                 LGA = employee.LGA,
                 ImageUrl = employee.ImageUrl,
                 EmployeeNo = employee.EmployeeNo,
-                MDAId = employee.MDAId,
+                // MDAId = employee.MDAId,
+                EmploymentType = employee.EmployeeTypeId,
                 Designation = employee.Designation,
-                EmployeeTypeId = employee.EmployeeTypeId,
+                Ministry = employee.MDAId,
+               // EmployeeTypeId = employee.EmployeeTypeId,
                 NextofKinLastName = employee.NextofKinLastName,
                 NextofKinFirstName = employee.NextofKinFirstName,
                 NextofKinPhone = employee.NextofKinPhone,
                 NextOfkinrelationship = employee.NextOfkinrelationship,
-                Email=employee.Email
+                Email=employee.Email,
+                Phone=employee.Phone
+                
 
 
             };

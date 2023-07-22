@@ -168,7 +168,7 @@
                         <label asp-for="Address"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <textarea asp-for="Address" id="address" cols="46" rows="3"></textarea>
+                        <textarea asp-for="Address" id="address" cols="50" rows="3"></textarea>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="ImageUrl"></label>
@@ -176,13 +176,13 @@
                     <div class="form-group col-md-4">
                         @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
                         <img id="imgCapture" alt="Photo" />
-                        <input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64"  type="hidden"/>
+                        <input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />
                         @*<input class="form-control" id="Photo" />*@
                         <input asp-for="Photo" class="form-control" id="Photo" type="hidden" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                     </div>
 
-                </div><br /><br />
+                </div><br />
                 <h3>Next of Kin Details</h3>
                 <hr style="background-color:crimson" />
                 <div class="form-row">
@@ -190,14 +190,14 @@
                         <label asp-for="NextofKinLastName"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="NextofKinLastName" class="form-control" placeholder="Enter SurName.." />
+                        <input asp-for="NextofKinLastName" class="form-control" id="NextofKinLastName" placeholder="Enter SurName.." />
                         <span asp-validation-for="NextofKinLastName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="NextofKinFirstName"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="NextofKinFirstName" class="form-control" placeholder="Enter FirstName.." />
+                        <input asp-for="NextofKinFirstName" class="form-control" id="NextofKinFirstName" placeholder="Enter FirstName.." />
                         <span asp-validation-for="NextofKinFirstName" class="text-danger"></span>
                     </div>
 
@@ -245,14 +245,49 @@
                                     <button type="button" class="btn btn-info btn-flat">Get Info</button>
                                 </span>*@
                             <div class="input-group-append">
-                                <button class="btn btn-primary btn-flat" type="button">Validate ID!</button>
-                                <button class="btn btn-success btn-flat" type="button">Get ID Info</button>
+                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
+                                @*<button class="btn btn-primary btn-flat" type="button"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>*@
+
                             </div>
                             <span asp-validation-for="EmployeeNo" class="text-danger"></span>
                         </div>
                     </div>
 
-                </div>
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label a>Surname</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="OracleSurName" disabled placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label a>First Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="OracleFirstName" disabled placeholder=" " />
+                        @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label a>Middle Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="OracleMiddleName" disabled placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label a>Gender</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="OracleGender" disabled placeholder=" " />
+                        @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
+                    </div>
+
+                </div><br />
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label asp-for="MDAId"></label>
@@ -273,28 +308,29 @@
                         <label asp-for="Designation"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="Designation" class="form-control" placeholder="Enter Designation.." />
+                        <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
                         <span asp-validation-for="Designation" class="text-danger"></span>
                     </div>
 
-                </div>
+                </div><br />
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label asp-for="DateofFirstAppointment"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="DateofFirstAppointment" class="form-control" />
+                        <input asp-for="DateofFirstAppointment" id="DateofFirstAppointment" class="form-control" />
                         <span asp-validation-for="DateofFirstAppointment" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="Email"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="Email" class="form-control" placeholder="Official Email" />
+                        <input asp-for="Email" class="form-control" id="OfficialEmail" placeholder="Official Email" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                </div><br /><br />
+                </div><br />
+                <hr style="background-color: crimson; border: 1px solid red" />
                 @*<div class="form-group">
 
                         <button type="submit" class="btn btn-rounded btn-primary float-right "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
@@ -433,6 +469,52 @@
             document.getElementById("LGA").value = selectedText;
         }
     </script>
+    <script type="text/javascript">
+
+        function OracleAPICallDetails() {
+
+          /*  var ID = $("#EmployeeNo").val()*/
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/Employee/GetOracleStaffRecord',
+                data: { oracleNumber: $("#EmployeeNo").val() },
+                //url: '/Home/GetResidentsBasicDetails',
+                //data: { LASRRAID: $("#txtLASRRAID").val() },
+                contentType: 'application/json; charset=utf-8',
+                success: function (responseData) {
+                    /*alert("VALID ID and Details returned");*/
+                    @* alert("@ViewBag.PictureString");*@
+                    //alert(response.surname);
+                    alert("Oracle details found");
+                    $("#OracleSurName").val(responseData.surname)
+                    $("#OracleFirstName").val(responseData.firstname)
+                    $("#OracleMiddleName").val(responseData.middlename)
+                    $("#OracleGender").val(responseData.gender)
+                    ("#Designation").val(responseData.name11)
+                    $("#OfficialEmail").val(responseData.name12)
+                    /*$("#txtfirst_name").val(response.firstname)*/
+                    //$("#phone_number").val(responseData.phone)
+                    //$("#address").val(responseData.address)
+                },
+
+                 failure: function (response) {
+                    /* alert(response.responseText);*/
+                    alert("Details on Oracle not found");
+                },
+                error: function (response) {
+                    alert("Error communicating to the backend");
+                }
+
+
+            });
+
+
+
+        }
+
+    </script>
 </div>
 <script>
 
@@ -483,10 +565,32 @@
         //// 👇️ get selected TEXT in or outside event handler
         //console.log(select.options[select.selectedIndex].text);
 
-        if (select.options[select.selectedIndex].text !="Oracle Staff") {
+        if (select.options[select.selectedIndex].text != "Oracle Staff") {
             document.getElementById("EmployeeNo").disabled = true;
         }
     });
+
+</script>
+<script type="text/javascript">
+
+    function forceKeyPressUppercase(e) {
+        var charInput = e.keyCode;
+        if ((charInput >= 97) && (charInput <= 122)) { // lowercase
+            if (!e.ctrlKey && !e.metaKey && !e.altKey) { // no modifier key
+                var newChar = charInput - 32;
+                var start = e.target.selectionStart;
+                var end = e.target.selectionEnd;
+                e.target.value = e.target.value.substring(0, start) + String.fromCharCode(newChar) + e.target.value.substring(end);
+                e.target.setSelectionRange(start + 1, start + 1);
+                e.preventDefault();
+            }
+        }
+    }
+
+    document.getElementById("NextofKinFirstName").addEventListener("keypress", forceKeyPressUppercase, false);
+    document.getElementById("NextofKinLastName").addEventListener("keypress", forceKeyPressUppercase, false);
+    document.getElementById("Designation").addEventListener("keypress", forceKeyPressUppercase, false);
+    document.getElementById("txtLASRRAID").addEventListener("keypress", forceKeyPressUppercase, false);
 
 </script>
 

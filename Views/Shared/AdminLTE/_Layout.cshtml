@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+
 <!--
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
@@ -55,10 +56,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <span class="info-box-icon bg-info elevation-1">@*<i class="fas fa-cog"></i>*@ <i class="fa fa-bus"></i></span>
 
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Total CSB Fleet</span>
+                                        @*<span class="info-box-text">Total CSB Fleet</span>*@
+                                        <span class="info-box-text">Total Officers Uploaded</span>
                                         <span class="info-box-number">
-                                            10
-                                            <small>%</small>
+                                            @*10*@
+                                            @ViewBag.TotalReg
+
+                                            @*<small>%</small>*@
                                         </span>
                                     </div>
                                     <!-- /.info-box-content -->
@@ -71,8 +75,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <span class="info-box-icon bg-danger elevation-1">@*<i class="fas fa-thumbs-up"></i>*@<i class="fa fa-users-cog"></i></span>
 
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Registered CSB Users </span>
-                                        <span class="info-box-number">41,410</span>
+                                        @*<span class="info-box-text">Registered CSB Users </span>*@
+                                        <span class="info-box-text">Uploaded Male Officers </span>
+                                        <span class="info-box-number">
+                                        @if (ViewBag.TotalRegMale !=null)
+                                        {
+                                            @ViewBag.TotalRegMale
+                                        }
+                                       </span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -87,8 +97,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <span class="info-box-icon bg-success elevation-1">@*<i class="fas fa-shopping-cart"></i>*@<i class="fa fa-clock"></i></span>
 
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Total Hours Traveled By Fleet</span>
-                                        <span class="info-box-number">760</span>
+                                        @*<span class="info-box-text">Total Hours Traveled By Fleet</span>*@
+                                        <span class="info-box-text">Uploaded Female Officers</span>
+                                        <span class="info-box-number">@ViewBag.TotalRegeFemale</span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -100,8 +111,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <span class="info-box-icon bg-warning elevation-1">@*<i class="fas fa-users"></i>*@<i class="fa fa-people-carry"></i></span>
 
                                     <div class="info-box-content">
-                                        <span class="info-box-text">Users On-Board Today</span>
-                                        <span class="info-box-number">2,000</span>
+                                        @*<span class="info-box-text">Users On-Board Today</span>*@
+                                        <span class="info-box-text">Record Upload for Today</span>
+                                        <span class="info-box-number">
+                                            @ViewBag.TotalRegToday
+                                        </span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>

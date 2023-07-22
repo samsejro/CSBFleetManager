@@ -14,6 +14,7 @@ namespace CSBFleetManager.Models
         [Required(ErrorMessage = "LASRRAID is required")]
         public string LASRRAID { get; set; }
         public string LAGID { get; set; }
+       
         public string EmployeeNo { get; set; }
 
         public EmployeeType EmploymentTypeName { get; set; }
@@ -21,6 +22,8 @@ namespace CSBFleetManager.Models
         [Required(ErrorMessage = "Employment Type is required"), Display(Name = "Employment Type")]
 
         public string EmployeeTypeId { get; set; }
+        public string EmploymentType { get; set; }
+        public string Ministry { get; set; }
 
         public MDA MDA { get; set; }
 
