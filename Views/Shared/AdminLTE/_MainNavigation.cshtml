@@ -1,11 +1,14 @@
 ﻿
+
 @using static CSBFleetManager.Helpers.NavigationIndicatorHelper;
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
         @*<img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
-        <img src="~/img/bus-2.png" alt="CSB Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">CSB Fleet</span>
+        @*<img src="~/img/bus-2.png" alt="CSB Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
+        <img src="~/img/LASRRA.jpg" alt="CSB Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+
+        <span class="brand-text font-weight-light">LASG Staff</span>
     </a>
 
     <!-- Sidebar -->
@@ -60,30 +63,99 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link active">
-                        <i class="nav-icon fas fa-people-carry"></i>
-                        <p>
-                            Employee Details
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
+                @if (User.Identity.IsAuthenticated)
+                {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Employee" asp-action="Index">
-                                <i class="far fa-edit nav-icon"></i>
-                                <p>All Employees</p>
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-people-carry"></i>
+                                <p>
+                                    Employee Details
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+
+                                    <a class="nav-link" asp-controller="Employee" asp-action="Index">
+                                            <i class="far fa-edit nav-icon"></i>
+                                            <p>Employee List</p>
+                                        </a>
+                                    @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                        <i class="far fa-edit nav-icon"></i>
+                                        <p></p>
+                                    </a>*@
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" asp-controller="Employee" asp-action="Create">
+                                        <i class="fa fa-folder-plus"></i>
+                                        <p>Creat New Employee</p>
+                                    </a>
+                                </li>
+
+                            </ul>
+
                         </li>
+                   
                         <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Employee" asp-action="Create">
-                                <i class="fa fa-folder-plus"></i>
-                                <p>New Employee</p>
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-people-carry"></i>
+                                <p>
+                                    Administration
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a class="nav-link active" asp-controller="Users" asp-action="Index">
+                                        <i class="far fa-edit nav-icon"></i>
+                                        <p>Users List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" asp-controller="RoleManager" asp-action="Index">
+                                        <i class="far fa-edit nav-icon"></i>
+                                        <p>Manage Roles</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="UserRoles" asp-action="Index">
+                                        <i class="fa fa-folder-plus"></i>
+                                        <p>Manage User Roles</p>
+                                    </a>
+                                </li>
+
+
+                            </ul>
                         </li>
 
-                    </ul>
-                </li>
+                }
+
+
+
+                @*<li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="nav-link @Url.MakeActiveClass("home","index")">
+                            <i class="nav-icon fas fa-home"></i>
+                            <p>
+                                Administration
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active" asp-controller="RoleManager" asp-action="Index">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Manage Roles</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" asp-controller="UserRoles" asp-action="Index">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Manage Users</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>*@
                 @*<li class="nav-item">
                         <a asp-controller="Home" asp-action="Privacy" class="nav-link @Url.MakeActiveClass("home","privacy")">
                             <i class="nav-icon fas fa-lock"></i>

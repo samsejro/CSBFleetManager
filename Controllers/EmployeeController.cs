@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace CSBFleetManager.Controllers
 {
-  
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -92,12 +92,17 @@ namespace CSBFleetManager.Controllers
                 return returnImage;
             }
         }
+
+        //[Authorize(Roles = "SuperAdmin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Index(int? pageNumber)
         {
             //int TotalReg = 0;
             //int TotalRegMale = 0;
             //int TotalRegeFemale = 0;
             //int TotalRegToday = 0;
+
+            ViewBag.MDAList = _mdaService.GetDistinctMDA();
 
             ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistration();
 
@@ -130,7 +135,50 @@ namespace CSBFleetManager.Controllers
             return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
             //return View();
         }
-        //[AllowAnonymous]
+
+        //[Authorize(Roles = "Basic,Manager")]
+        public IActionResult MDAIndex(int? pageNumber, string mdaID)
+        {
+            //int TotalReg = 0;
+            //int TotalRegMale = 0;
+            //int TotalRegeFemale = 0;
+            //int TotalRegToday = 0;
+
+            string id = mdaID;
+
+            ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistrationByMDA(mdaID);
+
+            ViewBag.TotalRegMale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Male", mdaID);
+
+            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Female",mdaID);
+
+            ViewBag.TotalRegToday = _getRegistrationStatistics.GetTotaRegistrationTodayByMDA(mdaID);
+
+
+            var employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+            {
+                LASRRAID = employee.LASRRAID,
+                FullName = employee.FullName,
+                EmployeeNo = employee.EmployeeNo,
+                //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                EmploymentTypeName = employee.EmployeeTypeId,
+                //EmploymentTypeName = empType.,
+                //LAGID=employee.LAGID,
+                Gender = employee.Gender,
+                // Designation = employee.Designation,
+                Ministry = employee.MDAId,
+                // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                ImageUrl = employee.ImageUrl,
+                LGA = employee.LGA
+
+            }).ToList();
+
+            int pageSize = 4;
+            return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            //return View();
+        }
+
+       
         [HttpGet]
         public IActionResult Create()
         {
@@ -146,11 +194,12 @@ namespace CSBFleetManager.Controllers
             var model = new EmployeeCreateViewModel();
             return View(model);
         }
+       
         [HttpPost]
         [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
         public async Task<IActionResult> Create(EmployeeCreateViewModel model)
         {
-            string val = "I am here";
+            //string val = "I am here";
 
             if (ModelState.IsValid)
             {
@@ -180,6 +229,7 @@ namespace CSBFleetManager.Controllers
                     NextofKinPhone = model.NextofKinPhone,
                     DateofFirstAppointment = model.DateofFirstAppointment,
                     Email = model.Email,
+                    DateUploaded=DateTime.Now.Date
 
                 };
                 if (!string.IsNullOrEmpty(model.EmployeeNo))
@@ -290,7 +340,6 @@ namespace CSBFleetManager.Controllers
 
         }
         
-
         public JsonResult GetOracleStaffRecord(string oracleNumber)
         {
             OracleStaffData oracleStaffObject = new OracleStaffData();
@@ -318,6 +367,7 @@ namespace CSBFleetManager.Controllers
             return Json(new { OracleNumber = oracleStaffObject.EmployeeNo, surname = oracleStaffObject.SurName, firstname = oracleStaffObject.FirstName, middlename = oracleStaffObject.MiddleName, gender = oracleStaffObject.Gender, name11 = oracleStaffObject.JobTitle, ministry = oracleStaffObject.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject.EmployeeCategory, dateofFirstappointment = oracleStaffObject.DateOfFirstAppointment, dueDate = oracleStaffObject.DueDate });
 
         }
+        
         [HttpGet]
         public IActionResult Detail(string LasrraID)
         {
@@ -431,6 +481,7 @@ namespace CSBFleetManager.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EmployeeEditViewModel model)

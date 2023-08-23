@@ -60,7 +60,15 @@
                     <a asp-controller="Employee" asp-action="Edit" asp- asp-route-LasrraID="@Model.LASRRAID" class="btn btn-rounded btn-primary "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</a>
                 </div>
                 <div class="form-group col-md-6" style="text-align:left">
-                    <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    }
+                    else
+                    {
+                        <a asp-action="MDAIndex" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    }
+
                 </div>
 
             </div>

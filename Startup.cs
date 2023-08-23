@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CSBFleetManager.Models;
+using CSBFleetManager.Entity;
 
 namespace CSBFleetManager
 {
@@ -34,59 +35,32 @@ namespace CSBFleetManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-
-                // Cookie settings
-                options.ConsentCookie.HttpOnly = true;
-                //options.ConsentCookie. = TimeSpan.FromMinutes(5);
-            });
-
-            //web addition from tutoria
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.SlidingExpiration = true;
-            });
-
-            //end of web addition from tutorial
+            
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            //services.AddDatabaseDeveloperPageExceptionFilter();//RECENTLY COMMENTED
 
             //services.AddDefaultIdentity<IdentityUser>(
             //  options => options.SignIn.RequireConfirmedAccount = true)
             //  .AddRoles<IdentityRole>()
             //  .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            //services.AddControllersWithViews();
+            //services.AddRazorPages();
 
             //first and last 3rd row commentend out
-            services.AddIdentity<IdentityUser, IdentityRole>()
-               //AddDefaultUI(UIFramework.Bootstrap4)
-              .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultUI()
+              .AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>()
+              .AddDefaultTokenProviders();
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
                //.AddDefaultTokenProviders();
 
-
-            //.AddEntityFrameworkStores<ApplicationDbContext>()
-           
-
-            //services.AddDefaultIdentity<IdentityUser>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-        //    services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-        //.AddEntityFrameworkStores<ApplicationDbContext>();
 
            
 
@@ -126,18 +100,14 @@ namespace CSBFleetManager
             services.AddScoped<IGetDetailsOnOracleNumberService, GetDetailsOnOracleNumberService>();
             services.AddScoped<IRegistrationStatistics, RegistrationStatistics>();
 
-            //services.AddMvcCore(o=>
-            //{
-            //    var policy=new aut
-            //})
+            
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app,
-                                    IWebHostEnvironment env,
-                                    UserManager<IdentityUser> userManager,
-                                    RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, UserManager<ApplicationUser> userManager,
+                                    RoleManager<IdentityRole> roleManager,
+                                    IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -153,7 +123,7 @@ namespace CSBFleetManager
             //app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy(); //recently commented
 
             app.UseRouting();
 
@@ -161,7 +131,7 @@ namespace CSBFleetManager
             app.UseAuthorization();
 
 
-            DataSeedingInitializer.UserAndRoleSeedAsync(userManager, roleManager).Wait();
+            //DataSeedingInitializer.UserAndRoleSeedAsync(userManager, roleManager).Wait();
 
             app.UseEndpoints(endpoints =>
             {
@@ -170,15 +140,15 @@ namespace CSBFleetManager
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-            app.Use(async (context, next) =>
-            {
-                await next();
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Request.Path = "/Home";
-                    await next();
-                }
-            });
+            //app.Use(async (context, next) =>
+            //{
+            //    await next();
+            //    if (context.Response.StatusCode == 404)
+            //    {
+            //        context.Request.Path = "/Home";
+            //        await next();
+            //    }
+            //});
         }
 
     }

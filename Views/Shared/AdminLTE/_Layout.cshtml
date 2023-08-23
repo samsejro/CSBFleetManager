@@ -33,14 +33,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h5 class="m-0">CSB Fleet Management Dashboard</h5>
+                                <h5 class="m-0">LASG Staff Record Harmonization with LASRRA DB Dashboard</h5>
                             </div><!-- /.col -->
                             <!--<div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                                     <li class="breadcrumb-item active">Application Dashbaord</li>
                                 </ol>
-                            </div>--><!-- /.col -->
+                            </div>-->
+                            <!-- /.col -->
                         </div><!-- /.row -->
                     </div><!-- /.container-fluid -->
                 </div>
@@ -49,7 +50,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="content">
                     <div class="container-fluid">
                         <!-------- My Code Start>
-                <!-- Info boxes -->
+                        <!-- Info boxes -->
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box">
@@ -78,11 +79,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         @*<span class="info-box-text">Registered CSB Users </span>*@
                                         <span class="info-box-text">Uploaded Male Officers </span>
                                         <span class="info-box-number">
-                                        @if (ViewBag.TotalRegMale !=null)
-                                        {
-                                            @ViewBag.TotalRegMale
-                                        }
-                                       </span>
+                                            @if (ViewBag.TotalRegMale != null)
+                                            {
+                                                @ViewBag.TotalRegMale
+                                            }
+                                        </span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -125,8 +126,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </div>
                         <!-- /.row -->
                         <!-------- My Code End>
-                
-                 <!-- /.row -->
+
+                        <!-- /.row -->
                     </div><!-- /.container-fluid -->
                     @RenderBody()
                 </div>
@@ -150,6 +151,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- ./wrapper -->
     <!-- REQUIRED SCRIPTS -->
     <partial name="AdminLTE/_Scripts" />
+    @RenderSection("Scripts", required: false)
 
     <!-- jQuery -->
 

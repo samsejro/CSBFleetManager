@@ -1,25 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj": {}
+    "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj": {}
   },
   "projects": {
-    "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
+    "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj",
+        "projectUniqueName": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj",
         "projectName": "CSBFleetManager.Entity",
-        "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\obj\\",
+        "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj",
+        "packagesPath": "C:\\Users\\Samsejro\\.nuget\\packages\\",
+        "outputPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Samsejro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -44,6 +39,16 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[5.0.17, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -59,26 +64,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj": {
+    "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj",
+        "projectUniqueName": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj",
         "projectName": "CSBFleetManager.Persistence",
-        "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\obj\\",
+        "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj",
+        "packagesPath": "C:\\Users\\Samsejro\\.nuget\\packages\\",
+        "outputPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Samsejro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -92,8 +92,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
-                "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
+              "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
+                "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
               }
             }
           }
@@ -114,25 +114,19 @@
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[5.0.17, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[5.0.17, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[5.0.17, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[5.0.0, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[5.0.17, )"
             }
           },
           "imports": [
@@ -150,26 +144,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj": {
+    "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj",
+        "projectUniqueName": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj",
         "projectName": "CSBFleetManager.Services",
-        "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\obj\\",
+        "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj",
+        "packagesPath": "C:\\Users\\Samsejro\\.nuget\\packages\\",
+        "outputPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Samsejro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -183,11 +172,11 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
-                "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
+              "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
+                "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
               },
-              "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj": {
-                "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj"
+              "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj": {
+                "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Persistence\\CSBFleetManager.Persistence.csproj"
               }
             }
           }
@@ -262,26 +251,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj": {
+    "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj",
+        "projectUniqueName": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj",
         "projectName": "CSBFleetManager",
-        "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\obj\\",
+        "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj",
+        "packagesPath": "C:\\Users\\Samsejro\\.nuget\\packages\\",
+        "outputPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Samsejro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -295,11 +279,11 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
-                "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
+              "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj": {
+                "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Entity\\CSBFleetManager.Entity.csproj"
               },
-              "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj": {
-                "projectPath": "F:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj"
+              "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj": {
+                "projectPath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager.Services\\CSBFleetManager.Services.csproj"
               }
             }
           }
@@ -357,7 +341,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.416\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }
