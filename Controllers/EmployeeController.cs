@@ -95,6 +95,7 @@ namespace CSBFleetManager.Controllers
 
         //[Authorize(Roles = "SuperAdmin")]
         //[Authorize(Roles = "Admin")]
+        //[Authorize]
         public IActionResult Index(int? pageNumber)
         {
             //int TotalReg = 0;
@@ -136,7 +137,7 @@ namespace CSBFleetManager.Controllers
             //return View();
         }
 
-        //[Authorize(Roles = "Basic,Manager")]
+        //[Authorize]
         public IActionResult MDAIndex(int? pageNumber, string mdaID)
         {
             //int TotalReg = 0;
@@ -177,8 +178,48 @@ namespace CSBFleetManager.Controllers
             return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
             //return View();
         }
+        public IActionResult FilterByMDA(int? pageNumber, string mdaID)
+        {
+            //int TotalReg = 0;
+            //int TotalRegMale = 0;
+            //int TotalRegeFemale = 0;
+            //int TotalRegToday = 0;
 
-       
+            string id = mdaID;
+
+            ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistrationByMDA(mdaID);
+
+            ViewBag.TotalRegMale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Male", mdaID);
+
+            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Female", mdaID);
+
+            ViewBag.TotalRegToday = _getRegistrationStatistics.GetTotaRegistrationTodayByMDA(mdaID);
+
+
+            var employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+            {
+                LASRRAID = employee.LASRRAID,
+                FullName = employee.FullName,
+                EmployeeNo = employee.EmployeeNo,
+                //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                EmploymentTypeName = employee.EmployeeTypeId,
+                //EmploymentTypeName = empType.,
+                //LAGID=employee.LAGID,
+                Gender = employee.Gender,
+                // Designation = employee.Designation,
+                Ministry = employee.MDAId,
+                // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                ImageUrl = employee.ImageUrl,
+                LGA = employee.LGA
+
+            }).ToList();
+
+            int pageSize = 4;
+            return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            //return View();
+        }
+
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -194,7 +235,108 @@ namespace CSBFleetManager.Controllers
             var model = new EmployeeCreateViewModel();
             return View(model);
         }
-       
+        [HttpGet]
+        public IActionResult CreatMDAEmployee(string MDAId)
+        {
+            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(MDAId);
+            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
+
+            var model = new EmployeeCreateViewModel();
+            return View(model);
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
+        public async Task<IActionResult> CreatMDAEmployee(EmployeeCreateViewModel model)
+        {
+
+            //string val = "I am here";
+
+            if (ModelState.IsValid)
+            {
+                var employee = new Employee()
+                {
+                    LASRRAID = model.LASRRAID,
+                    LAGID = model.LAGID,
+                    EmployeeTypeId = model.EmployeeTypeId,
+                    //EmployeeNo = model.EmployeeNo,
+                    //EmploymentType = model.EmploymentTypeName,
+                    MDAId = model.MDAId,
+                    Designation = model.Designation,
+                    LastName = model.LastName.ToUpper(),
+                    //FirstName = model.FirstName.ToUpper(),
+                    FirstName = (string.IsNullOrEmpty(model.FirstName) ? " " : char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1)),
+                    // MiddleName = model.MiddleName,
+                    MiddleName = (string.IsNullOrEmpty(model.MiddleName) ? " " : char.ToUpper(model.MiddleName[0]) + model.MiddleName.Substring(1)),
+                    FullName = model.FullName,
+                    DOB = model.DOB,
+                    Gender = model.Gender,
+                    Phone = model.Phone,
+                    Address = model.Address,
+                    LGA = model.LGA,
+                    NextofKinFirstName = (string.IsNullOrEmpty(model.NextofKinFirstName) ? " " : char.ToUpper(model.NextofKinFirstName[0]) + model.NextofKinFirstName.Substring(1)),
+                    NextofKinLastName = model.NextofKinLastName.ToUpper(),
+                    NextOfkinrelationship = model.NextOfkinrelationship,
+                    NextofKinPhone = model.NextofKinPhone,
+                    DateofFirstAppointment = model.DateofFirstAppointment,
+                    Email = model.Email,
+                    DateUploaded = DateTime.Now.Date
+
+                };
+                if (!string.IsNullOrEmpty(model.EmployeeNo))
+                {
+                    employee.EmployeeNo = model.EmployeeNo;
+                }
+                else
+                {
+                    employee.EmployeeNo = model.LASRRAID;
+                }
+                if (model.Photo != null && model.Photo.Length > 0)
+                //if (!string.IsNullOrEmpty(form["imgCapture"].ToString()))
+                {
+                    var uploadDir = @"images/CSBUsers";
+                    //var fileName = Path.GetFileNameWithoutExtension(model.ImageUrl.FileName);
+                    string fileName = model.LASRRAID;
+                    //var extension = Path.GetExtension(model.ImageUrl.FileName);
+                    string extension = ".jpg";
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+                    fileName = DateTime.UtcNow.ToString("yymmssfff") + fileName + extension;
+                    var path = Path.Combine(webRootPath, uploadDir, fileName);
+
+                    //string data = form["imgCapture"].ToString();
+                    string data = model.Photo.ToString();
+
+                    //pictureByteArray = Convert.FromBase64String(data.Split(',')[1]);
+                    pictureByteArray = Convert.FromBase64String(data);
+                    // ResidentfPicture = ConvertByteArrayToImage(pictureByteArray);
+
+                    int offset = 0;
+                    const int Buffer_Size = 4096;
+
+                    using var fileStream = new FileStream(path,
+                                                            FileMode.Append, FileAccess.Write,
+                                                            FileShare.None, bufferSize: Buffer_Size, useAsync: true);
+                    await fileStream.WriteAsync(pictureByteArray, offset, pictureByteArray.Length);
+
+                    // await model.ImageUrl.CopyToAsync(new FileStream(path, FileMode.Create));
+                    employee.ImageUrl = "/" + uploadDir + "/" + fileName;
+                }
+                await _employeeService.CreateAsync(employee);
+                return RedirectToAction(nameof(MDAIndex));
+
+            }
+            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(model.MDAId);
+            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
+
+            string last = "I got here";
+
+            return View();
+
+
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
         public async Task<IActionResult> Create(EmployeeCreateViewModel model)
@@ -281,23 +423,7 @@ namespace CSBFleetManager.Controllers
 
             return View();
         }
-        //public async Task<IActionResult> VerifyLASRRAId(string LA)
-        //{
-        //    //string ResponseMessage = "";
-
-        //    IDValidation validationModel = new IDValidation();
-
-        //    if (ModelState.IsValid==true)
-        //    {
-        //        var message = await   _ivalidationService.ValidateID(LA);
-
-        //        validationModel.ResponseMessage = message.ToString();
-
-        //        ViewBag.ValidationMessage = validationModel.ResponseMessage;
-
-        //    }
-        //    return (ViewBag.ValidationMessage);
-        //}
+       
         public async Task<JsonResult> VerifyLASRRAId(string LA)
         {
             //string ResponseMessage = "";
@@ -363,11 +489,22 @@ namespace CSBFleetManager.Controllers
                 //oracleStaffObject = _getDetailsOnOracleNumberService.GetDetailsOnEmployeeNo(oracleNumber);
 
                 oracleStaffObject = ExistingOracleStaff;
+                
             }
-            return Json(new { OracleNumber = oracleStaffObject.EmployeeNo, surname = oracleStaffObject.SurName, firstname = oracleStaffObject.FirstName, middlename = oracleStaffObject.MiddleName, gender = oracleStaffObject.Gender, name11 = oracleStaffObject.JobTitle, ministry = oracleStaffObject.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject.EmployeeCategory, dateofFirstappointment = oracleStaffObject.DateOfFirstAppointment, dueDate = oracleStaffObject.DueDate });
+            //if (oracleStaffObject != null)
+            //{
+            //    return Json(new { OracleNumber = oracleStaffObject?.EmployeeNo, surname = oracleStaffObject?.SurName, firstname = oracleStaffObject?.FirstName, middlename = oracleStaffObject?.MiddleName, gender = oracleStaffObject?.Gender, name11 = oracleStaffObject?.JobTitle, ministry = oracleStaffObject?.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject?.EmployeeCategory, dateofFirstappointment = oracleStaffObject?.DateOfFirstAppointment, dueDate = oracleStaffObject?.DueDate });
+
+            //}
+            //else
+            //{
+            //    return
+            //}
+            return Json(new { OracleNumber = oracleStaffObject?.EmployeeNo, surname = oracleStaffObject?.SurName, firstname = oracleStaffObject?.FirstName, middlename = oracleStaffObject?.MiddleName, gender = oracleStaffObject?.Gender, name11 = oracleStaffObject?.JobTitle, ministry = oracleStaffObject?.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject?.EmployeeCategory, dateofFirstappointment = oracleStaffObject?.DateOfFirstAppointment, dueDate = oracleStaffObject?.DueDate });
+
 
         }
-        
+
         [HttpGet]
         public IActionResult Detail(string LasrraID)
         {
@@ -412,29 +549,7 @@ namespace CSBFleetManager.Controllers
 
 
             };
-            //EmployeeDetailViewModel model = new EmployeeDetailViewModel()
-            //{
-            //    LASRRAID = emp.LASRRAID,
-            //    Surname = emp.LastName,
-            //    FirstName = emp.FirstName,
-            //    MiddleName = emp.MiddleName,
-            //    Gender = emp.Gender,
-            //    DOB = emp.DOB,
-            //    ContactPhone = emp.Phone,
-            //    Address = emp.Address,
-            //    LGA = emp.LGA,
-            //    ImageUrl = emp.ImageUrl,
-            //    EmploymentTypeName = emp.EmployeeTypeId,
-            //    Designation = emp.Designation,
-            //    Ministry = emp.MDAId,
-            //    EmployeeNo = emp.EmployeeNo,
-            //    DateofFirstAppointment = emp.DateofFirstAppointment,
-            //    NextofkinFullName = emp.NextofKinLastName.ToUpper() + " " + (string.IsNullOrEmpty(emp.NextofKinFirstName) ? " " : char.ToUpper(emp.NextofKinFirstName[0]) + emp.NextofKinFirstName.Substring(1)),
-            //    NextOfkinrelationship = emp.NextOfkinrelationship,
-            //    NextofKinPhone = emp.NextofKinPhone,
-
-
-            //};
+            
 
             return View(model);
         }

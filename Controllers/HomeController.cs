@@ -1,4 +1,5 @@
-﻿using CSBFleetManager.Models;
+﻿using CSBFleetManager.Areas.Identity.Pages.Account;
+using CSBFleetManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,6 +20,17 @@ namespace CSBFleetManager.Controllers
         }
 
         public IActionResult Index()
+        {
+            //return View();
+
+            return RedirectToPage("/Identity/Account/Login");
+            
+        }
+        public IActionResult IndexAdmin()
+        {
+            return View();
+        }
+        public IActionResult IndexManager()
         {
             return View();
         }

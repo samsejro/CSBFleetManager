@@ -1,3 +1,26 @@
-﻿@{
-    Layout = "_Layout";
+﻿@using Microsoft.AspNetCore.Identity
+@using CSBFleetManager.Entity
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject SignInManager<IdentityUser> SignInManager*@
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("SuperAdmin") || this.User.IsInRole("Admin"))
+        {
+            Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+        }
+        else
+        {
+            Layout = "~/Views/Shared/AdminLTE/_LayoutManager.cshtml";
+        }
+
+    }
+    //else
+    //{
+    //    Layout = "~/Views/Shared/_LayoutManager.cshtml";
+    //}
+
 }

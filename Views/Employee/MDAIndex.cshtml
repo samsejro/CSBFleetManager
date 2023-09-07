@@ -1,7 +1,8 @@
 ﻿@model EmployeeListPagination<EmployeeIndexViewModel>
 
 @{ ViewBag.Title = "Employee";
-    Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+    Layout = "~/Views/Shared/AdminLTE/_LayoutManager.cshtml";
+    
 }
 
 <div class="row">
@@ -10,7 +11,7 @@
             <div class="card-body">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="MDAIndex">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="IndexManager">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Employee List</li>
                     </ol>
                 </nav>
@@ -41,7 +42,7 @@
 
                     </div><br />
                     <div class="col-md-12 table-responsive-md">
-                        <a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"> New Employee</a>
+                        <a class="btn btn-xs btn-outline-success float-md-right" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)"> New Employee</a>
                         <table class="table table-striped">
                             <thead>
                                 <tr>

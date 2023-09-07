@@ -245,7 +245,7 @@
                                     <button type="button" class="btn btn-info btn-flat">Get Info</button>
                                 </span>*@
                             <div class="input-group-append">
-                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
+                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()" id="btnOracle"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
                                 @*<button class="btn btn-primary btn-flat" type="button"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>*@
 
                             </div>
@@ -283,7 +283,9 @@
                         <label a>Gender</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input class="form-control" id="OracleGender" disabled placeholder=" " />
+                        @*<input class="form-control" id="OracleGender" disabled placeholder=" " />*@
+                        @Html.DropDownList("Gender", new SelectList(Gender), "Select Gender", new { @class = "form-control", @id = "ddlOracleGender" })
+                        @*<span asp-validation-for="Gender" class="text-danger"></span>*@
                         @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
                     </div>
 
@@ -354,6 +356,8 @@
         </div>
 
     </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/Script/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
 
         function VerifyID() {
@@ -535,40 +539,30 @@
     }
 </script>
 <script type="text/javascript">
-    //$("#EmployeeType").on("change", function () {
-    //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
-    //    alert(selectedEmployeeType);
-    //    if (selectedEmployeeType != "EMPT-01") {
-    //        $("#EmployeeNo").prop("disabled", true);
+    $("#EmployeeTypeId").change(function (evt) {
 
-    //    }
-    //});
+        alert($("#EmployeeTypeId").val());
+        alert($("#EmployeeTypeId option:selected").text());
 
-    //$('#EmployeeType').change(
-    //    function () {
-    //        alert(selectedEmployeeType);
-    //        if (selectedEmployeeType != "EMPT-01") {
-    //            $("#EmployeeNo").prop("disabled", true);
+        var selectedText = $("#EmployeeTypeId option:selected").text();
 
-    //        }
-    //        // Do something with val1 and val2 ...
-    //    }
-    //);
-
-    const select = document.getElementById("EmployeeType");
-    select.addEventListener('change', function handleChange(event) {
-        //console.log(event.target.value); // 👉️ get selected VALUE
-
-        //// 👇️ get selected VALUE even outside event handler
-        //console.log(select.options[select.selectedIndex].value);
-
-        //// 👇️ get selected TEXT in or outside event handler
-        //console.log(select.options[select.selectedIndex].text);
-
-        if (select.options[select.selectedIndex].text != "Oracle Staff") {
+        if (selectedText != "Oracle Staff") {
             document.getElementById("EmployeeNo").disabled = true;
+            document.getElementById("btnOracle").disabled = true;
+            document.getElementById("OracleSurName").disabled = false;
+            document.getElementById("OracleFirstName").disabled = false;
+            document.getElementById("OracleMiddleName").disabled = false;
+            document.getElementById("ddlOracleGender").disabled = false;
         }
+        else {
+            document.getElementById("EmployeeNo").disabled = false;
+            document.getElementById("ddlOracleGender").disabled = true;
+            document.getElementById("btnOracle").disabled = false;
+        }
+
     });
+    
+   
 
 </script>
 <script type="text/javascript">

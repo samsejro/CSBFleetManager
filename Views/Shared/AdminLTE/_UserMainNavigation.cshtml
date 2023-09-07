@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CSBFleetManager.Entity
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject SignInManager<IdentityUser> SignInManager*@
+@inject UserManager<ApplicationUser> UserManager
+
+@using static CSBFleetManager.Helpers.NavigationIndicatorHelper;
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+        @*<img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
+        @*<img src="~/img/bus-2.png" alt="CSB Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
+        <img src="~/img/LASRRA.jpg" alt="CSB Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+
+        <span class="brand-text font-weight-light">LASG Staff</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a asp-controller="Home" asp-action="IndexManager" class="nav-link @Url.MakeActiveClass("home","IndexManager")">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Home
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="far fa nav-icon"></i>
+                                <p>Application Basic Details</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa nav-icon"></i>
+                                <p>Inactive Page</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="nav-icon fas fa-people-carry"></i>
+                        <p>
+                            Employee Details
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+
+                            <!--<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex">-->
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value" )>*@
+                                <!--<i class="far fa-edit nav-icon"></i>
+                                <p>Employee List</p>
+                            </a>-->
+                            <a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                <i class="far fa-edit nav-icon"></i>
+                                <p>Employee List</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <!--<a class="nav-link active" asp-controller="Employee" asp-action="Create">-->
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                <!--<i class="fa fa-folder-plus"></i>
+                                <p>Creat New Employee</p>
+                            </a>-->
+                            <a class="nav-link active" asp-controller="Employee" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                <i class="fa fa-folder-plus"></i>
+                                <p>Creat New Employee</p>
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace CSBFleetManager.Areas.Identity.Pages.Account
 {
     //[AllowAnonymous]
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -82,7 +82,7 @@ namespace CSBFleetManager.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
         }
-
+       
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -90,10 +90,11 @@ namespace CSBFleetManager.Areas.Identity.Pages.Account
             //ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
 
             MDAList = _mdaService.GetAllMDAforEmployee().ToList();
+           
 
             //string MM = "I got here";
 
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

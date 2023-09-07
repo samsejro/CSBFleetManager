@@ -98,29 +98,33 @@ namespace CSBFleetManager.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    //var user = await _userManager.FindByEmailAsync(Input.Email);
-                    //var roles = await _userManager.GetRolesAsync(user);
+                   // var user = await _userManager.FindByEmailAsync(Input.Email);
+                    var user = await _userManager.FindByNameAsync(userName);
+                    var roles = await _userManager.GetRolesAsync(user);
 
                     //if (roles.Contains("SuperAdmin"))
                     //{
                     //    return RedirectToAction("Index", "Employee");
+
                     //}
-                    //if (roles.Contains("Admin"))
+                    //else if (roles.Contains("Admin"))
                     //{
                     //    return RedirectToAction("Index", "Employee");
+
                     //}
-                    //if (roles.Contains("Basic"))
+                    //else if (roles.Contains("Basic"))
                     //{
                     //    return RedirectToAction("MDAIndex", "Employee", user.MDAId);
+                    //    //returnUrl = "~/Employee/MDAIndex/ Index";
+                    //    //return LocalRedirect();
                     //}
-                    //if (roles.Contains("Manager"))
+                    //else if (roles.Contains("Manager"))
                     //{
                     //    return RedirectToAction("MDAIndex", "Employee", user.MDAId);
+
+
                     //}
-                    //else
-                    //{
-                    //    return LocalRedirect(returnUrl);
-                    //}
+
 
                     return LocalRedirect(returnUrl);
 

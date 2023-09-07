@@ -1,6 +1,7 @@
 ﻿@model EmployeeListPagination<EmployeeIndexViewModel>
 
-@{ ViewBag.Title = "Employee";
+@{
+    ViewBag.Title = "Employee";
     Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
 }
 
@@ -17,22 +18,30 @@
                 </nav>
                 <div class="row">
                     <div class="form-row">
-                        <div class="form-group col-md-2">
+                        <div class="form-group col-md-1">
                             @*<label class="control-label">Ministry</label>*@
                         </div>
-                        <div class="form-group col-md-5">
+                        <div class="form-group col-md-5" style="text-align:right">
                             <label class="control-label">Filter Output By Ministry</label>
                         </div>
-                        <div class="form-group col-md-5">
-                            <select name="Ministry" class="form-control" asp-items="@ViewBag.MDAList"></select>
+                        @*<select asp-for="MDAId" class="form-control" asp-items="@ViewBag.MDAList ">
+                                <option selected>-----Select MDA-------</option>
+                            </select>*@
+                        <div class="form-group col-md-4">
+                            <select name="Ministry" id="ddMinistryFilter" class="form-control" asp-items="@ViewBag.MDAList">
+                                <option selected>-----Select MDA-------</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2" style="text-align:right">
+                            <button type="button" class="btn btn-rounded btn-primary" id="btnFilter"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Filter</button>
                         </div>
                         @*<div class="form-group col-md-2" style="text-align:right">
-            <label asp-for="Designation"></label>
-        </div>
-        <div class="form-group col-md-4">
-            <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
-            <span asp-validation-for="Designation" class="text-danger"></span>
-        </div>*@
+                                <label asp-for="Designation"></label>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
+                                <span asp-validation-for="Designation" class="text-danger"></span>
+                            </div>*@
 
                     </div><br />
                     <div class="col-md-12 table-responsive-md">
@@ -111,13 +120,101 @@
 
 
 </div>
-@*<script type="text/jscript">
-        $('#EditLink').click(function () {
 
-            var url = "/Employee/Edit";
-            /*var name = $('#Name').val();*/
-            $.get(url,null, function (data) {
-                $("#rData").html(data);
-            });
-        })
-    </script>*@
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/Script/jquery-3.7.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$("#ddMinistryFilter").change(function (evt) {
+
+        //    alert($("#ddMinistryFilter").val());
+        //    alert($("#ddMinistryFilter option:selected").text());
+
+        //});
+
+
+
+        //var selectedValue = null;
+
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#btnFilter").click(function () {
+            var selectedIndex = $("#ddMinistryFilter").val();
+            var selectedText = $("#ddMinistryFilter option:selected").text();
+
+            if (selectedText == "-----Select MDA-------") {
+                alert("No selection made yet.Make a selection and try again");
+                return;
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    /*dataType: 'json',*/
+                    url: '/Employee/FilterByMDA',
+                    @*data: { oracleNumber: $("#EmployeeNo").val() },*@
+                    data: { mdaID: selectedIndex },
+                    //url: '/Home/GetResidentsBasicDetails',
+                    //data: { LASRRAID: $("#txtLASRRAID").val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        window.location.href = data.redirect;
+                    },
+
+                    failure: function (response) {
+                        /* alert(response.responseText);*/
+                        alert("Problem loading record");
+                        return;
+                    },
+                    error: function (response) {
+                        alert("Error communicating to the backend");
+                        return;
+                    }
+
+
+                });
+            }
+            //alert("button");
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    function FilterMDARecord() {
+
+        /*  var ID = $("#EmployeeNo").val()*/
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: '/Employee/MDAIndex',
+            /*data: { oracleNumber: $("#EmployeeNo").val() },*/
+            data: { mdaID: MDASelectedIndex },
+            //url: '/Home/GetResidentsBasicDetails',
+            //data: { LASRRAID: $("#txtLASRRAID").val() },
+            contentType: 'application/json; charset=utf-8',
+            success: function (responseData) {
+
+            },
+
+            failure: function (response) {
+                /* alert(response.responseText);*/
+                alert("Details on Oracle not found");
+            },
+            error: function (response) {
+                alert("Error communicating to the backend");
+            }
+
+
+        });
+
+
+
+    }
+
+</script>

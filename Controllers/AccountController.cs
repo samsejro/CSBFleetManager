@@ -22,22 +22,115 @@ using CSBFleetManager.Models;
 
 namespace CSBFleetManager.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-       // private readonly ILogger<RegisterModel> _logger;
+       private readonly ILogger<AccountController> _logger;
         private readonly IEmailSender _emailSender;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
+            SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-          //  _logger = logger;
+          _logger = logger;
             _emailSender = emailSender;
 
         }
+        public IActionResult Login()
+        {
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(InputModel model)
+        {
+           // returnUrl ??= Url.Content("~/");
+
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (ModelState.IsValid)
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+
+                var userName = model.Email;
+                if (IsValidEmail(model.Email))
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        userName = user.UserName;
+                    }
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    // var user = await _userManager.FindByEmailAsync(Input.Email);
+                    var user = await _userManager.FindByNameAsync(userName);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
+                    {
+                        //return RedirectToAction("Index", "Employee");
+                        return RedirectToAction("IndexAdmin", "Home");
+
+                    }
+                    //else if (roles.Contains("Admin"))
+                    //{
+                    //    return RedirectToAction("Index", "Employee");
+
+                    //}
+                    else if (roles.Contains("Basic") || roles.Contains("Manager"))
+                    {
+                        //return RedirectToAction("MDAIndex", "Employee", user.MDAId);
+                        return RedirectToAction("IndexManager", "Home", user.MDAId);
+                        //returnUrl = "~/Employee/MDAIndex/ Index";
+                        //return LocalRedirect();
+                    }
+                    //else if (roles.Contains("Manager"))
+                    //{
+                    //    return RedirectToAction("MDAIndex", "Employee", user.MDAId);
+
+
+                    //}
+
+
+                    return View();
+
+
+                }
+                
+            }
+
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult>Logout()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+
+            return RedirectToAction("Login");
+        }
+        public bool IsValidEmail(string emailaddress)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(emailaddress);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
         //public UserRegistrationModel Input { get; set; }
         public string ReturnUrl { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }

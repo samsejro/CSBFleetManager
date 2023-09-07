@@ -35,36 +35,42 @@ namespace CSBFleetManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDatabaseDeveloperPageExceptionFilter();//RECENTLY COMMENTED
 
-            //services.AddDefaultIdentity<IdentityUser>(
-            //  options => options.SignIn.RequireConfirmedAccount = true)
-            //  .AddRoles<IdentityRole>()
-            //  .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            //services.AddControllersWithViews();
-            //services.AddRazorPages();
-
-            //first and last 3rd row commentend out
             services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultUI()
               .AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>()
               .AddDefaultTokenProviders();
 
+            services.AddRazorPages()
+        .AddRazorRuntimeCompilation();
+
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
-               //.AddDefaultTokenProviders();
+            //.AddDefaultTokenProviders();
 
+            //Add Authorization Policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("adminpolicy",
+                    builder => builder.RequireRole("SuperAdmin", "Admin"));
+                options.AddPolicy("userpolicy",
+                    builder => builder.RequireRole("Manager", "Basic"));
+            });
+            //settings to ensure login page becomes the default and first page
+            //services.AddMvc().AddRazorPagesOptions(options =>
+            //{
 
-           
-
-
+            //    //options.Conventions.AddPageRoute("/Account/Login", "");
+            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/LoginNew", "");
+            //});
             //services.AddTransient<IEmailSender, EmailSender>();
 
             services.Configure<IdentityOptions>(options =>
@@ -100,7 +106,7 @@ namespace CSBFleetManager
             services.AddScoped<IGetDetailsOnOracleNumberService, GetDetailsOnOracleNumberService>();
             services.AddScoped<IRegistrationStatistics, RegistrationStatistics>();
 
-            
+
 
         }
 
@@ -128,6 +134,7 @@ namespace CSBFleetManager
             app.UseRouting();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
 
@@ -137,18 +144,13 @@ namespace CSBFleetManager
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+            //pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Account}/{action=Login}/{id?}");
+                //pattern: "{area=Manager}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages().RequireAuthorization();
             });
-            //app.Use(async (context, next) =>
-            //{
-            //    await next();
-            //    if (context.Response.StatusCode == 404)
-            //    {
-            //        context.Request.Path = "/Home";
-            //        await next();
-            //    }
-            //});
+
+
         }
 
     }
