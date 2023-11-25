@@ -8,7 +8,7 @@
 @model List<CSBFleetManager.Models.UserRolesViewModel>
 @{
     ViewData["Title"] = "Index";
-    //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+    Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
 }
 <h1>User Roles</h1>
 <table class="table table-striped">
@@ -30,7 +30,9 @@
                 <td>@user.Email</td>
                 <td>@string.Join(" , ", user.Roles.ToList())</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>
+                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>&nbsp;&nbsp;
+                    <a class="btn btn-primary" asp-controller="UserRoles" asp-action="UserPasswordReset" asp-route-userId="@user.UserId">Password Reset</a>
+
                 </td>
             </tr>
         }

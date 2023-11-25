@@ -1,0 +1,165 @@
+﻿
+
+
+<div class="col-md-12 grid-margin">
+    <div class="card">
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="IndexAdmin">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employee List</li>
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="form-row">
+                    <div class="form-group col-md-1">
+                        @*<label class="control-label">Ministry</label>*@
+                    </div>
+                    <div class="form-group col-md-5" style="text-align:right">
+                        <label class="control-label">Filter Output By Ministry</label>
+                    </div>
+                    @*<select asp-for="MDAId" class="form-control" asp-items="@ViewBag.MDAList ">
+                            <option selected>-----Select MDA-------</option>
+                        </select>*@
+                    <div class="form-group col-md-4">
+                        <select name="Ministry" id="ddMinistryFilter" class="form-control" asp-items="@ViewBag.MDAList">
+                            <option selected>-----Select MDA-------</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        @*<button type="button" class="btn btn-rounded btn-primary" id="btnFilter"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Filter</button>*@
+                        <button type="submit" class="btn btn-rounded btn-primary" id="btnFilter"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Filter</button>
+                    </div>
+                    @*<div class="form-group col-md-2" style="text-align:right">
+                            <label asp-for="Designation"></label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
+                            <span asp-validation-for="Designation" class="text-danger"></span>
+                        </div>*@
+
+                </div><br />
+                <div class="col-md-12 table-responsive-md">
+                    <a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"> New Employee</a>
+
+
+                </div>
+            </div>
+            <!--<div class="row" id="dvDisplayEmployeeList">-->
+            @*<p>I got here</p>*@
+            <!--</div>-->
+            <body>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>LASRRA/LAGID</th>
+                            <th>Oracle No.</th>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            @*<th>MDA</th>*@
+                            @*<th>Designation</th>*@
+                            <th>Employment Type</th>
+                            <th class="text-warning">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Detail" asp-route-LasrraID="@item.LASRRAID"> @item.LASRRAID</a>
+
+                                </td>
+                                <td>
+
+                                    @item.EmployeeNo
+                                </td>
+                                <td>
+                                    <img class="img-fluid" style="width:42px; height:56px" alt="image" src="@Url.Content(item.ImageUrl)" />
+                                </td>
+                                <td>@item.FullName</td>
+                                <td>@item.Gender</td>
+                                @*<td>@item.Ministry</td>*@
+                                @*<td>@item.Designation</td>*@
+                                <td>@item.EmploymentTypeName</td>
+                                <td>
+                                    <a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a> |
+                                    @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
+                                    <a class="text-success" asp-action="Detail" asp-route-LasrraID="@item.LASRRAID">
+                                        <i class="fas fa-bars"></i> Detail
+                                    </a> |
+                                    <a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
+                                        <i class="far fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+                <br />
+                <div class="form-row">
+                    @{ var disablePrevious = !Model.IsPreviousPageAvailable ? "disabled" : "";
+                        var disableNext = !Model.IsNextPageAvailable ? "disabled" : "";
+                    }
+                    <div class="form-group col-md-3">
+
+                        <a asp-action="Index" id="btnPrevious"
+                           asp-route-pageNumber="@(Model.PageIndex - 1)"
+                           class="btn btn-primary @disablePrevious">
+                            Previous
+                        </a>
+
+                    </div>
+                    <div class="form-group col-md-3">
+
+                    </div>
+                    <div class="form-group col-md-3">
+
+                        @*<a asp-action="Index" id="btnNext"
+                               asp-route-pageNumber="@(Model.PageIndex + 1)"
+                               class="btn btn-primary @disableNext">
+                                Next
+                            </a>*@
+                        <a id="btnNext"
+                           asp-route-pageNumber="@(Model.PageIndex + 1)"
+                           class="btn btn-primary @disableNext">
+                            Next
+                        </a>
+
+                    </div>
+                    <div class="form-group col-md-1">
+
+                    </div>
+
+                </div>
+                <div class="col-md-12 table-responsive-md">
+                    @*<a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
+                    @*<a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
+                    <a class="btn btn-xs btn-outline-success float-md-right" asp-action="index">Back to Index</a>
+
+                </div>
+                @*@{ var disablePrevious = !Model.IsPreviousPageAvailable ? "disabled" : "";
+                        var disableNext = !Model.IsNextPageAvailable ? "disabled" : "";
+                    }
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       class="btn btn-primary @disablePrevious">
+                        Previous
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       class="btn btn-primary @disableNext">
+                        Next
+                    </a>*@
+
+            </body>
+
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/Script/jquery-3.7.1.min.js"></script>

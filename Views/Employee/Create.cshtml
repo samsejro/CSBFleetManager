@@ -142,7 +142,7 @@
                             <option>LAGOS-MAINLAND</option>
                             <option>LEKI LCDA</option>
                             <option>MOSANOKUNOLA</option>
-                            <option>MUSHINLG</option>
+                            <option>MUSHIN LG</option>
                             <option>ODI-OLOWO OJUWOYE LCDA</option>
                             <option>OJO LG</option>
                             <option>OJODU</option>
@@ -245,7 +245,7 @@
                                     <button type="button" class="btn btn-info btn-flat">Get Info</button>
                                 </span>*@
                             <div class="input-group-append">
-                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()" id="btnOracle"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
+                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()" id="btnOracle" name="btnOracle"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
                                 @*<button class="btn btn-primary btn-flat" type="button"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>*@
 
                             </div>
@@ -259,14 +259,14 @@
                         <label a>Surname</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input class="form-control" id="OracleSurName" disabled placeholder="" />
+                        <input class="form-control" id="OracleSurName" placeholder="" />
                         @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label a>First Name</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input class="form-control" id="OracleFirstName" disabled placeholder=" " />
+                        <input class="form-control" id="OracleFirstName" placeholder=" " />
                         @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
                     </div>
 
@@ -276,7 +276,7 @@
                         <label a>Middle Name</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input class="form-control" id="OracleMiddleName" disabled placeholder="" />
+                        <input class="form-control" id="OracleMiddleName" placeholder="" />
                         @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
@@ -358,7 +358,9 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/Script/jquery-3.7.1.min.js"></script>
-    <script type="text/javascript">
+    @section Scripts{
+
+        <script type="text/javascript">
 
         function VerifyID() {
 
@@ -389,9 +391,9 @@
                 }
             });
         }
-    </script>
+        </script>
 
-    <script type="text/javascript">
+        <script type="text/javascript">
             @*window.onload = function () {
                 alert("@ViewBag.ExistingStaffRecord");
             };*@
@@ -424,6 +426,7 @@
                     $("#phone_number").val(responseData.phone )
                     $("#address").val(responseData.address)
                     //alert(response.gender)
+                    alert(responseData.birtDate)
                     $("#Birthdate").val(responseData.birtDate)
                    /* $("#registrationDate").val(responseData.regDate)*/
                     /*$("#txtfirst_name").val(response.regDate)*/
@@ -461,9 +464,9 @@
         }
         function GetSelectedLG() {
 
-            //$("#dropdownID").change(function () {
-            //    alert($('option:selected', $(this)).text());
-            //});
+            $("#dropdownID").change(function () {
+                alert($('option:selected', $(this)).text());
+            });
             const select = document.getElementById("LGA");
 
             const selectedIndex = select.selectedIndex;
@@ -472,8 +475,8 @@
 
             document.getElementById("LGA").value = selectedText;
         }
-    </script>
-    <script type="text/javascript">
+        </script>
+        <script type="text/javascript">
 
         function OracleAPICallDetails() {
 
@@ -491,13 +494,16 @@
                     /*alert("VALID ID and Details returned");*/
                     @* alert("@ViewBag.PictureString");*@
                     //alert(response.surname);
-                    alert("Oracle details found");
+                   // alert("Oracle details found");
                     $("#OracleSurName").val(responseData.surname)
                     $("#OracleFirstName").val(responseData.firstname)
                     $("#OracleMiddleName").val(responseData.middlename)
                     $("#OracleGender").val(responseData.gender)
-                    ("#Designation").val(responseData.name11)
-                    $("#OfficialEmail").val(responseData.name12)
+                    alert(responseData.name8)
+                    $("#Designation").val(responseData.name6)
+                    $("#OfficialEmail").val(responseData.name7)
+                    $("#DateofFirstAppointment").val(responseData.name8)
+
                     /*$("#txtfirst_name").val(response.firstname)*/
                     //$("#phone_number").val(responseData.phone)
                     //$("#address").val(responseData.address)
@@ -518,77 +524,145 @@
 
         }
 
+        </script>
+    </div>
+    <script>
+
+        var CreateEmployee = function () {
+            debugger
+            var EmployeeFormData = $("#MDAEmployeefrm").serialize();
+
+            $.ajax({
+                type: "Post",
+                url: "Employee/CreatMDAEmployee",
+                data: EmployeeFormData,
+                success: function (response) {
+
+                    alert(success);
+                }
+
+            })
+        }
     </script>
-</div>
-<script>
+    <script type="text/javascript">
+                //$("#EmployeeType").on("change", function () {
+                //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
+                //    alert(selectedEmployeeType);
+                //    if (selectedEmployeeType != "EMPT-01") {
+                //        $("#EmployeeNo").prop("disabled", true);
 
-    var CreateEmployee = function () {
-        debugger
-        var EmployeeFormData = $("#Employeefrm").serialize();
+                //    }
+                //});
 
-        $.ajax({
-            type: "Post",
-            url: "Employee/Create",
-            data: EmployeeFormData,
-            success: function (response) {
+                //$('#EmployeeType').change(
+                //    function () {
+                //        alert(selectedEmployeeType);
+                //        if (selectedEmployeeType != "EMPT-01") {
+                //            $("#EmployeeNo").prop("disabled", true);
 
-                alert(success);
-            }
+                //        }
+                //        // Do something with val1 and val2 ...
+                //    }
+                //);
+
+                //const select = document.getElementById("EmployeeType");
+                //select.addEventListener('change', function handleChange(event) {
+                //    //console.log(event.target.value); // 👉️ get selected VALUE
+
+                //    //// 👇️ get selected VALUE even outside event handler
+                //    //console.log(select.options[select.selectedIndex].value);
+
+                //    //// 👇️ get selected TEXT in or outside event handler
+                //    //console.log(select.options[select.selectedIndex].text);
+
+                //    if (select.options[select.selectedIndex].text != "Oracle Staff") {
+                //        document.getElementById("EmployeeNo").disabled = true;
+                //    }
+                });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#EmployeeTypeId").change(function (evt) {
+
+                //alert($("#EmployeeTypeId").val());
+                //alert($("#EmployeeTypeId option:selected").text());
+
+                var selectedText = $("#EmployeeTypeId option:selected").text();
+
+                alert(selectedText);
+                const employeeNo = document.getElementById("EmployeeNo");
+                const getOracleButton = document.getElementById("btnOracle");
+                const OracleSurname = document.getElementById("OracleSurName");
+                const OracleFirstName = document.getElementById("OracleFirstName");
+                const OracleMiddleName = document.getElementById("OracleMiddleName");
+                const ddlOracleGender = document.getElementById("ddlOracleGender");
+
+                if (selectedText != "Oracle Staff") {
+                    //document.getElementById("EmployeeNo").disabled = true;
+                    //document.getElementById("btnOracle").disabled = true;
+                    //document.getElementById("OracleSurName").disabled = false;
+                    //document.getElementById("OracleFirstName").disabled = false;
+                    //document.getElementById("OracleMiddleName").disabled = false;
+                    //document.getElementById("ddlOracleGender").disabled = false;
+                    getOracleButton.setAttribute('disabled', 'disabled');
+                    employeeNo.setAttribute('disabled', 'disabled');
+                    OracleSurname.removeAttribute('disabled');
+                    OracleFirstName.removeAttribute('disabled');
+                    OracleMiddleName.removeAttribute('disabled');
+                    ddlOracleGender.removeAttribute('disabled');
+
+
+                }
+                else {
+                    //document.getElementById("EmployeeNo").disabled = false;
+                    //document.getElementById("btnOracle").disabled = false;
+                    //document.getElementById("OracleSurName").disabled = true;
+                    //document.getElementById("OracleFirstName").disabled = true;
+                    //document.getElementById("OracleMiddleName").disabled = true;
+                    //document.getElementById("ddlOracleGender").disabled = true;
+
+                    employeeNo.removeAttribute('disabled');
+                    getOracleButton.removeAttribute('disabled');
+                    OracleSurname.setAttribute('disabled', 'disabled');
+                    OracleFirstName.setAttribute('disabled', 'disabled');
+                    OracleMiddleName.setAttribute('disabled', 'disabled');
+                    ddlOracleGender.setAttribute('disabled', 'disabled');
+                }
+
+            });
 
         })
-    }
-</script>
-<script type="text/javascript">
-    $("#EmployeeTypeId").change(function (evt) {
 
-        alert($("#EmployeeTypeId").val());
-        alert($("#EmployeeTypeId option:selected").text());
 
-        var selectedText = $("#EmployeeTypeId option:selected").text();
 
-        if (selectedText != "Oracle Staff") {
-            document.getElementById("EmployeeNo").disabled = true;
-            document.getElementById("btnOracle").disabled = true;
-            document.getElementById("OracleSurName").disabled = false;
-            document.getElementById("OracleFirstName").disabled = false;
-            document.getElementById("OracleMiddleName").disabled = false;
-            document.getElementById("ddlOracleGender").disabled = false;
-        }
-        else {
-            document.getElementById("EmployeeNo").disabled = false;
-            document.getElementById("ddlOracleGender").disabled = true;
-            document.getElementById("btnOracle").disabled = false;
-        }
 
-    });
-    
-   
+    </script>
+    <script type="text/javascript">
 
-</script>
-<script type="text/javascript">
-
-    function forceKeyPressUppercase(e) {
-        var charInput = e.keyCode;
-        if ((charInput >= 97) && (charInput <= 122)) { // lowercase
-            if (!e.ctrlKey && !e.metaKey && !e.altKey) { // no modifier key
-                var newChar = charInput - 32;
-                var start = e.target.selectionStart;
-                var end = e.target.selectionEnd;
-                e.target.value = e.target.value.substring(0, start) + String.fromCharCode(newChar) + e.target.value.substring(end);
-                e.target.setSelectionRange(start + 1, start + 1);
-                e.preventDefault();
+        function forceKeyPressUppercase(e) {
+            var charInput = e.keyCode;
+            if ((charInput >= 97) && (charInput <= 122)) { // lowercase
+                if (!e.ctrlKey && !e.metaKey && !e.altKey) { // no modifier key
+                    var newChar = charInput - 32;
+                    var start = e.target.selectionStart;
+                    var end = e.target.selectionEnd;
+                    e.target.value = e.target.value.substring(0, start) + String.fromCharCode(newChar) + e.target.value.substring(end);
+                    e.target.setSelectionRange(start + 1, start + 1);
+                    e.preventDefault();
+                }
             }
         }
+
+        document.getElementById("NextofKinFirstName").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("NextofKinLastName").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("Designation").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("txtLASRRAID").addEventListener("keypress", forceKeyPressUppercase, false);
+
+    </script>
+
+
+
+
     }
-
-    document.getElementById("NextofKinFirstName").addEventListener("keypress", forceKeyPressUppercase, false);
-    document.getElementById("NextofKinLastName").addEventListener("keypress", forceKeyPressUppercase, false);
-    document.getElementById("Designation").addEventListener("keypress", forceKeyPressUppercase, false);
-    document.getElementById("txtLASRRAID").addEventListener("keypress", forceKeyPressUppercase, false);
-
-</script>
-
-@*@section Scripts{
-        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }*@
-

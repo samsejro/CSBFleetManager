@@ -3,10 +3,12 @@ using CSBFleetManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CSBFleetManager.Controllers
@@ -28,15 +30,21 @@ namespace CSBFleetManager.Controllers
         {
             var users = await _userManager.Users.ToListAsync();
             var userRolesViewModel = new List<UserRolesViewModel>();
+            
             foreach (ApplicationUser user in users)
             {
+                var roles = await _userManager.GetRolesAsync(user);
                 var thisViewModel = new UserRolesViewModel();
-                thisViewModel.UserId = user.Id;
-                thisViewModel.Email = user.Email;
-                thisViewModel.FirstName = user.FirstName;
-                thisViewModel.LastName = user.LastName;
-                thisViewModel.Roles = await GetUserRoles(user);
-                userRolesViewModel.Add(thisViewModel);
+                if (roles.Contains("Basic") || roles.Contains("Manager") || roles.Contains("Admin"))
+                {
+                    thisViewModel.UserId = user.Id;
+                    thisViewModel.Email = user.Email;
+                    thisViewModel.FirstName = user.FirstName;
+                    thisViewModel.LastName = user.LastName;
+                    thisViewModel.Roles = await GetUserRoles(user);
+                    userRolesViewModel.Add(thisViewModel);
+                }               
+                
             }
             return View(userRolesViewModel);
         }
@@ -97,7 +105,57 @@ namespace CSBFleetManager.Controllers
                 ModelState.AddModelError("", "Cannot add selected roles to user");
                 return View(model);
             }
-            return RedirectToAction("Index");
+            //return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> UserPasswordReset(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View();
+            }
+
+            var model = new UserPasswordResetViewModel()
+            {
+                Email=user.Email
+                
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UserPasswordReset(string UserId, UserPasswordResetViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            //var user = await _userManager.FindByIdAsync(UserId);
+            if (user == null)
+            {
+                return View();
+            }
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
+            
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View();
+            //return RedirectToAction(nameof(Index));
+
+
         }
     }
 }

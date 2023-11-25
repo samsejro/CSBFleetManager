@@ -1,5 +1,4 @@
 ﻿
-
 @using static CSBFleetManager.Helpers.NavigationIndicatorHelper;
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -39,7 +38,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
-                with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
                 <li class="nav-item">
                     <a asp-controller="Home" asp-action="Index" class="nav-link @Url.MakeActiveClass("home","index")">
                         <i class="nav-icon fas fa-home"></i>
@@ -65,75 +64,110 @@
                 </li>
                 @if (User.Identity.IsAuthenticated)
                 {
-                        <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-people-carry"></i>
-                                <p>
-                                    Employee Details
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="nav-icon fas fa-people-carry"></i>
+                            <p>
+                                Employee Details
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
 
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
 
-                                    <a class="nav-link" asp-controller="Employee" asp-action="Index">
-                                            <i class="far fa-edit nav-icon"></i>
-                                            <p>Employee List</p>
-                                        </a>
-                                    @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
-                                        <i class="far fa-edit nav-icon"></i>
-                                        <p></p>
-                                    </a>*@
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" asp-controller="Employee" asp-action="Create">
-                                        <i class="fa fa-folder-plus"></i>
-                                        <p>Creat New Employee</p>
-                                    </a>
-                                </li>
+                                <a class="nav-link" asp-controller="Employee" asp-action="Index">
+                                    <i class="far fa-edit nav-icon"></i>
+                                    <p>Employee List</p>
+                                </a>
+                                @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                            <i class="far fa-edit nav-icon"></i>
+                            <p></p>
+                        </a>*@
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-controller="Employee" asp-action="Create">
+                                    <i class="fa fa-folder-plus"></i>
+                                    <p>Creat New Employee</p>
+                                </a>
+                            </li>
 
-                            </ul>
+                        </ul>
 
-                        </li>
-                   
-                        <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-people-carry"></i>
-                                <p>
-                                    Administration
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a class="nav-link active" asp-controller="Users" asp-action="Index">
-                                        <i class="far fa-edit nav-icon"></i>
-                                        <p>Users List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" asp-controller="RoleManager" asp-action="Index">
-                                        <i class="far fa-edit nav-icon"></i>
-                                        <p>Manage Roles</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="UserRoles" asp-action="Index">
-                                        <i class="fa fa-folder-plus"></i>
-                                        <p>Manage User Roles</p>
-                                    </a>
-                                </li>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="nav-icon fas fa-people-carry"></i>
+                            <p>
+                                Administration
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @*<li class="nav-item">
+                        <a class="nav-link active" asp-controller="Users" asp-action="Index">
+                            <i class="far fa-edit nav-icon"></i>
+                            <p>Users List</p>
+                        </a>
+                    </li>*@
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="UserRoles" asp-action="Index">
+                                    <i class="fa fa-folder-plus"></i>
+                                    <p>Manage Users</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-controller="RoleManager" asp-action="Index">
+                                    <i class="far fa-edit nav-icon"></i>
+                                    <p>Manage Roles</p>
+                                </a>
+                            </li>
 
 
-                            </ul>
-                        </li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            @*<i class="nav-icon fas fa-people-carry"></i>*@
+                            <i class="nav-icon fas fa-researchgate"></i>
+                            <p>
+                                Account Manager
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+
+                                @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">*@
+                                <a class="nav-link"  asp-controller="Account" asp-action="ManageUserIndex" title="Manage Profile">
+
+                                    <i class="far fa-edit nav-icon"></i>
+                                    <p>Manage Profile</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+
+                                <a class="nav-link active" asp-controller="Account" asp-action="USerPasswordChange">
+                                    @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                    <i class="fa fa-folder-plus"></i>
+                                    <p>Update Password</p>
+                                </a>
+                            </li>
+
+
+
+                        </ul>
+
+                    </li>
 
                 }
 
 
 
-               
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

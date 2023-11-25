@@ -48,7 +48,7 @@ namespace CSBFleetManager
               .AddDefaultTokenProviders();
 
             services.AddRazorPages()
-        .AddRazorRuntimeCompilation();
+              .AddRazorRuntimeCompilation();
 
 
 
@@ -144,8 +144,9 @@ namespace CSBFleetManager
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-            //pattern: "{controller=Home}/{action=Index}/{id?}");
-            pattern: "{controller=Account}/{action=Login}/{id?}");
+                //pattern: "{controller=Home}/{action=Index}/{id?}");
+                //pattern: "{controller=Account}/{action=Login}/{id?}");
+                pattern: "{controller=Account}/{action=NewLogin}/{id?}");
                 //pattern: "{area=Manager}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages().RequireAuthorization();
             });

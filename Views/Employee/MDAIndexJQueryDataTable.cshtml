@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CSBFleetManager.Entity
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject SignInManager<IdentityUser> SignInManager*@
+@inject UserManager<ApplicationUser> UserManager
+@*@model EmployeeListPagination<EmployeeIndexViewModel>*@
+@model List<EmployeeIndexViewModel>
+
+@{ ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/AdminLTE/_LayoutManager.cshtml";
+
+}
+
+<div class="row" id="FilterDiv">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="IndexManager">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Employee List</li>
+                    </ol>
+                </nav>
+                <div class="row">
+
+                    <br />
+                    <div class="col-md-12 table-responsive-md">
+                        @*<a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"> New Employee</a>*@
+                        <a class="btn btn-xs btn-outline-success float-md-right" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)"> New Employee</a>
+                    </div>
+                </div>
+                <div class="h-100 d-flex align-items-center justify-content-center" id="dvDisplayEmployeeList" >
+                <input type="hidden" id="AgencyID" name="Id" value="@ViewBag.mdaID" />
+                <p>@ViewBag.mdaID</p>
+                </div>
+               
+                <div class="col-md-12 table-responsive-md">
+                    @*<a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"> New Employee</a>*@
+                    @*<a class="btn btn-xs btn-outline-success float-md-right" asp-controller="Home" asp-action="IndexManager" >Back</a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/Script/jquery-3.7.1.min.js"></script>
+
+
+<script src="~/DataTables/DataTables-1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="~/DataTables/DataTables-1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var AgencyId = $('#AgencyID').val();
+        /*alert("I got here");*/
+        /* $("#dvDisplayEmployeeList").load("/Employee/FilterByMDA?pageNumber=0&mdaID=" + AgencyId);*/
+        //$("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeList?pageNumber=0&mdaID=" + AgencyId);
+        //$("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeList?pageNumber=" + ViewBag.pageNumber + '&mdaID=' + ViewBag.mdaID);
+        $("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeListDataTable?mdaID=" + AgencyId);
+
+
+
+    });
+</script>

@@ -4,72 +4,89 @@
 @{
 }
 @using Microsoft.AspNetCore.Identity;
-@model IEnumerable<IdentityUser>
+@using CSBFleetManager.Models
+@model List<CSBFleetManager.Models.UserRolesViewModel>
+@*@model IEnumerable<IdentityUser>*@
 @{
     ViewData["Title"] = "Index";
-    //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+    Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
 }
 
 <h1>User List</h1>
 <br />
 <table class="table table-striped" id="userTable">
+    @*<thead>
+            <tr>
+                <th>
+                    User
+                </th>
+                <th>
+                    UserId
+                </th>
+                <th>
+                    Email
+                </th>
+                <th style="width:10%">
+                    Actions
+                </th>
+            </tr>
+        </thead>*@
     <thead>
         <tr>
-            <th>
-                User
-            </th>
-            <th>
-                UserId
-            </th>
-            <th>
-                Email
-            </th>
-            <th style="width:10%">
-                Actions
-            </th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var user in Model)
         {
-            <tr>
-                <td>
-                    <a>
-                        @user.UserName
-                    </a>
-                    @*<div class="row">
-                            <div class="col-sm">
-                                <a>
-                                    @user.UserName
+            @*<tr>
+                    <td>
+                        <a>
+                            @user.UserName
+                        </a>
+
+                    </td>
+                    <td>
+                        <a> @user.Id</a>
+                    </td>
+                    <td>
+                        <a>
+                            @user.Email
+                        </a>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu shadow animated--grow-in">
+                                <a style='margin-right:16px' asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.Id" class="dropdown-item">
+                                    <i class="fas fa-wrench"></i> Manage Roles
                                 </a>
-                                <br>
-                                <small>
-                                    @user.Id
-                                </small>
                             </div>
-                        </div>*@
-                </td>
-                <td>
-                    <a> @user.Id</a>
-                </td>
-                <td>
-                    <a>
-                        @user.Email
-                    </a>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Action
-                        </button>
-                        <div class="dropdown-menu shadow animated--grow-in">
-                            <a style='margin-right:16px' asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.Id" class="dropdown-item">
-                                <i class="fas fa-wrench"></i> Manage Roles
-                            </a>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>*@
+
+        <tr>
+            <td>@user.FirstName</td>
+            <td>@user.LastName</td>
+            <td>@user.Email</td>
+            <td>@string.Join(" , ", user.Roles.ToList())</td>
+            <td>
+                @*<a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>&nbsp;&nbsp;*@
+                @*<a class="btn btn-primary" asp-controller="UserRoles" asp-action="UserPasswordReset" asp-route-userId="@user.UserId">Reset Password</a>*@
+            </td>
+            <td>
+                @*<a class="btn btn-primary" asp-controller="UserRoles" asp-action="Manage" asp-route-userId="@user.UserId">Manage Roles</a>&nbsp;&nbsp;*@
+                <a class="btn btn-primary" asp-controller="UserRoles" asp-action="UserPasswordReset" asp-route-userId="@user.UserId">Reset Password</a>
+            </td>
+
+        </tr>
         }
     </tbody>
 </table>

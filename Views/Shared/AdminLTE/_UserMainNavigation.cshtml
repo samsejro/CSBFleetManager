@@ -46,6 +46,7 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item">
                     <a href="#" class="nav-link active">
                         <i class="nav-icon fas fa-people-carry"></i>
@@ -58,20 +59,16 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
 
-                            <!--<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex">-->
-                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value" )>*@
-                                <!--<i class="far fa-edit nav-icon"></i>
-                                <p>Employee List</p>
-                            </a>-->
-                            <a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                            @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">*@
+                            <a class="nav-link" asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
                                 <i class="far fa-edit nav-icon"></i>
                                 <p>Employee List</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <!--<a class="nav-link active" asp-controller="Employee" asp-action="Create">-->
-                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
-                                <!--<i class="fa fa-folder-plus"></i>
+                            @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                            <!--<i class="fa fa-folder-plus"></i>
                                 <p>Creat New Employee</p>
                             </a>-->
                             <a class="nav-link active" asp-controller="Employee" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
@@ -80,6 +77,118 @@
                                 <p>Creat New Employee</p>
                             </a>
                         </li>
+
+                    </ul>
+
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        @*<i class="nav-icon fas fa-people-carry"></i>*@
+                        <i class="nav-icon fas fa-x-ray"></i>
+                        <p>
+                            Reports
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+
+                            @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">*@
+                            <a class="nav-link" asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+
+                                @*<i class="far fa-edit nav-icon"></i>*@
+                                <i class="far fa-record-vinyl nav-icon"></i>
+                                <p>Records with No Issues</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link active" asp-controller="Employee" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                @*<i class="fa fa-folder-plus"></i>*@
+                                <i class="fa fa-edit"></i>
+                                <p>Records with Issues</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link active" asp-controller="Employee" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                @*<i class="fa fa-folder-plus"></i>*@
+                                <i class="fa fa-sd-card"></i>
+                                <p>Records With LAGID Cards</p>
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        @*<i class="nav-icon fas fa-people-carry"></i>*@
+                        <i class="nav-icon fas fa-researchgate"></i>
+                        <p>
+                            Record Operations
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+
+                            @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">*@
+                            <a class="nav-link" asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+
+                                <i class="far fa-edit nav-icon"></i>
+                                <p>Records in Nominal Roll Template</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link active" asp-controller="Employee" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                <i class="fa fa-folder-plus"></i>
+                                <p>Remove an officer from Nominal Roll List</p>
+                            </a>
+                        </li>
+
+
+
+                    </ul>
+
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        @*<i class="nav-icon fas fa-people-carry"></i>*@
+                        <i class="nav-icon fas fa-researchgate"></i>
+                        <p>
+                            Account Manager
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+
+                            @*<a class="nav-link" asp-controller="Employee" asp-action="MDAIndex" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">*@
+                            <a class="nav-link" asp-controller="Account" asp-action="ManageUserIndex" title="Manage Profile">
+
+                                <i class="far fa-edit nav-icon"></i>
+                                <p>Manage Profile</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+
+                            <a class="nav-link active" asp-controller="Account" asp-action="USerPasswordChange" >
+                                @*<a class="nav-link active" asp-controller="Employee" asp-action="MDAIndex" asp-route-asp-route-mdaID="@User.Claims.First(x=> x.Type=="MDAId")?.Value")>*@
+                                <i class="fa fa-folder-plus"></i>
+                                <p>Update Password</p>
+                            </a>
+                        </li>
+
+
 
                     </ul>
 

@@ -1,0 +1,116 @@
+﻿@model EmployeeListPagination<EmployeeIndexViewModel>
+
+
+
+<div class="row">
+    <div class="col-md-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Employee" asp-action="Index">All MDA</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Employee List</li>
+                    </ol>
+                </nav>
+                <div class="row">
+                    <div class="form-row">
+                        @*<div class="form-group col-md-2">
+                                <label asp-for="des"></label>
+                            </div>*@
+                        <div class="form-group col-md-4">
+                            @*<input asp-for="MDA" class="form-control" placeholder="Select Ministry.." />*@
+                            @*@if (ViewBag.MDA != null)
+                                {
+                                    <select asp-for="MDA" class="form-control" asp-items="@ViewBag.MDA"></select>
+
+                                }*@
+                            @*<select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA ">
+                                    <option selected>-----Select MDA-------</option>
+                                </select>
+                                <span asp-validation-for="MDAId" class="text-danger"></span>*@
+                        </div>
+                        @*<div class="form-group col-md-2" style="text-align:right">
+                                <label asp-for="Designation"></label>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
+                                <span asp-validation-for="Designation" class="text-danger"></span>
+                            </div>*@
+
+                    </div><br />
+                    <div class="col-md-12 table-responsive-md">
+                        <a class="btn btn-xs btn-outline-success float-md-right" asp-action="CreatMDAEmployee" asp-route-mdaID="@(User.FindFirst("MDAId").Value)"> New Employee</a>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>LASRRA/LAGID</th>
+                                    <th>Oracle No.</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>Gender</th>
+                                    @*<th>MDA</th>*@
+                                    @*<th>Designation</th>*@
+                                    <th>Employment Type</th>
+                                    <th class="text-warning">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Detail" asp-route-LasrraID="@item.LASRRAID"> @item.LASRRAID</a>
+
+                                        </td>
+                                        <td>
+
+                                            @item.EmployeeNo
+                                        </td>
+                                        <td>
+                                            <img class="img-fluid" style="width:42px; height:56px" alt="image" src="@Url.Content(item.ImageUrl)" />
+                                        </td>
+                                        <td>@item.FullName</td>
+                                        <td>@item.Gender</td>
+                                        @*<td>@item.Ministry</td>*@
+                                        @*<td>@item.Designation</td>*@
+                                        <td>@item.EmploymentTypeName</td>
+                                        <td>
+                                            <a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a> |
+                                            @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
+                                            <a class="text-success" asp-action="Detail" asp-route-LasrraID="@item.LASRRAID">
+                                                <i class="fas fa-bars"></i> Detail
+                                            </a> |
+                                            <a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
+                                                <i class="far fa-trash-alt"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table><br />
+                        @{ var disablePrevious = !Model.IsPreviousPageAvailable ? "disabled" : "";
+                            var disableNext = !Model.IsNextPageAvailable ? "disabled" : "";
+                        }
+                        <a asp-action="Index"
+                           asp-route-pageNumber="@(Model.PageIndex - 1)"
+                           class="btn btn-primary @disablePrevious">
+                            Previous
+                        </a>
+                        <a asp-action="Index"
+                           asp-route-pageNumber="@(Model.PageIndex + 1)"
+                           class="btn btn-primary @disableNext">
+                            Next
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

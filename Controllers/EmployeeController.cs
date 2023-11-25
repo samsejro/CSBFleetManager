@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using CSBFleetManager.Entity;
@@ -17,6 +18,7 @@ using System.Drawing;
 //using Microsoft.AspNetCore.Mvc;
 //using System.Web.Mvc;
 using Microsoft.AspNetCore.Http;
+using CSBFleetManager.Persistence;
 
 namespace CSBFleetManager.Controllers
 {
@@ -37,7 +39,11 @@ namespace CSBFleetManager.Controllers
         Image ResidentfPicture = null;
         byte[] pictureByteArray = null;
         byte[] signatureByteArray = null;
-        public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService, IMDAService mDAService, IValidationService validationService, IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService,IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,IRegistrationStatistics getRegistrationStatistics,   IWebHostEnvironment hostingEnvironment)
+        private readonly ApplicationDbContext _context;
+        public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService,
+            IMDAService mDAService, IValidationService validationService, 
+            IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService,IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,
+            IRegistrationStatistics getRegistrationStatistics,   IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
         {
             _employeeService = employeeService;
             _mdaService = mDAService;
@@ -47,6 +53,8 @@ namespace CSBFleetManager.Controllers
             _getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
             _getDetailsOnOracleNumberService = getDetailsOnOracleNumberService;
             _getRegistrationStatistics = getRegistrationStatistics;
+            context = _context;
+            
         }
         public static Image ResizeImage(Image image, Size size, bool preserveAspectRatio = true)
         {
@@ -96,13 +104,52 @@ namespace CSBFleetManager.Controllers
         //[Authorize(Roles = "SuperAdmin")]
         //[Authorize(Roles = "Admin")]
         //[Authorize]
-        public IActionResult Index(int? pageNumber)
+        public ActionResult Index(int pageNumber=0)
         {
-            //int TotalReg = 0;
-            //int TotalRegMale = 0;
-            //int TotalRegeFemale = 0;
-            //int TotalRegToday = 0;
+            ////int TotalReg = 0;
+            ////int TotalRegMale = 0;
+            ////int TotalRegeFemale = 0;
+            ////int TotalRegToday = 0;
 
+            ViewBag.MDAList = _mdaService.GetDistinctMDA();
+
+            ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistration();
+
+            ViewBag.TotalRegMale = _getRegistrationStatistics.GetTotalRegistrationByGender("Male");
+
+            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotalRegistrationByGender("Female");
+
+            ViewBag.TotalRegToday = _getRegistrationStatistics.GetTotaRegistrationToday();
+
+
+            ViewBag.pageNumber = pageNumber;
+            //ViewBag.mdaID = mdaID;
+
+
+            //var employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
+            //{
+            //    LASRRAID = employee.LASRRAID,
+            //    FullName = employee.FullName,
+            //    EmployeeNo = employee.EmployeeNo,
+            //    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+            //    EmploymentTypeName = employee.EmployeeTypeId,
+            //    //EmploymentTypeName = empType.,
+            //    //LAGID=employee.LAGID,
+            //    Gender = employee.Gender,
+            //    // Designation = employee.Designation,
+            //    Ministry = employee.MDAId,
+            //    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+            //    ImageUrl = employee.ImageUrl,
+            //    LGA = employee.LGA
+
+            //}).ToList();
+
+            //int pageSize = 4;
+            //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            return View();
+        }
+        public IActionResult LoadIndexEmployeeList(int pageNumber)
+        {
             ViewBag.MDAList = _mdaService.GetDistinctMDA();
 
             ViewBag.TotalReg = _getRegistrationStatistics.GetTotalRegistration();
@@ -120,12 +167,12 @@ namespace CSBFleetManager.Controllers
                 FullName = employee.FullName,
                 EmployeeNo = employee.EmployeeNo,
                 //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
-                EmploymentTypeName =employee.EmployeeTypeId,
+                EmploymentTypeName = employee.EmployeeTypeId,
                 //EmploymentTypeName = empType.,
                 //LAGID=employee.LAGID,
                 Gender = employee.Gender,
-               // Designation = employee.Designation,
-                Ministry=employee.MDAId,
+                // Designation = employee.Designation,
+                Ministry = employee.MDAId,
                 // Ministry =_mdaService.GetMDANameById(employee.MDAId),
                 ImageUrl = employee.ImageUrl,
                 LGA = employee.LGA
@@ -133,8 +180,10 @@ namespace CSBFleetManager.Controllers
             }).ToList();
 
             int pageSize = 4;
-            return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            return PartialView("_EmployeeListByMDA.cshtml", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber , pageSize));
             //return View();
+
         }
 
         //[Authorize]
@@ -178,7 +227,8 @@ namespace CSBFleetManager.Controllers
             return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
             //return View();
         }
-        public IActionResult FilterByMDA(int? pageNumber, string mdaID)
+
+        public ActionResult MDAIndexJQueryDataTable(string mdaID)
         {
             //int TotalReg = 0;
             //int TotalRegMale = 0;
@@ -214,9 +264,187 @@ namespace CSBFleetManager.Controllers
 
             }).ToList();
 
-            int pageSize = 4;
-            return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            int pageSize = 8;
+            //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            //pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            //ViewBag.pageNumber = pageNumber;
+            ViewBag.mdaID = mdaID;
+            //return PartialView("_MDAEmployeeList", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
+            //return PartialView("_MDAEmployeeListJqueryDataTable", employees);
+            return View(employees);
+        }
+
+        [HttpGet]
+        public IActionResult FilterByMDA(int pageNumber, string mdaID)
+        {
+            var employees =new List<EmployeeIndexViewModel>();
+
+            if (!string.IsNullOrEmpty(mdaID))
+            {
+                 employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+            }
+            else
+            {
+                 employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+
+            }
+
+           // _testpartial.cshtml
+
+            int pageSize = 8;
+            //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            return PartialView("_EmployeeListByMDA", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber , pageSize));
             //return View();
+            
+            //return PartialView("@~/Views/Employee/_testpartial.cshtml");
+        }
+        
+        
+        public PartialViewResult MDAEmployeeList(int pageNumber, string mdaID)
+        {
+            var employees = new List<EmployeeIndexViewModel>();
+            if (!string.IsNullOrEmpty(mdaID))
+            {
+                employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+            }
+            else
+            {
+                employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+
+            }
+
+            // _testpartial.cshtml
+
+            int pageSize = 8;
+            //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            ViewBag.pageNumber = pageNumber;
+            ViewBag.mdaID = mdaID;
+            return PartialView("_MDAEmployeeList", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
+
+        }
+        public PartialViewResult MDAEmployeeListDataTable(string mdaID)
+        {
+            var employees = new List<EmployeeIndexViewModel>();
+            if (!string.IsNullOrEmpty(mdaID))
+            {
+                employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+            }
+            else
+            {
+                employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
+                {
+                    LASRRAID = employee.LASRRAID,
+                    FullName = employee.FullName,
+                    EmployeeNo = employee.EmployeeNo,
+                    //EmploymentTypeName = employee.EmploymentType.EmployeeTypeName,
+                    EmploymentTypeName = employee.EmployeeTypeId,
+                    //EmploymentTypeName = empType.,
+                    //LAGID=employee.LAGID,
+                    Gender = employee.Gender,
+                    // Designation = employee.Designation,
+                    Ministry = employee.MDAId,
+                    // Ministry =_mdaService.GetMDANameById(employee.MDAId),
+                    ImageUrl = employee.ImageUrl,
+                    LGA = employee.LGA
+
+                }).ToList();
+
+            }
+
+            // _testpartial.cshtml
+
+            int pageSize = 8;
+            //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
+            //pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            //ViewBag.pageNumber = pageNumber;
+            ViewBag.mdaID = mdaID;
+            //return PartialView("_MDAEmployeeList", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
+            return PartialView("_MDAEmployeeListJqueryDataTable",employees);
+
+
+
         }
 
 
@@ -284,6 +512,7 @@ namespace CSBFleetManager.Controllers
                     DateUploaded = DateTime.Now.Date
 
                 };
+
                 if (!string.IsNullOrEmpty(model.EmployeeNo))
                 {
                     employee.EmployeeNo = model.EmployeeNo;
@@ -323,13 +552,19 @@ namespace CSBFleetManager.Controllers
                     employee.ImageUrl = "/" + uploadDir + "/" + fileName;
                 }
                 await _employeeService.CreateAsync(employee);
-                return RedirectToAction(nameof(MDAIndex));
+                //return RedirectToAction(nameof(MDAIndex));
+                //return RedirectToAction(nameof(MDAIndexJQueryDataTable));
+                return RedirectToAction("MDAIndexJQueryDataTable", "Employee", new { mdaID = model.MDAId });
 
+            }
+            else
+            {
+                ModelState.AddModelError("", "You have provided Invalid Data");
             }
             ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(model.MDAId);
             ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
-            string last = "I got here";
+            //string last = "I got here";
 
             return View();
 
@@ -477,30 +712,20 @@ namespace CSBFleetManager.Controllers
 
             var ExistingOracleStaff = _getDetailsOnOracleNumberService.GetDetailonEmployeeDetailView(oracleNumber);
 
-            if (ExistingOracleStaff ==null)
+            if (ExistingOracleStaff == null)
             {
                 //return NotFound();
             }
-          
+
             string resultString = JsonConvert.SerializeObject(oracleStaffObject);
 
-            if (ModelState.IsValid==true)
+            if (ModelState.IsValid == true)
             {
                 //oracleStaffObject = _getDetailsOnOracleNumberService.GetDetailsOnEmployeeNo(oracleNumber);
 
                 oracleStaffObject = ExistingOracleStaff;
-                
             }
-            //if (oracleStaffObject != null)
-            //{
-            //    return Json(new { OracleNumber = oracleStaffObject?.EmployeeNo, surname = oracleStaffObject?.SurName, firstname = oracleStaffObject?.FirstName, middlename = oracleStaffObject?.MiddleName, gender = oracleStaffObject?.Gender, name11 = oracleStaffObject?.JobTitle, ministry = oracleStaffObject?.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject?.EmployeeCategory, dateofFirstappointment = oracleStaffObject?.DateOfFirstAppointment, dueDate = oracleStaffObject?.DueDate });
-
-            //}
-            //else
-            //{
-            //    return
-            //}
-            return Json(new { OracleNumber = oracleStaffObject?.EmployeeNo, surname = oracleStaffObject?.SurName, firstname = oracleStaffObject?.FirstName, middlename = oracleStaffObject?.MiddleName, gender = oracleStaffObject?.Gender, name11 = oracleStaffObject?.JobTitle, ministry = oracleStaffObject?.Ministry, name12 = oracleStaffObject.Email, employeecategory = oracleStaffObject?.EmployeeCategory, dateofFirstappointment = oracleStaffObject?.DateOfFirstAppointment, dueDate = oracleStaffObject?.DueDate });
+            return Json(new { OracleNumber = oracleStaffObject?.EmployeeNo, surname = oracleStaffObject?.SurName, firstname = oracleStaffObject?.FirstName, middlename = oracleStaffObject?.MiddleName, gender = oracleStaffObject?.Gender, name6 = oracleStaffObject?.JobTitle, ministry = oracleStaffObject?.Ministry, name7 = oracleStaffObject?.Email, employeecategory = oracleStaffObject?.EmployeeCategory, name8 = oracleStaffObject?.DateOfFirstAppointment.ToShortDateString(), dueDate = oracleStaffObject?.DueDate });
 
 
         }
