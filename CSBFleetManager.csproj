@@ -1941,6 +1941,7 @@
     <None Include="wwwroot\js\pages\dashboard.js" />
     <None Include="wwwroot\js\pages\dashboard2.js" />
     <None Include="wwwroot\js\pages\dashboard3.js" />
+    <None Include="wwwroot\lib\sweetalert\sweetalert.min.js" />
     <None Include="wwwroot\Login_V18\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
     <None Include="wwwroot\Login_V18\fonts\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
     <None Include="wwwroot\Login_V18\fonts\font-awesome-4.7.0\less\animated.less" />

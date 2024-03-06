@@ -19,6 +19,7 @@ using System.Drawing;
 //using System.Web.Mvc;
 using Microsoft.AspNetCore.Http;
 using CSBFleetManager.Persistence;
+using Microsoft.AspNetCore.Identity;
 
 namespace CSBFleetManager.Controllers
 {
@@ -30,7 +31,8 @@ namespace CSBFleetManager.Controllers
         private readonly IMDAService _mdaService;
         private readonly IEmployeeTypeService _employeeTypeService;
         private readonly IValidationService _ivalidationService;
-        private readonly IGetDetailsOnLASRRAIdService _getDetailsOnLASRRAIdService;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IGetDetailsOnLASRRAIdService _getDetailsOnLASRRAIdService;
         private readonly IGetDetailsOnOracleNumberService _getDetailsOnOracleNumberService;
         private readonly IRegistrationStatistics _getRegistrationStatistics;
 
@@ -41,7 +43,7 @@ namespace CSBFleetManager.Controllers
         byte[] signatureByteArray = null;
         private readonly ApplicationDbContext _context;
         public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService,
-            IMDAService mDAService, IValidationService validationService, 
+            IMDAService mDAService, IValidationService validationService, UserManager<ApplicationUser> userManager,
             IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService,IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,
             IRegistrationStatistics getRegistrationStatistics,   IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
         {
@@ -50,7 +52,8 @@ namespace CSBFleetManager.Controllers
             _employeeTypeService = employeeTypeService;
             _hostingEnvironment = hostingEnvironment;
             _ivalidationService = validationService;
-            _getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
+            _userManager = userManager;
+			_getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
             _getDetailsOnOracleNumberService = getDetailsOnOracleNumberService;
             _getRegistrationStatistics = getRegistrationStatistics;
             context = _context;
@@ -463,23 +466,21 @@ namespace CSBFleetManager.Controllers
             var model = new EmployeeCreateViewModel();
             return View(model);
         }
-        [HttpGet]
-        public IActionResult CreatMDAEmployee(string MDAId)
-        {
-            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(MDAId);
-            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
-
-            var model = new EmployeeCreateViewModel();
-            return View(model);
-            
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
-        public async Task<IActionResult> CreatMDAEmployee(EmployeeCreateViewModel model)
+        public async Task<IActionResult> Create(EmployeeCreateViewModel model)
         {
-
             //string val = "I am here";
+            var user = await _userManager.GetUserAsync(User);
+
+            Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+
+            if (employeeExist == null)
+            {
+                ModelState.AddModelError("", "Duplicate entry for an employee not allowed. Emplyee already exist");
+                ViewBag.AlreadyExistingEmployee = "Duplicate entry for an employee not allowed. Emplyee already exist";
+                return View();
+            }
 
             if (ModelState.IsValid)
             {
@@ -509,7 +510,122 @@ namespace CSBFleetManager.Controllers
                     NextofKinPhone = model.NextofKinPhone,
                     DateofFirstAppointment = model.DateofFirstAppointment,
                     Email = model.Email,
-                    DateUploaded = DateTime.Now.Date
+                    DateUploaded = DateTime.Now.Date,
+                    UploadedBy = user.UserName
+
+
+                };
+                if (!string.IsNullOrEmpty(model.EmployeeNo))
+                {
+                    employee.EmployeeNo = model.EmployeeNo;
+                }
+                else
+                {
+                    employee.EmployeeNo = model.LASRRAID;
+                }
+                if (model.Photo != null && model.Photo.Length > 0)
+                //if (!string.IsNullOrEmpty(form["imgCapture"].ToString()))
+                {
+                    var uploadDir = @"images/CSBUsers";
+                    //var fileName = Path.GetFileNameWithoutExtension(model.ImageUrl.FileName);
+                    string fileName = model.LASRRAID;
+                    //var extension = Path.GetExtension(model.ImageUrl.FileName);
+                    string extension = ".jpg";
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+                    fileName = DateTime.UtcNow.ToString("yymmssfff") + fileName + extension;
+                    var path = Path.Combine(webRootPath, uploadDir, fileName);
+
+                    //string data = form["imgCapture"].ToString();
+                    string data = model.Photo.ToString();
+
+                    //pictureByteArray = Convert.FromBase64String(data.Split(',')[1]);
+                    pictureByteArray = Convert.FromBase64String(data);
+                    // ResidentfPicture = ConvertByteArrayToImage(pictureByteArray);
+
+                    int offset = 0;
+                    const int Buffer_Size = 4096;
+
+                    using var fileStream = new FileStream(path,
+                                                            FileMode.Append, FileAccess.Write,
+                                                            FileShare.None, bufferSize: Buffer_Size, useAsync: true);
+                    await fileStream.WriteAsync(pictureByteArray, offset, pictureByteArray.Length);
+
+                    // await model.ImageUrl.CopyToAsync(new FileStream(path, FileMode.Create));
+                    employee.ImageUrl = "/" + uploadDir + "/" + fileName;
+                }
+                await _employeeService.CreateAsync(employee);
+                return RedirectToAction(nameof(Index));
+
+            }
+            ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
+            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
+
+
+            //string last = "I got here";
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CreatMDAEmployee(string MDAId)
+        {
+            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(MDAId);
+            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
+
+            var model = new EmployeeCreateViewModel();
+            return View(model);
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
+        public async Task<IActionResult> CreatMDAEmployee(EmployeeCreateViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            string val = "I am here";
+
+            Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+
+			if (employeeExist == null)
+			{
+                ModelState.AddModelError("", "Duplicate entry for an employee not allowed. Emplyee already exist");
+                return View();
+			}
+
+            if (ModelState.IsValid)
+            {
+
+                var employee = new Employee()
+                {
+                    LASRRAID = model.LASRRAID,
+                    LAGID = model.LAGID,
+                    EmployeeTypeId = model.EmployeeTypeId,
+                    //EmployeeNo = model.EmployeeNo,
+                    //EmploymentType = model.EmploymentTypeName,
+                    MDAId = model.MDAId,
+                    Designation = model.Designation,
+                    LastName = model.LastName.ToUpper(),
+                    //FirstName = model.FirstName.ToUpper(),
+                    FirstName = (string.IsNullOrEmpty(model.FirstName) ? " " : char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1)),
+                    // MiddleName = model.MiddleName,
+                    MiddleName = (string.IsNullOrEmpty(model.MiddleName) ? " " : char.ToUpper(model.MiddleName[0]) + model.MiddleName.Substring(1)),
+                    FullName = model.FullName,
+                    DOB = model.DOB,
+                    Gender = model.Gender,
+                    Phone = model.Phone,
+                    Address = model.Address,
+                    LGA = model.LGA,
+                    NextofKinFirstName = (string.IsNullOrEmpty(model.NextofKinFirstName) ? " " : char.ToUpper(model.NextofKinFirstName[0]) + model.NextofKinFirstName.Substring(1)),
+                    NextofKinLastName = model.NextofKinLastName.ToUpper(),
+                    NextOfkinrelationship = model.NextOfkinrelationship,
+                    NextofKinPhone = model.NextofKinPhone,
+                    DateofFirstAppointment = model.DateofFirstAppointment,
+                    DateofPresentAppointment = model.DateofPresentAppointment,
+                    DueDate = model.DueDate,
+                    Email = model.Email,
+                    DateUploaded = DateTime.Now.Date,
+                    UploadedBy = user.UserName
+                    
 
                 };
 
@@ -564,6 +680,8 @@ namespace CSBFleetManager.Controllers
             ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(model.MDAId);
             ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
+
+
             //string last = "I got here";
 
             return View();
@@ -572,92 +690,6 @@ namespace CSBFleetManager.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
-        public async Task<IActionResult> Create(EmployeeCreateViewModel model)
-        {
-            //string val = "I am here";
-
-            if (ModelState.IsValid)
-            {
-                var employee = new Employee()
-                {
-                    LASRRAID = model.LASRRAID,
-                    LAGID = model.LAGID,
-                    EmployeeTypeId = model.EmployeeTypeId,
-                    //EmployeeNo = model.EmployeeNo,
-                    //EmploymentType = model.EmploymentTypeName,
-                    MDAId = model.MDAId,
-                    Designation = model.Designation,
-                    LastName = model.LastName.ToUpper(),
-                    //FirstName = model.FirstName.ToUpper(),
-                    FirstName = (string.IsNullOrEmpty(model.FirstName) ? " " : char.ToUpper(model.FirstName[0]) + model.FirstName.Substring(1)),
-                    // MiddleName = model.MiddleName,
-                    MiddleName = (string.IsNullOrEmpty(model.MiddleName) ? " " : char.ToUpper(model.MiddleName[0]) + model.MiddleName.Substring(1)),
-                    FullName = model.FullName,
-                    DOB = model.DOB,
-                    Gender = model.Gender,
-                    Phone = model.Phone,
-                    Address = model.Address,
-                    LGA=model.LGA,
-                    NextofKinFirstName = (string.IsNullOrEmpty(model.NextofKinFirstName) ? " " : char.ToUpper(model.NextofKinFirstName[0]) + model.NextofKinFirstName.Substring(1)),
-                    NextofKinLastName = model.NextofKinLastName.ToUpper(),
-                    NextOfkinrelationship = model.NextOfkinrelationship,
-                    NextofKinPhone = model.NextofKinPhone,
-                    DateofFirstAppointment = model.DateofFirstAppointment,
-                    Email = model.Email,
-                    DateUploaded=DateTime.Now.Date
-
-                };
-                if (!string.IsNullOrEmpty(model.EmployeeNo))
-                {
-                    employee.EmployeeNo = model.EmployeeNo;
-                }
-                else
-                {
-                    employee.EmployeeNo = model.LASRRAID;
-                }
-                if (model.Photo != null && model.Photo.Length > 0)
-                //if (!string.IsNullOrEmpty(form["imgCapture"].ToString()))
-                {
-                    var uploadDir = @"images/CSBUsers";
-                    //var fileName = Path.GetFileNameWithoutExtension(model.ImageUrl.FileName);
-                    string fileName = model.LASRRAID;
-                    //var extension = Path.GetExtension(model.ImageUrl.FileName);
-                    string extension = ".jpg";
-                    var webRootPath = _hostingEnvironment.WebRootPath;
-                    fileName = DateTime.UtcNow.ToString("yymmssfff") + fileName + extension;
-                    var path = Path.Combine(webRootPath, uploadDir, fileName);
-
-                    //string data = form["imgCapture"].ToString();
-                    string data = model.Photo.ToString();
-
-                    //pictureByteArray = Convert.FromBase64String(data.Split(',')[1]);
-                    pictureByteArray = Convert.FromBase64String(data);
-                    // ResidentfPicture = ConvertByteArrayToImage(pictureByteArray);
-
-                    int offset = 0;
-                    const int Buffer_Size = 4096;
-
-                    using var fileStream = new FileStream(path,
-                                                            FileMode.Append, FileAccess.Write,
-                                                            FileShare.None, bufferSize: Buffer_Size, useAsync: true);
-                    await fileStream.WriteAsync(pictureByteArray, offset, pictureByteArray.Length);
-
-                   // await model.ImageUrl.CopyToAsync(new FileStream(path, FileMode.Create));
-                    employee.ImageUrl = "/" + uploadDir + "/" + fileName;
-                }
-                await _employeeService.CreateAsync(employee);
-                return RedirectToAction(nameof(Index));
-
-            }
-            ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
-            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
-
-            string last = "I got here";
-
-            return View();
-        }
        
         public async Task<JsonResult> VerifyLASRRAId(string LA)
         {
@@ -700,6 +732,47 @@ namespace CSBFleetManager.Controllers
             return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
 
         }
+        public async Task<JsonResult>GetImagesByLASRRAID()
+        {
+            GetInfoPictureModel gpi = new GetInfoPictureModel();
+
+            string resultString = JsonConvert.SerializeObject(gpi);
+            List<string> ids = new List<string>();
+            string textFilePath = "D:/ProjectPicture/LAWMA.txt";
+            try
+            {
+                using (StreamReader reader = new StreamReader(textFilePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        ids.Add(line.Trim());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file: {ex.Message}");
+            }
+            foreach (string item in ids)
+            {
+                var messaage = await _getDetailsOnLASRRAIdService.GetDetailsOnLASRRAId(item);
+
+                resultString = messaage;
+                //var result = new JsonResult
+                //{
+                //    Data = JsonConvert.DeserializeObject(messaage)
+
+                //};
+
+                gpi = JsonConvert.DeserializeObject<GetInfoPictureModel>(resultString);
+            }
+           
+
+
+            return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
+        }
+        
         
         public JsonResult GetOracleStaffRecord(string oracleNumber)
         {
@@ -781,16 +854,22 @@ namespace CSBFleetManager.Controllers
       
         public IActionResult Edit(string LASRRAID)
         {
-            var employee = _employeeService.GetByLASRRAIDDetailView(LASRRAID);
-            // var employee = _employeeService.GetByLASRRAId(LASRRAID);
+            
 
-            ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
-            ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
+			if (LASRRAID==null || LASRRAID==string.Empty)
+			{
+                return NotFound();
+			}
+            Employee employee = _employeeService.GetByLASRRAIDDetailView(LASRRAID);
 
-            if (employee == null)
+            if (employee == null )
             {
                 return NotFound();
             }
+            string MDASelected = employee.MDAId;
+            string emptypeId = employee.EmployeeTypeId;
+            ViewBag.MDA = _mdaService.GetByMDAId(MDASelected);
+            ViewBag.EmployeeType = _employeeTypeService.GetByEmployeeTypeById(emptypeId);
 
             var model = new EmployeeEditViewModel()
             {
@@ -820,6 +899,7 @@ namespace CSBFleetManager.Controllers
 
             };
             return View(model);
+           
         }
 
         [HttpPost]
@@ -827,6 +907,7 @@ namespace CSBFleetManager.Controllers
         public async Task<IActionResult> Edit(EmployeeEditViewModel model)
         {
             var employee = _employeeService.GetByLASRRAId(model.LASRRAID);
+            
 
             if (ModelState.IsValid)
             {
@@ -845,7 +926,8 @@ namespace CSBFleetManager.Controllers
                 employee.NextOfkinrelationship = model.NextOfkinrelationship;
 
                 await _employeeService.UpdateAsync(employee);
-                return RedirectToAction(nameof(Index));
+                // return RedirectToAction(nameof(Index));
+                return RedirectToAction("MDAIndexJQueryDataTable", "Employee", new { mdaID = model.MDAId });
             }
             return View();
 

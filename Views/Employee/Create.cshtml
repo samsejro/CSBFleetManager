@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
 
     string[] Gender = { "Male", "Female" };
+    var message = ViewBag.AlreadyExistingEmployee;
 }
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
@@ -358,7 +359,7 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/Script/jquery-3.7.1.min.js"></script>
-    @section Scripts{
+ @section Scripts{
 
         <script type="text/javascript">
 
@@ -380,7 +381,7 @@
                    // alert("VALID ID and Details returned");
 
                     @*alert(@ViewBag.ValidationMessage);*@
-                    alert(responseData.name6);
+                    //alert(responseData.name6);
                 },
                 failure: function (response) {
                     /* alert(response.responseText);*/
@@ -426,7 +427,7 @@
                     $("#phone_number").val(responseData.phone )
                     $("#address").val(responseData.address)
                     //alert(response.gender)
-                    alert(responseData.birtDate)
+                    //alert(responseData.birtDate)
                     $("#Birthdate").val(responseData.birtDate)
                    /* $("#registrationDate").val(responseData.regDate)*/
                     /*$("#txtfirst_name").val(response.regDate)*/
@@ -499,7 +500,7 @@
                     $("#OracleFirstName").val(responseData.firstname)
                     $("#OracleMiddleName").val(responseData.middlename)
                     $("#OracleGender").val(responseData.gender)
-                    alert(responseData.name8)
+                    //alert(responseData.name8)
                     $("#Designation").val(responseData.name6)
                     $("#OfficialEmail").val(responseData.name7)
                     $("#DateofFirstAppointment").val(responseData.name8)
@@ -530,55 +531,80 @@
 
         var CreateEmployee = function () {
             debugger
-            var EmployeeFormData = $("#MDAEmployeefrm").serialize();
+            var EmployeeFormData = $("#Employeefrm").serialize();
 
             $.ajax({
                 type: "Post",
-                url: "Employee/CreatMDAEmployee",
+                url: "Employee/Creat",
                 data: EmployeeFormData,
                 success: function (response) {
 
-                    alert(success);
+                    //alert(success);
+                    swal({
+                        title: "Employee Creation",
+                        text: "Employee Created Successfully",
+                        icon: "Success",
+                        buttons: true,
+                        dangerMode: false
+
+                    })
+                },
+                 failure: function (response) {
+                /* alert(response.responseText);*/
+                //alert("Details on Oracle not found");
+
+                    swal({
+                        title: "Employee Creation",
+                        text:@ViewBag.AlreadyExistingEmployee,
+                        icon: "Failure",
+                        buttons: true,
+                        dangerMode: true
+
+                    })
+                },
+                error: function (response) {
+                    alert("Error communicating to the backend");
                 }
 
-            })
+
+             })
         }
     </script>
     <script type="text/javascript">
-                //$("#EmployeeType").on("change", function () {
-                //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
-                //    alert(selectedEmployeeType);
-                //    if (selectedEmployeeType != "EMPT-01") {
-                //        $("#EmployeeNo").prop("disabled", true);
+                        //$("#EmployeeType").on("change", function () {
+                        //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
+                        //    alert(selectedEmployeeType);
+                        //    if (selectedEmployeeType != "EMPT-01") {
+                        //        $("#EmployeeNo").prop("disabled", true);
 
-                //    }
-                //});
+                        //    }
+                        //});
 
-                //$('#EmployeeType').change(
-                //    function () {
-                //        alert(selectedEmployeeType);
-                //        if (selectedEmployeeType != "EMPT-01") {
-                //            $("#EmployeeNo").prop("disabled", true);
+                        //$('#EmployeeType').change(
+                        //    function () {
+                        //        alert(selectedEmployeeType);
+                        //        if (selectedEmployeeType != "EMPT-01") {
+                        //            $("#EmployeeNo").prop("disabled", true);
 
-                //        }
-                //        // Do something with val1 and val2 ...
-                //    }
-                //);
+                        //        }
+                        //        // Do something with val1 and val2 ...
+                        //    }
+                        //);
 
-                //const select = document.getElementById("EmployeeType");
-                //select.addEventListener('change', function handleChange(event) {
-                //    //console.log(event.target.value); // 👉️ get selected VALUE
+                        //const select = document.getElementById("EmployeeType");
+                        //select.addEventListener('change', function handleChange(event) {
+                        //    //console.log(event.target.value); // 👉️ get selected VALUE
 
-                //    //// 👇️ get selected VALUE even outside event handler
-                //    //console.log(select.options[select.selectedIndex].value);
+                        //    //// 👇️ get selected VALUE even outside event handler
+                        //    //console.log(select.options[select.selectedIndex].value);
 
-                //    //// 👇️ get selected TEXT in or outside event handler
-                //    //console.log(select.options[select.selectedIndex].text);
+                        //    //// 👇️ get selected TEXT in or outside event handler
+                        //    //console.log(select.options[select.selectedIndex].text);
 
-                //    if (select.options[select.selectedIndex].text != "Oracle Staff") {
-                //        document.getElementById("EmployeeNo").disabled = true;
-                //    }
-                });
+                        //    if (select.options[select.selectedIndex].text != "Oracle Staff") {
+                        //        document.getElementById("EmployeeNo").disabled = true;
+                        //    }
+                        });
 
     </script>
     <script type="text/javascript">
@@ -591,7 +617,7 @@
 
                 var selectedText = $("#EmployeeTypeId option:selected").text();
 
-                alert(selectedText);
+                //alert(selectedText);
                 const employeeNo = document.getElementById("EmployeeNo");
                 const getOracleButton = document.getElementById("btnOracle");
                 const OracleSurname = document.getElementById("OracleSurName");
@@ -662,7 +688,9 @@
 
     </script>
 
+        @{
+            <partial name="_ValidationScriptsPartial" />
+        }
 
 
-
-    }
+ }

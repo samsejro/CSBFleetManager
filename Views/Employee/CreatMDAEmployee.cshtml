@@ -4,6 +4,7 @@
     //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
 
     string[] Gender = { "Male", "Female" };
+    var message = ViewBag.AlreadyExistingEmployee;
 }
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
@@ -16,7 +17,7 @@
                     <li class="breadcrumb-item active" aria-current="page">New Employee</li>
                 </ol>
             </nav><br />
-            <form method="post" enctype="multipart/form-data" asp-action="CreatMDAEmployee " id="MDAEmployeefrm">
+            <form method="post" enctype="multipart/form-data" asp-action="CreatMDAEmployee " id="MDAEmployeefrm" name="MDAEmployeefrm">
                 <h3>Basic Details From LASRRA's DB</h3>
                 <hr style="background-color:crimson" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -227,11 +228,7 @@
                         <label asp-for="EmployeeTypeId"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        @*<input asp-for="EmploymentTypeName" class="form-control" placeholder="Select Employment Type.." />*@
-                        @*@if (ViewBag.EmployeeType != null)
-                            {
-                                <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
-                            }*@
+                       
                         <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
@@ -343,11 +340,12 @@
                     </div>*@
                 <div class="form-row">
                     <div class="form-group col-md-6" style="text-align:right">
+                        @*<button type="button" class="btn btn-rounded btn-primary" onclick="CreateEmployee()"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>*@
                         <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
                     </div>
                     <div class="form-group col-md-6" style="text-align:left">
                         @*<a asp-controller="Home" asp-action="IndexManager" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
-                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)"class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
 
                     </div>
 
@@ -360,7 +358,8 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/Script/jquery-3.7.1.min.js"></script>
-   @section Scripts{
+    @section Scripts{
+
 
         <script type="text/javascript">
 
@@ -428,7 +427,7 @@
                     $("#phone_number").val(responseData.phone )
                     $("#address").val(responseData.address)
                     //alert(response.gender)
-                    alert(responseData.birtDate)
+                    //alert(responseData.birtDate)
                     $("#Birthdate").val(responseData.birtDate)
                    /* $("#registrationDate").val(responseData.regDate)*/
                     /*$("#txtfirst_name").val(response.regDate)*/
@@ -467,7 +466,7 @@
         function GetSelectedLG() {
 
             $("#dropdownID").change(function () {
-                alert($('option:selected', $(this)).text());
+                //alert($('option:selected', $(this)).text());
             });
             const select = document.getElementById("LGA");
 
@@ -501,7 +500,7 @@
                     $("#OracleFirstName").val(responseData.firstname)
                     $("#OracleMiddleName").val(responseData.middlename)
                     $("#OracleGender").val(responseData.gender)
-                    alert(responseData.name8)
+                    //alert(responseData.name8)
                     $("#Designation").val(responseData.name6)
                     $("#OfficialEmail").val(responseData.name7)
                     $("#DateofFirstAppointment").val(responseData.name8)
@@ -511,7 +510,7 @@
                     //$("#address").val(responseData.address)
                 },
 
-                 failure: function (response) {
+                failure: function (response) {
                     /* alert(response.responseText);*/
                     alert("Details on Oracle not found");
                 },
@@ -527,11 +526,10 @@
         }
 
         </script>
-    </div>
-<script>
+        <script type="text/javascript">
 
-    var CreateEmployee = function () {
-        debugger
+    function CreateEmployee() {
+         //debugger
         var EmployeeFormData = $("#MDAEmployeefrm").serialize();
 
         $.ajax({
@@ -540,49 +538,44 @@
             data: EmployeeFormData,
             success: function (response) {
 
-                alert(success);
+                alert("Employee Created Successfully");
+
+                //swal({
+                //    title: "Employee Creation",
+                //    text: "Employee Created Successfully",
+                //    icon: "Success",
+                //    buttons: true,
+                //    dangerMode: false
+
+                //})
+            },
+            failure: function (response) {
+                /* alert(response.responseText);*/
+                alert(@ViewBag.AlreadyExistingEmployee,);
+
+                @*swal({
+                    title: "Employee Creation",
+                    text:@ViewBag.AlreadyExistingEmployee,
+                    icon: "Failure",
+                    buttons: true,
+                    dangerMode: true
+
+                })*@
+            },
+            error: function (response) {
+                alert("Error communicating to the backend");
             }
 
         })
+
     }
-</script>
-<script type="text/javascript">
-        //$("#EmployeeType").on("change", function () {
-        //    /*$("#hdnDesignationName").val($(this).find("option:selected").text());*/
-        //    alert(selectedEmployeeType);
-        //    if (selectedEmployeeType != "EMPT-01") {
-        //        $("#EmployeeNo").prop("disabled", true);
+    //var CreateEmployee = function () {
 
-        //    }
-        //});
+    //}
+        </script>
+    </div>
 
-        //$('#EmployeeType').change(
-        //    function () {
-        //        alert(selectedEmployeeType);
-        //        if (selectedEmployeeType != "EMPT-01") {
-        //            $("#EmployeeNo").prop("disabled", true);
 
-        //        }
-        //        // Do something with val1 and val2 ...
-        //    }
-        //);
-
-        //const select = document.getElementById("EmployeeType");
-        //select.addEventListener('change', function handleChange(event) {
-        //    //console.log(event.target.value); // 👉️ get selected VALUE
-
-        //    //// 👇️ get selected VALUE even outside event handler
-        //    //console.log(select.options[select.selectedIndex].value);
-
-        //    //// 👇️ get selected TEXT in or outside event handler
-        //    //console.log(select.options[select.selectedIndex].text);
-
-        //    if (select.options[select.selectedIndex].text != "Oracle Staff") {
-        //        document.getElementById("EmployeeNo").disabled = true;
-        //    }
-        });
-
-</script>
 <script type="text/javascript">
     $(document).ready(function () {
 
@@ -593,7 +586,7 @@
 
             var selectedText = $("#EmployeeTypeId option:selected").text();
 
-            alert(selectedText);
+           //alert(selectedText);
             const employeeNo = document.getElementById("EmployeeNo");
             const getOracleButton = document.getElementById("btnOracle");
             const OracleSurname = document.getElementById("OracleSurName");
@@ -664,7 +657,9 @@
 
 </script>
 
-
+    @{ 
+        <partial name="_ValidationScriptsPartial"/>
+    }
 
 
 }

@@ -98,7 +98,7 @@
                         <label asp-for="LGA"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <select class="form-control" asp-for="LGA" id="LGA" >
+                        <select class="form-control" asp-for="LGA" id="LGA">
                             <option selected>Select LGA</option>
                             <option>AGBADO-OKEODO</option>
                             <option>AGBOYI-KETU</option>
@@ -178,7 +178,7 @@
                         @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
                         <img id="imgCapture" alt="Photo" />
                         @*<input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />*@
-                        <img  src="@Url.Content(Model.ImageUrl)" alt="" />
+                        <img src="@Url.Content(Model.ImageUrl)" alt="" />
                         @*<input class="form-control" id="Photo" />*@
                         <input asp-for="Photo" class="form-control" id="Photo" type="hidden" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
@@ -228,12 +228,8 @@
                         <label asp-for="EmployeeTypeId"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        @*<input asp-for="EmploymentTypeName" class="form-control" placeholder="Select Employment Type.." />*@
-                        @*@if (ViewBag.EmployeeType != null)
-                            {
-                                <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
-                            }*@
-                        <select asp-for="EmployeeTypeId" id="EmployeeType" class="form-control"  asp-items="ViewBag.EmployeeType">
+
+                        <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
 
@@ -260,13 +256,8 @@
                         <label asp-for="MDAId"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        @*<input asp-for="MDA" class="form-control" placeholder="Select Ministry.." />*@
-                        @*@if (ViewBag.MDA != null)
-                            {
-                                <select asp-for="MDA" class="form-control" asp-items="@ViewBag.MDA"></select>
 
-                            }*@
-                        <select asp-for="MDAId" id="MDA" class="form-control" asp-items="ViewBag.MDA ">
+                        <select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA " id="Ministry">
                             <option selected>-----Select MDA-------</option>
                         </select>
                         <span asp-validation-for="MDAId" class="text-danger"></span>
@@ -310,9 +301,15 @@
                     <div class="form-group col-md-6" style="text-align:right">
                         <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</button>
                     </div>
+                    @*<div class="form-group col-md-6" style="text-align:left">
+                            <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        </div>*@
                     <div class="form-group col-md-6" style="text-align:left">
-                        <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        @*<a asp-controller="Home" asp-action="IndexManager" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
+                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+
                     </div>
+
 
                 </div>
 
@@ -345,33 +342,123 @@
         $("#Gender").val('@Model.Gender');
     });
 </script>
-@*<script type="text/javascript">
-    $(document).ready(() => {
-        $("#MDA option:selected").text('@Model.Ministry');
-    });
-</script>*@
 <script type="text/javascript">
-    $(document).ready(function () {
-
-        var text1 = @Model.EmploymentType;
-         $("#EmployeeType option").filter(function () {
-        //may want to use $.trim in here
-        return $(this).text() == text1;
-    }).prop('selected', true);
-
-
-    })
+        $(document).ready(() => {
+            $("#MDA option:selected").text('@Model.Ministry');
+        });
 </script>
+@*<script type="text/javascript">
+        $(document).ready(function () {
+
+            var text1 = @Model.EmploymentType;
+             $("#EmployeeType option").filter(function () {
+            //may want to use $.trim in here
+            return $(this).text() == text1;
+        }).prop('selected', true);
+
+
+        })
+    </script>*@
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            const selectMDA = document.getElementById("MDA");
+            const selectEmploymentType = document.getElementById("EmployeeType");
+
+            const selectedIndexMDA = select.selectedIndex;
+            const selectedValue = select.value;
+            const selectedText = select.options[selectedIndex].text;
+
+            document.getElementById("Ministry").value = selectedText;
+
+
+        })
+    </script>*@
+
+@*<script type="text/javascript">
+
+        function GetSelectedMDA() {
+
+            $("#Ministry").change(function () {
+                //alert($('option:selected', $(this)).text());
+            });
+            const select = document.getElementById("Ministry");
+
+            const selectedIndex = select.selectedIndex;
+            const selectedValue = select.value;
+            const selectedText = select.options[selectedIndex].text;
+
+            document.getElementById("Ministry").value = selectedText;
+        }
+    </script>*@
+@*<script type="text/javascript">
+
+        function GetSelectedEmployeeType() {
+
+            $("#EmployeeType").change(function () {
+                //alert($('option:selected', $(this)).text());
+            });
+            const select = document.getElementById("EmployeeType");
+
+            const selectedIndex = select.selectedIndex;
+            const selectedValue = select.value;
+            const selectedText = select.options[selectedIndex].text;
+
+            document.getElementById("EmployeeType").value = selectedText;
+        }
+    </script>*@
+
+
 <script type="text/javascript">
     $(document).ready(function () {
-        const selectMDA = document.getElementById("MDA");
-        const selectEmploymentType = document.getElementById("EmployeeType");
 
-        const selectedIndexMDA = select.selectedIndex;
-        const selectedValue = select.value;
-        const selectedText = select.options[selectedIndex].text;
+        $("#EmployeeTypeId").change(function (evt) {
 
-        document.getElementById("LGA").value = selectedText;
+            //alert($("#EmployeeTypeId").val());
+            //alert($("#EmployeeTypeId option:selected").text());
+
+            var selectedText = $("#EmployeeTypeId option:selected").text();
+
+            //alert(selectedText);
+            const employeeNo = document.getElementById("EmployeeNo");
+            const getOracleButton = document.getElementById("btnOracle");
+            const OracleSurname = document.getElementById("OracleSurName");
+            const OracleFirstName = document.getElementById("OracleFirstName");
+            const OracleMiddleName = document.getElementById("OracleMiddleName");
+            const ddlOracleGender = document.getElementById("OracleGender");
+
+            if (selectedText != "Oracle Staff") {
+                //document.getElementById("EmployeeNo").disabled = true;
+                //document.getElementById("btnOracle").disabled = true;
+                //document.getElementById("OracleSurName").disabled = false;
+                //document.getElementById("OracleFirstName").disabled = false;
+                //document.getElementById("OracleMiddleName").disabled = false;
+                //document.getElementById("ddlOracleGender").disabled = false;
+                getOracleButton.setAttribute('disabled', 'disabled');
+                employeeNo.setAttribute('disabled', 'disabled');
+                OracleSurname.removeAttribute('disabled');
+                OracleFirstName.removeAttribute('disabled');
+                OracleMiddleName.removeAttribute('disabled');
+                ddlOracleGender.removeAttribute('disabled');
+
+
+            }
+            else {
+                //document.getElementById("EmployeeNo").disabled = false;
+                //document.getElementById("btnOracle").disabled = false;
+                //document.getElementById("OracleSurName").disabled = true;
+                //document.getElementById("OracleFirstName").disabled = true;
+                //document.getElementById("OracleMiddleName").disabled = true;
+                //document.getElementById("ddlOracleGender").disabled = true;
+
+                employeeNo.removeAttribute('disabled');
+                getOracleButton.removeAttribute('disabled');
+                OracleSurname.setAttribute('disabled', 'disabled');
+                OracleFirstName.setAttribute('disabled', 'disabled');
+                OracleMiddleName.setAttribute('disabled', 'disabled');
+                ddlOracleGender.setAttribute('disabled', 'disabled');
+            }
+
+        });
 
     })
 </script>

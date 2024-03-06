@@ -322,6 +322,7 @@ namespace CSBFleetManager.Controllers
                     //    await _signInManager.SignInAsync(user, isPersistent: false);
                     //    return LocalRedirect(returnUrl);
                     //}
+                    TempData["Success"] = "User Created Successfully";
                 }
                 foreach (var error in result.Errors)
                 {
@@ -432,6 +433,10 @@ namespace CSBFleetManager.Controllers
                     //return RedirectToAction("OnGetAsync");
                     return RedirectToAction("ManageUserIndex");
                 }
+                else
+                {
+                    TempData["Success"] = "Phone number updated Successfully";
+                }
             }
             if (model.FirstName != firstName)
             {
@@ -454,6 +459,7 @@ namespace CSBFleetManager.Controllers
                         StatusMessage = "User name already taken. Select a different username.";
                         //return RedirectToPage();
                         //return RedirectToAction("OnGetAsync");
+                        TempData["Error"] = "User name already taken. Select a different username";
                         return RedirectToAction("ManageUserIndex");
                     }
                     var setUserName = await _userManager.SetUserNameAsync(user, model.Username);
@@ -468,6 +474,7 @@ namespace CSBFleetManager.Controllers
                     {
                         user.UsernameChangeLimit -= 1;
                         await _userManager.UpdateAsync(user);
+                        TempData["Success"] = "User details updated Successfully";
                     }
                 }
             }
@@ -486,7 +493,9 @@ namespace CSBFleetManager.Controllers
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
 
+
             ViewBag.StatusMessage = StatusMessage;
+            TempData["Success"] = "Your profile has been updated Successfully";
             return RedirectToAction("ManageUserIndex");
         }
 
@@ -547,6 +556,9 @@ namespace CSBFleetManager.Controllers
                     
                 }
                 StatusMessage = "Password updated not successful";
+
+                TempData["Error"] = "Password updated not successful";
+
                 return View();
             }
             //StatusMessage = "Password updated successfully";
@@ -555,7 +567,7 @@ namespace CSBFleetManager.Controllers
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
             ViewBag.StatusMessage = StatusMessage;
-
+            TempData["Success"] = "Your password has been changed successfully";
             return View();
            // return RedirectToAction(nameof(NewLogin));
         }

@@ -55,6 +55,12 @@ namespace CSBFleetManager.Models
 
         [DataType(DataType.Date), Display(Name = "Date of First Appointment")]
         public DateTime DateofFirstAppointment { get; set; } = DateTime.UtcNow;
+
+        [DataType(DataType.Date), Display(Name = "Date of Present Appointment")]
+        public DateTime DateofPresentAppointment { get; set; } = DateTime.UtcNow;
+
+        [DataType(DataType.Date), Display(Name = "Date of Exit from Service")]
+        public DateTime DueDate { get; set; } = DateTime.UtcNow;
         public string Phone { get; set; }
         [Required(ErrorMessage = "Designation is required")]
         public string Designation { get; set; }
@@ -75,7 +81,7 @@ namespace CSBFleetManager.Models
 
         public string LGA { get; set; }
 
-
+        public string UploadedBy { get; set; }
 
 
     }

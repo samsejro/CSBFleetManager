@@ -20,6 +20,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Google Font: Source Sans Pro -->
     <partial name="AdminLTE/_Styles" />
     <link href="~/DataTables/DataTables-1.13.6/css/dataTables.bootstrap5.css" rel="stylesheet" />" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
 
 </head>
 @*<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">*@
@@ -63,7 +64,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <div class="content">
                     <div class="container-fluid">
                         <!-------- My Code Start>
-                        <!-- Info boxes -->
+        <!-- Info boxes -->
                         <div class="row">
                             <div class="col-12 col-sm-6 col-md-3">
                                 <div class="info-box">
@@ -140,8 +141,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <!-- /.row -->
                         <!-------- My Code End>
 
-                        <!-- /.row -->
+        <!-- /.row -->
                     </div><!-- /.container-fluid -->
+                    <partial name="_Notifications" />
                     @RenderBody()
                 </div>
                 <!-- /.content -->
