@@ -1,0 +1,92 @@
+﻿@model EmployeeDetailViewModel
+
+@{
+    ViewData["Title"] = "Detail";
+    //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+
+    string[] Gender = { "Male", "Female" };
+}
+
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Employee List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employee Details</li>
+                </ol>
+            </nav><br />
+            <div class="wrap d-flex justify-content-start justify-content-sm-center flex-wrap">
+                <img class="rounded-circle shadow-lg" style="width:300px; height:350px" src="@Url.Content(Model.ImageUrl)" alt="" />
+                <br />
+                @if (Model.SignatureImageUrl != null)
+                {
+                    <img class="rounded-circle shadow-lg" style="width:300px; height:350px" src="@Url.Content(Model.SignatureImageUrl)" alt="" />
+
+                }
+                <div class="wrap align-items-center ml-5">
+                    <p class="font-weight-bold text-primary" style="font-size:20px">@Model.LASRRAID</p>
+                    <p class="font-weight-bold text-success" style="font-size:20px">@Model.Surname</p>
+                    <p class="font-weight-bold text-success" style="font-size:20px">@Model.FirstName</p>
+                    <p class="font-weight-bold text-success" style="font-size:20px">@Model.MiddleName</p>
+                    <p class="font-weight-normal"> Contact Phone: @Model.ContactPhone</p>
+                    <p class="font-weight-normal"> Gender: @Model.Gender</p>
+                    <p class="font-weight-normal">Date Of Birth: @Model.DOB.ToString("dd/MM/yyyy")</p>
+                    <br />
+                    <p class="font-weight-bold"> Employment Detail</p>
+                    <hr style="background-color:crimson" />
+                    <p class="font-weight-normal">Employment Type: @Model.EmployeeTypeName</p>
+                    <p class="font-weight-normal">Oracle No: @Model.EmployeeNo</p>
+                    <p class="font-weight-normal">MDA: <a href="#">@Model.Ministry</a></p>
+                    <p class="font-weight-normal">Designation: @Model.Designation</p>
+                    <p class="font-weight-normal"> Email: <a href="#">@Model.Email</a></p>
+                    <br />
+                    <p class="font-weight-bold"> Next of Kin Information</p>
+                    <hr style="background-color:crimson" />
+                    <p class="font-weight-normal">Full Name: @Model.NextofkinFullName</p>
+                    <p class="font-weight-normal"> Contact Phone: @Model.NextofKinPhone</p>
+                    <p class="font-weight-normal">Relationship: @Model.NextOfkinrelationship</p>
+                    @*<p class="font-weight-normal"><i class="fas fa-envelope" style="margin-right:0.6em; color:cornflowerblue"></i> <a href="mailto:@Model.Email?subject=Payslip&body=Attached within is your paylip.">Send Message</a></p>*@
+                    <br />
+
+                    <p class="font-weight-bold"> Address</p>
+                    <hr style="background-color:crimson" />
+                    <p class="font-weight-normal"> @Model.Address</p>
+                    @*<p class="font-weight-normal"> @Model.City</p>
+                        <p class="font-weight-normal"> @Model.Postcode</p>*@
+                    <br />
+                    <br />
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    
+                </div>
+                <div class="form-group col-md-6">
+                    
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6" style="text-align:right">
+                    @*<button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</button>*@
+                    <a asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@Model.LASRRAID" class="btn btn-rounded btn-primary "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</a>
+                </div>
+                <div class="form-group col-md-6" style="text-align:left">
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    }
+                    else
+                    {
+                        @*<a asp-action="MDAIndex" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
+                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>

@@ -1,0 +1,273 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using CSBFleetManager.Entity
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject SignInManager<IdentityUser> SignInManager*@
+@inject UserManager<ApplicationUser> UserManager
+@*@model EmployeeListPagination<EmployeeIndexViewModel>*@
+@model List<EmployeeCardRequestIndexViewModel>
+
+@{
+    ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/AdminLTE/_LayoutManager.cshtml";
+}
+
+<body>
+    <form id="IDRequestfrm" method="post" asp-controller="Employee" asp-action="MDAIndexJQueryCardRequestDataTable">
+        <div class="form-row">
+            <div class="form-group col-md-3"></div>
+            <div class="form-group col-md-6"><h2>Employee List for StaffID Card Request</h2></div>
+            <div class="form-group col-md-3"></div>
+        </div>
+
+        <table class="table table-striped" id="tblEmployeeCardRequestList">
+            <thead>
+                <tr>
+                    <th>LASRRA/LAGID</th>
+                    <th>Oracle No.</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    @*<th>Gender</th>*@
+                    @*<th>MDA</th>*@
+                    <th>Request Type</th>
+                    <th>Employment Type</th>
+                    @*<th class="text-warning">&nbsp;&nbsp;&nbsp;<button id="checkAll" class="btn btn-danger">Check All</button></th>
+                        <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
+                    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkAll" /></th>
+                    <th>Validation(s)</th>
+                    @*<th><button id="checkAll">Check All</button></th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Detail" asp-route-LasrraID="@item.LASRRAID"> @item.LASRRAID</a>
+
+                        </td>
+                        <td>
+
+                            @item.EmployeeNo
+                        </td>
+                        <td>
+                            <img class="img-fluid" style="width:42px; height:56px" alt="image" src="@Url.Content(item.ImageUrl)" />
+                        </td>
+                        <td>@item.FullName</td>
+                        @*<td>@item.Gender</td>*@
+                        @*<td>@item.Ministry</td>*@
+                        <td>
+                            <select asp-for="@item.CardRequestType" class="form-control" id="RequesttypeCode" asp-items="ViewBag.PrintReasons">
+                                <option selected>-----Select Print Type-------</option>
+                            </select>
+                        </td>
+                        <td>@item.EmploymentTypeName</td>
+                        <td>
+
+
+
+                            <!--<a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">-->             @*<i class="fas fa-edit"></i>*@
+                            <!--<i class="fas fa-user-pen"></i> Edit
+                            </a> |-->
+                            @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
+                            <a class="text-success" asp-controller="Employee" asp-action="DetailCardRequest" asp-route-LasrraID="@item.LASRRAID">
+                                <i class="fas fa-bars"></i> Detail
+                            </a> |
+                            @*<a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
+                                    <i class="far fa-trash-alt"></i> Delete
+                                </a>*@
+                            <i class="far fa-square-root-alt"></i>ID Request
+                            <input type="checkbox" class="id-checkbox" asp-route-LasrraID="@item.LASRRAID" />
+                        </td>
+                        <td class="validationMessage"></td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        @*<th class="text-warning">&nbsp;&nbsp;&nbsp;<button id="checkAll" class="btn btn-danger">Check All</button></th>
+            <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
+        <div class="form-row">
+            <div class="form-group col-md-9">
+
+            </div>
+            <div class="form-group col-md-2">
+                <button id="checkAllButton" class="btn btn-danger">Check All</button>
+                <button id="uncheckAllButton" class="btn btn-primary">Uncheck All</button>
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <div class="form-row">
+
+            <div class="form-group col-md-4">
+
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" id="submitRequest" class="btn btn-rounded btn-primary">Submit Request</button>
+            </div>
+            <div class="form-group col-md-2">
+                <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+            </div>
+            <div class="form-group col-md-4">
+
+            </div>
+
+        </div><br />
+        <div id="error-message" style="color:red;"></div>
+    </form>
+</body>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/Script/jquery-3.7.1.min.js"></script>
+
+
+@*<link rel="stylesheet" href="~/DataTables/datatables.css" />*@
+
+<script src="~/DataTables/datatables.js"></script>
+
+<script src="~/DataTables/DataTables-1.13.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="~/DataTables/DataTables-1.13.6/css/dataTables.jqueryui.min.css" />
+
+<script type="text/javascript">
+
+    var js = jQuery.noConflict(true);
+
+    js(document).ready(function () {
+        js("#tblEmployeeCardRequestList").DataTable({
+
+            "processing": true,
+            "serverside": false,
+            "filter": true,
+            "orderMulti": true
+
+        });
+        $('#submitRequest').click(function () {
+
+            let validSelections = [];
+            let isValid = false;
+            $('#tblEmployeeCardRequestList tbody tr').each(function () {
+                const row = $(this);
+                const checkBox = row.find('input[type="checkbox"]');
+                const dropDown = row.find('select');
+                //const validationMessage = row.find('.validationMessage');
+
+                //validationMessage.text('');
+
+                if (checkBox.is(':checked') && dropDown.val() !== '') {
+                    isValid = true;
+                    validSelections.push({
+                        LASRRAID: row.find('select').attr('name').match(/\d+/)[0], // extract EmployeeId from name attribute
+                        EmployeeNo: row.find('select').attr('name').match(/\d+/)[0],
+                        //LAGID: row.find('select').attr('name').match(/\d+/)[0],
+                        //MDAId: row.find('select').attr('name').match(/\d+/)[0],
+                        CardRequestType: dropDown.val(),
+                        IsChecked: true
+                    });
+                    //} else if (checkBox.is(':checked') && dropDown.val() === '') {
+                    //    validationMessage.text('Please select Card Request Type');
+                    //} else if (!checkBox.is(':checked') && dropDown.val() !== '') {
+                    //    validationMessage.text('Please check the checkbox.');
+                    //}
+                }
+            });
+
+            if (isValid) {
+                /*$('#employeeForm').submit();*/
+                //CreateIDRequest();
+                $.ajax({
+                    type: 'POST',
+                    url: $('#IDRequestfrm').attr('action'),
+                    data: JSON.stringify(validSelections),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+                        // Handle success
+                    },
+                    error: function (response) {
+                        // Handle error
+                    }
+                });
+
+            }
+            else {
+                $('#error-message').text('Please make at least one valid selection.');
+            }
+        });
+
+    });
+
+</script>
+<script type="text/javascript">
+    var CreateIDRequest = function () {
+        debugger
+        var EmployeeFormData = $("#IDRequestfrm").serialize();
+
+        $.ajax({
+            type: "Post",
+            url: "Employee/MDAIndexJQueryCardRequestDataTable",
+            data: EmployeeFormData,
+            success: function (response) {
+
+                //alert(success);
+                swal({
+                    title: "Employee Staff ID Request",
+                    text: "Employee Staff ID Request Created Successfully",
+                    icon: "Success",
+                    buttons: true,
+                    dangerMode: false
+
+                })
+            },
+            failure: function (response) {
+                /* alert(response.responseText);*/
+                //alert("Details on Oracle not found");
+
+                swal({
+                    title: "Employee Creation",
+                    text: "Error submitting ID request.",
+                    icon: "Failure",
+                    buttons: true,
+                    dangerMode: true
+
+                })
+            },
+            error: function (response) {
+                alert("Error communicating to the backend");
+            }
+
+
+        })
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        // Function to check all checkboxes
+        $('#checkAll').click(function () {
+            $('.id-checkbox').prop('checked', this.checked);
+        });
+
+        // Function to check all checkboxes via button
+        $('#checkAllButton').click(function (event) {
+            event.preventDefault(); // Prevent the form from submitting
+            $('.id-checkbox').prop('checked', true);
+            $('#checkAll').prop('checked', true);
+        });
+
+        // Function to uncheck all checkboxes via button
+        $('#uncheckAllButton').click(function (event) {
+            event.preventDefault(); // Prevent the form from submitting
+            $('.id-checkbox').prop('checked', false);
+            $('#checkAll').prop('checked', false);
+        });
+
+        // Update the "Check All" checkbox status based on individual checkbox changes
+        $('.id-checkbox').change(function () {
+            var allChecked = $('.id-checkbox').length === $('.id-checkbox:checked').length;
+            $('#checkAll').prop('checked', allChecked);
+        });
+    });
+</script>
+
+
+

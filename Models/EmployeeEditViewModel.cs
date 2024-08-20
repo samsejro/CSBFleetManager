@@ -17,7 +17,7 @@ namespace CSBFleetManager.Models
        
         public string EmployeeNo { get; set; }
 
-        public EmployeeType EmploymentTypeName { get; set; }
+        //public EmployeeType EmploymentTypeName { get; set; }
 
         [Required(ErrorMessage = "Employment Type is required"), Display(Name = "Employment Type")]
 
@@ -25,7 +25,7 @@ namespace CSBFleetManager.Models
         public string EmploymentType { get; set; }
         public string Ministry { get; set; }
 
-        public MDA MDA { get; set; }
+        //public MDA MDA { get; set; }
 
         [Required(ErrorMessage = "MDA is required"), Display(Name = "MDA")]
         public string MDAId { get; set; }
@@ -40,18 +40,26 @@ namespace CSBFleetManager.Models
         [Required(ErrorMessage = "SurName is required"), StringLength(50, MinimumLength = 2)]
         [RegularExpression(@"^[A-Z][a-zA-Z""'\s-]*$"), Display(Name = "Surname")]
         public string LastName { get; set; }
-        
+        public string EmpSurname { get; set; }
+        public string EmpFirstname { get; set; }
+        public string EmpMiddleName { get; set; }
+
         public Image EmployeePhoto { get; set; }
         public string Photo { get; set; }
         public string Gender { get; set; }
         [Display(Name = "Photo")]
         //public IFormFile ImageUrl { get; set; }
         public string ImageUrl { get; set; }
+        public string Signature { get; set; }
+        [Display(Name = "Signature")]
+        public string SignatureImageUrl { get; set; }
         [DataType(DataType.Date), Display(Name = "Date Of Birth")]
         public DateTime DOB { get; set; }
 
         [DataType(DataType.Date), Display(Name = "Date of First Appointment")]
         public DateTime DateofFirstAppointment { get; set; } = DateTime.UtcNow;
+        [DataType(DataType.Date), Display(Name = "Date of Present Appointment")]
+        public DateTime DateofPresentAppointment { get; set; } = DateTime.UtcNow;
         public string Phone { get; set; }
         [Required(ErrorMessage = "Designation is required")]
         public string Designation { get; set; }

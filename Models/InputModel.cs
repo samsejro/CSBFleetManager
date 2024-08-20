@@ -18,5 +18,9 @@ namespace CSBFleetManager.Models
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+        public string? Status { get; set; }
+        public DateTime? DateCreated { get; set; }
+        public DateTime? DateLastModified { get; set; }
     }
 }

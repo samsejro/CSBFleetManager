@@ -52,6 +52,9 @@ namespace CSBFleetManager.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
             [Display(Name = "Profile Picture")]
             public byte[] ProfilePicture { get; set; }
+            public string? Status { get; set; }
+            public DateTime? DateCreated { get; set; }
+            public DateTime? DateLastModified { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)

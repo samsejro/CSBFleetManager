@@ -29,5 +29,8 @@ namespace CSBFleetManager.Models
         public string StatusMessage { get; set; }
         [TempData]
         public string UserNameChangeLimitMessage { get; set; }
+        public string? Status { get; set; }
+        public DateTime? DateCreated { get; set; }
+        public DateTime? DateLastModified { get; set; }
     }
 }

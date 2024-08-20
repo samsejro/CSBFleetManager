@@ -105,6 +105,8 @@ namespace CSBFleetManager
             services.AddScoped<IGetDetailsOnLASRRAIdService, GetDetailsOnLASRRAIdService>();
             services.AddScoped<IGetDetailsOnOracleNumberService, GetDetailsOnOracleNumberService>();
             services.AddScoped<IRegistrationStatistics, RegistrationStatistics>();
+            services.AddScoped<IPrintReasonService, PrintReasonService>();
+            services.AddScoped<ICardRequestService, CardRequestService>();
 
 
 

@@ -74,11 +74,21 @@ namespace CSBFleetManager.Controllers
                 var userName = model.Email;
                 if (IsValidEmail(model.Email))
                 {
-                    var user = await _userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
+                    if (model.Status=="ACTIVE")
                     {
-                        userName = user.UserName;
+                        var user = await _userManager.FindByEmailAsync(model.Email);
+                        if (user != null)
+                        {
+                            userName = user.UserName;
+                        }
+
+
                     }
+                    else
+                    {
+
+                    }
+                    
                 }
 
                 var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -217,59 +227,70 @@ namespace CSBFleetManager.Controllers
         [HttpPost]
         public async Task<IActionResult> NewLogin(InputModel model)
         {
+            ViewBag.Failure = "";
+            ViewBag.Success = "";
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-
+                string message = "I got here";
                 var userName = model.Email;
                 if (IsValidEmail(model.Email))
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email);
                     if (user != null)
                     {
-                        userName = user.UserName;
+                        if (user.Status== "ACTIVE")
+                        {
+                            userName = user.UserName;
+                            var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                            if (result.Succeeded)
+                            {
+                                _logger.LogInformation("User logged in.");
+                                // var user = await _userManager.FindByEmailAsync(Input.Email);
+                                 user = await _userManager.FindByNameAsync(userName);
+                                var roles = await _userManager.GetRolesAsync(user);
+                                if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
+                                {
+                                    //return RedirectToAction("Index", "Employee");
+                                    TempData["Success"] = "Welcome" + " " + user.FirstName ;
+                                    ViewBag.Success= "Welcome" + " " + user.FirstName;
+                                    return RedirectToAction("IndexAdmin", "Home");
+                                }
+                                else if (roles.Contains("Basic") || roles.Contains("Manager"))
+                                {
+                                    //return RedirectToAction("MDAIndex", "Employee", user.MDAId);
+                                    TempData["Success"] = "Welcome" + " " + user.FirstName;
+                                    ViewBag.Success = "Welcome" + " " + user.FirstName;
+                                    return RedirectToAction("IndexManager", "Home", user.MDAId);
+                                    //returnUrl = "~/Employee/MDAIndex/ Index";
+                                    //return LocalRedirect();
+                                }
+                               
+                                return View();
+                            }
+
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "User Account is not active. Contact Administrator!";
+                            ViewBag.Failure = "User Account is not active. Contact Administrator!";
+                            return View();
+                        }
+
                     }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "You have provided wrong user Id. Contact Administrator!";
+                        ViewBag.Failure = "Invalid UserId. Contact Administrator!";
+                        return View();
+                    }
+                    
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    // var user = await _userManager.FindByEmailAsync(Input.Email);
-                    var user = await _userManager.FindByNameAsync(userName);
-                    var roles = await _userManager.GetRolesAsync(user);
-
-                    if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
-                    {
-                        //return RedirectToAction("Index", "Employee");
-                        return RedirectToAction("IndexAdmin", "Home");
-
-                    }
-                    //else if (roles.Contains("Admin"))
-                    //{
-                    //    return RedirectToAction("Index", "Employee");
-
-                    //}
-                    else if (roles.Contains("Basic") || roles.Contains("Manager"))
-                    {
-                        //return RedirectToAction("MDAIndex", "Employee", user.MDAId);
-                        return RedirectToAction("IndexManager", "Home", user.MDAId);
-                        //returnUrl = "~/Employee/MDAIndex/ Index";
-                        //return LocalRedirect();
-                    }
-                    //else if (roles.Contains("Manager"))
-                    //{
-                    //    return RedirectToAction("MDAIndex", "Employee", user.MDAId);
-
-
-                    //}
-
-
-                    return View();
-
-
-                }
+                //var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+               
 
             }
 
@@ -293,7 +314,7 @@ namespace CSBFleetManager.Controllers
             {
                 MailAddress address = new MailAddress(model.Email);
                 string userName = address.User;
-                var user = new ApplicationUser { UserName = userName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, MDAId = model.MDAId };
+                var user = new ApplicationUser { UserName = userName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, MDAId = model.MDAId, DateCreated=DateTime.Today.Date,DateLastModified= DateTime.Today.Date,Status= "ACTIVE" };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -351,6 +372,8 @@ namespace CSBFleetManager.Controllers
                 FirstName = firstName,
                 LastName = lastName,
                 ProfilePicture = profilePicture
+                
+               
             };
 
             
@@ -503,6 +526,7 @@ namespace CSBFleetManager.Controllers
         public async Task<IActionResult> USerPasswordChange()
         {
             var user = await _userManager.GetUserAsync(User);
+            ViewData["Layout"] = "";
 
             if (user == null)
             {
@@ -546,30 +570,57 @@ namespace CSBFleetManager.Controllers
                 StatusMessage = "Unexpected error. Please try again.";
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
-
-            if (!changePasswordResult.Succeeded)
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Basic") || roles.Contains("Manager"))
             {
-                foreach (var error in changePasswordResult.Errors)
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                if (!changePasswordResult.Succeeded)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                    
+                    foreach (var error in changePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+
+                    }
+                    StatusMessage = "Password update not successful";
+
+                    TempData["Error"] = "Password update not successful";
+
+                    return View();
                 }
-                StatusMessage = "Password updated not successful";
-
-                TempData["Error"] = "Password updated not successful";
-
-                return View();
+                
             }
+            else if (roles.Contains("SuperAdmin") || roles.Contains("Admin"))
+            {
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, user.PasswordHash, model.ConfirmPassword);
+                
+                if (!changePasswordResult.Succeeded)
+                {
+                    foreach (var error in changePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+
+                    }
+                    StatusMessage = "Password update not successful";
+
+                    TempData["Error"] = "Password update not successful";
+
+                    return View();
+                }
+                
+            }
+
             //StatusMessage = "Password updated successfully";
-           
+
+
+            // return RedirectToAction(nameof(NewLogin));
+
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
             ViewBag.StatusMessage = StatusMessage;
             TempData["Success"] = "Your password has been changed successfully";
             return View();
-           // return RedirectToAction(nameof(NewLogin));
         }
 
 

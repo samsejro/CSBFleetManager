@@ -1,8 +1,10 @@
-﻿@model EmployeeEditViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using CSBFleetManager.Entity
+@model EmployeeEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
-    //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+    Layout = "~/Views/Shared/AdminLTE/_LayoutManager.cshtml";
 
     string[] Gender = { "Male", "Female" };
 }
@@ -11,8 +13,8 @@
         <div class="card-body">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item"><a asp-action="Index">Employee List</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="IndexManager">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">Employee List</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Edit Employee</li>
                 </ol>
             </nav><br />
@@ -184,7 +186,64 @@
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                     </div>
 
-                </div><br /><br />
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Signature"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<textarea asp-for="Address" id="address" cols="50" rows="3"></textarea>*@
+                        <table border="1" cellpadding="0" width="500">
+                            <tr>
+                                <td height="100" width="300">
+                                    <canvas id="cnv" name="cnv" width="300" height="100"></canvas>
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                        <br />
+                        <table border="0" cellpadding="0" width="500">
+                            <tr>
+                                <td align="center">
+                                    <p id="FORM1">
+                                        <input id="SignBtn" name="SignBtn" type="button" class="btn btn-primary" value="Start Signature" onclick="javascript:onSign()" />&nbsp;&nbsp;&nbsp;
+                                        <input id="button1" name="ClearBtn" type="button" class="btn btn-secondary" value="Clear Signature" onclick="javascript:onClear()" />&nbsp;&nbsp;&nbsp;
+                                        <input id="button2" name="DoneBtn" type="button" value="Capture" class="btn btn-danger" onclick="javascript:onDone()" />&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <INPUT type="hidden" NAME="bioSigData">
+                                        <br /><br />
+                                        <INPUT type="hidden" NAME="sigImgData">
+                                        <BR>
+
+                                    </p>
+                                </td>
+
+                            </tr>
+                        </table>
+
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        @*<label asp-for="SignatureImageUrl"></label>*@
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
+                        @if (Model.SignatureImageUrl != null)
+                        {
+                            <img id="SigimgCapture" src="@Url.Content(Model.SignatureImageUrl)" alt="Captured Signature" />
+                        }
+                        else
+                        {
+                            <img id="SigimgCapture" alt="Captured Signature" />
+
+                        }
+
+                        <input asp-for="SignatureImageUrl" class="form-control" id="SignatureUrl" name="SignatureUrl" type="hidden" />
+
+                        <input asp-for="Signature" class="form-control" id="Sig" type="hidden" />
+                        <span asp-validation-for="SignatureImageUrl" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+
                 <h3>Next of Kin Details</h3>
                 <hr style="background-color:crimson" />
                 <div class="form-row">
@@ -228,7 +287,11 @@
                         <label asp-for="EmployeeTypeId"></label>
                     </div>
                     <div class="form-group col-md-4">
-
+                        @*<input asp-for="EmploymentTypeName" class="form-control" placeholder="Select Employment Type.." />*@
+                        @*@if (ViewBag.EmployeeType != null)
+                            {
+                                <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
+                            }*@
                         <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
                             <option selected>--- Select EmployeementType ---</option>
                         </select>
@@ -237,66 +300,98 @@
                     </div>
                     <div class="form-group col-md-6">
                         <div class="input-group">
-                            <input asp-for="EmployeeNo" class="form-control rounded-0" readonly />
+                            <input asp-for="EmployeeNo" class="form-control rounded-0" id="EmployeeNo" placeholder="Enter Oracle No" />
                             @*<span class="input-group-append">
                                     <button type="button" class="btn btn-info btn-flat">Validate ID!</button>
                                     <button type="button" class="btn btn-info btn-flat">Get Info</button>
                                 </span>*@
                             <div class="input-group-append">
-                                <button class="btn btn-primary btn-flat" type="button" disabled>Validate ID!</button>
-                                <button class="btn btn-success btn-flat" type="button" disabled>Get ID Info</button>
+                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()" id="btnOracle" name="btnOracle"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
+                                @*<button class="btn btn-primary btn-flat" type="button"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>*@
+
                             </div>
                             <span asp-validation-for="EmployeeNo" class="text-danger"></span>
                         </div>
                     </div>
 
-                </div>
+                </div><br />
                 <div class="form-row">
                     <div class="form-group col-md-2">
+                        <label a>Surname</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="EmpSurname" class="form-control" id="EmployeeSurName" placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label a>First Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="EmpFirstname" class="form-control" id="EmployeeFirstName" placeholder=" " />
+                        @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label a>Middle Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="EmpMiddleName" class="form-control" id="EmployeeMiddleName" placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    @*<div class="form-group col-md-2" style="text-align:right">
+                            <label a>Gender</label>
+                        </div>*@
+                    <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="MDAId"></label>
                     </div>
                     <div class="form-group col-md-4">
-
-                        <select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA " id="Ministry">
+                        <select asp-for="MDAId" id="Ministry" class="form-control" asp-items="ViewBag.MDA ">
                             <option selected>-----Select MDA-------</option>
                         </select>
                         <span asp-validation-for="MDAId" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-md-2" style="text-align:right">
-                        <label asp-for="Designation"></label>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <input asp-for="Designation" class="form-control" placeholder="Enter Designation.." />
-                        <span asp-validation-for="Designation" class="text-danger"></span>
-                    </div>
+                    @*<div class="form-group col-md-4">
+                            @Html.DropDownList("Gender", new SelectList(Gender), "Select Gender", new { @class = "form-control", @id = "ddlOracleGender" })
+                        </div>*@
 
-                </div>
+                </div><br />
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label asp-for="DateofFirstAppointment"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="DateofFirstAppointment" class="form-control" readonly />
+                        <input asp-for="DateofFirstAppointment" id="DateofFirstAppointment" class="form-control" />
                         <span asp-validation-for="DateofFirstAppointment" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="DateofPresentAppointment"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="DateofPresentAppointment" id="DateofFirstAppointment" class="form-control" />
+                        <span asp-validation-for="DateofPresentAppointment" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Designation"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
+                        <span asp-validation-for="Designation" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="Email"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="Email" class="form-control" />
+                        <input asp-for="Email" class="form-control" id="OfficialEmail" placeholder="Official Email" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                </div><br /><br />
-                @*<div class="form-group">
-
-                        <button type="submit" class="btn btn-rounded btn-primary float-right "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
-                        <a asp-action="index" class="btn btn-rounded btn-success float-left "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
-                        <br />
-                        <br />
-                        <br />
-
-                    </div>*@
+                </div><br />
+                <hr style="background-color: crimson; border: 1px solid red" />
                 <div class="form-row">
                     <div class="form-group col-md-6" style="text-align:right">
                         <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</button>
@@ -306,11 +401,9 @@
                         </div>*@
                     <div class="form-group col-md-6" style="text-align:left">
                         @*<a asp-controller="Home" asp-action="IndexManager" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
-                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
-
+                        @*<input type="hidden" id="AgencyID" name="Id" value="@ViewBag.mdaID" />*@
+                        <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" class="btn btn-rounded btn-success " asp-route-mdaID="@(User.FindFirst("MDAId").Value)"><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
                     </div>
-
-
                 </div>
 
             </form>
@@ -319,146 +412,345 @@
     </div>
 
 </div>
-@*<script>
 
-        var CreateEmployee = function () {
-            debugger
-            var EmployeeEditFormData = $("#EmployeeEditfrm").serialize();
 
-            $.ajax({
-                type: "Get",
-                url: "Employee/Edit",
-                data: EmployeeEditFormData,
-                success: function (response) {
+@section Scripts{
 
-                    alert(success);
+    <script type="text/javascript">
+        $(document).ready(() => {
+        alert(@Model.Gender);
+        $("#ddlGender").val('@Model.Gender');
+    });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Ministry").val('@Model.MDAId');
+
+        })
+        $(document).ready(function () {
+            $("#EmployeeTypeId").val('@Model.EmployeeTypeId');
+
+        })
+        @*$(document).ready(function () {
+            $("#EmployeeSurName").val('@Model.EmpSurname');
+
+        })*@
+        @*$(document).ready(function () {
+            $("#EmployeeTypeId").val('@Model.EmploymentType');
+
+        })*@
+        @*$(document).ready(function () {
+            $("#EmployeeTypeId").val('@Model.EmploymentType');
+
+        })*@
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#EmployeeTypeId").change(function (evt) {
+
+                //alert($("#EmployeeTypeId").val());
+                //alert($("#EmployeeTypeId option:selected").text());
+
+                var selectedText = $("#EmployeeTypeId option:selected").text();
+
+                //alert(selectedText);
+                const employeeNo = document.getElementById("EmployeeNo");
+                const getOracleButton = document.getElementById("btnOracle");
+                const OracleSurname = document.getElementById("OracleSurName");
+                const OracleFirstName = document.getElementById("OracleFirstName");
+                const OracleMiddleName = document.getElementById("OracleMiddleName");
+                const ddlOracleGender = document.getElementById("OracleGender");
+
+                if (selectedText != "Oracle Staff") {
+                    //document.getElementById("EmployeeNo").disabled = true;
+                    //document.getElementById("btnOracle").disabled = true;
+                    //document.getElementById("OracleSurName").disabled = false;
+                    //document.getElementById("OracleFirstName").disabled = false;
+                    //document.getElementById("OracleMiddleName").disabled = false;
+                    //document.getElementById("ddlOracleGender").disabled = false;
+                    getOracleButton.setAttribute('disabled', 'disabled');
+                    employeeNo.setAttribute('disabled', 'disabled');
+                    OracleSurname.removeAttribute('disabled');
+                    OracleFirstName.removeAttribute('disabled');
+                    OracleMiddleName.removeAttribute('disabled');
+                    ddlOracleGender.removeAttribute('disabled');
+
+
+                }
+                else {
+                    //document.getElementById("EmployeeNo").disabled = false;
+                    //document.getElementById("btnOracle").disabled = false;
+                    //document.getElementById("OracleSurName").disabled = true;
+                    //document.getElementById("OracleFirstName").disabled = true;
+                    //document.getElementById("OracleMiddleName").disabled = true;
+                    //document.getElementById("ddlOracleGender").disabled = true;
+
+                    employeeNo.removeAttribute('disabled');
+                    getOracleButton.removeAttribute('disabled');
+                    OracleSurname.setAttribute('disabled', 'disabled');
+                    OracleFirstName.setAttribute('disabled', 'disabled');
+                    OracleMiddleName.setAttribute('disabled', 'disabled');
+                    ddlOracleGender.setAttribute('disabled', 'disabled');
                 }
 
-            })
-        }
-    </script>*@
-<script type="text/javascript">
-    $(document).ready(() => {
-        $("#Gender").val('@Model.Gender');
-    });
-</script>
-<script type="text/javascript">
-        $(document).ready(() => {
-            $("#MDA option:selected").text('@Model.Ministry');
-        });
-</script>
-@*<script type="text/javascript">
-        $(document).ready(function () {
-
-            var text1 = @Model.EmploymentType;
-             $("#EmployeeType option").filter(function () {
-            //may want to use $.trim in here
-            return $(this).text() == text1;
-        }).prop('selected', true);
-
+            });
 
         })
-    </script>*@
-@*<script type="text/javascript">
-        $(document).ready(function () {
-            const selectMDA = document.getElementById("MDA");
-            const selectEmploymentType = document.getElementById("EmployeeType");
+    </script>
 
-            const selectedIndexMDA = select.selectedIndex;
-            const selectedValue = select.value;
-            const selectedText = select.options[selectedIndex].text;
+    <script type="text/javascript" src="~/lib/SigWeb/SigWebTablet.js"></script> >
+    <script type="text/javascript">
+        var tmr;
 
-            document.getElementById("Ministry").value = selectedText;
+        var resetIsSupported = false;
+        var SigWeb_1_6_4_0_IsInstalled = false; //SigWeb 1.6.4.0 and above add the Reset() and GetSigWebVersion functions
+        var SigWeb_1_7_0_0_IsInstalled = false; //SigWeb 1.7.0.0 and above add the GetDaysUntilCertificateExpires() function
 
+        window.onload = function () {
+            if (IsSigWebInstalled()) {
+                var sigWebVer = "";
+                try {
+                    sigWebVer = GetSigWebVersion();
+                } catch (err) { console.log("Unable to get SigWeb Version: " + err.message) }
 
-        })
-    </script>*@
+                if (sigWebVer != "") {
+                    try {
+                        SigWeb_1_7_0_0_IsInstalled = isSigWeb_1_7_0_0_Installed(sigWebVer);
+                    } catch (err) { console.log(err.message) };
+                    //if SigWeb 1.7.0.0 is installed, then enable corresponding functionality
+                    if (SigWeb_1_7_0_0_IsInstalled) {
 
-@*<script type="text/javascript">
+                        resetIsSupported = true;
+                        try {
+                            var daysUntilCertExpires = GetDaysUntilCertificateExpires();
+                            document.getElementById("daysUntilExpElement").innerHTML = "SigWeb Certificate expires in " + daysUntilCertExpires + " days.";
+                        } catch (err) { console.log(err.message) };
+                        var note = document.getElementById("sigWebVrsnNote");
+                        note.innerHTML = "SigWeb 1.7.0 installed";
+                    } else {
+                        try {
+                            SigWeb_1_6_4_0_IsInstalled = isSigWeb_1_6_4_0_Installed(sigWebVer);
+                            //if SigWeb 1.6.4.0 is installed, then enable corresponding functionality
+                        } catch (err) { console.log(err.message) };
+                        if (SigWeb_1_6_4_0_IsInstalled) {
+                            resetIsSupported = true;
+                            var sigweb_link = document.createElement("a");
+                            sigweb_link.href = "https://www.topazsystems.com/software/sigweb.exe";
+                            sigweb_link.innerHTML = "https://www.topazsystems.com/software/sigweb.exe";
 
-        function GetSelectedMDA() {
+                            var note = document.getElementById("sigWebVrsnNote");
+                            note.innerHTML = "SigWeb 1.6.4 is installed. Install the newer version of SigWeb from the following link: ";
+                            note.appendChild(sigweb_link);
+                        } else {
+                            var sigweb_link = document.createElement("a");
+                            sigweb_link.href = "https://www.topazsystems.com/software/sigweb.exe";
+                            sigweb_link.innerHTML = "https://www.topazsystems.com/software/sigweb.exe";
 
-            $("#Ministry").change(function () {
-                //alert($('option:selected', $(this)).text());
-            });
-            const select = document.getElementById("Ministry");
+                            var note = document.getElementById("sigWebVrsnNote");
+                            note.innerHTML = "A newer version of SigWeb is available. Please uninstall the currently installed version of SigWeb and then install the new version of SigWeb from the following link: ";
+                            note.appendChild(sigweb_link);
+                        }
+                    }
+                } else {
+                    //Older version of SigWeb installed that does not support retrieving the version of SigWeb (Version 1.6.0.2 and older)
+                    var sigweb_link = document.createElement("a");
+                    sigweb_link.href = "https://www.topazsystems.com/software/sigweb.exe";
+                    sigweb_link.innerHTML = "https://www.topazsystems.com/software/sigweb.exe";
 
-            const selectedIndex = select.selectedIndex;
-            const selectedValue = select.value;
-            const selectedText = select.options[selectedIndex].text;
-
-            document.getElementById("Ministry").value = selectedText;
+                    var note = document.getElementById("sigWebVrsnNote");
+                    note.innerHTML = "A newer version of SigWeb is available. Please uninstall the currently installed version of SigWeb and then install the new version of SigWeb from the following link: ";
+                    note.appendChild(sigweb_link);
+                }
+            }
+            else {
+                alert("Unable to communicate with SigWeb. Please confirm that SigWeb is installed and running on this PC.");
+            }
         }
-    </script>*@
-@*<script type="text/javascript">
 
-        function GetSelectedEmployeeType() {
+        function isSigWeb_1_6_4_0_Installed(sigWebVer) {
+            var minSigWebVersionResetSupport = "1.6.4.0";
 
-            $("#EmployeeType").change(function () {
-                //alert($('option:selected', $(this)).text());
-            });
-            const select = document.getElementById("EmployeeType");
-
-            const selectedIndex = select.selectedIndex;
-            const selectedValue = select.value;
-            const selectedText = select.options[selectedIndex].text;
-
-            document.getElementById("EmployeeType").value = selectedText;
+            if (isOlderSigWebVersionInstalled(minSigWebVersionResetSupport, sigWebVer)) {
+                console.log("SigWeb version 1.6.4.0 or higher not installed.");
+                return false;
+            }
+            return true;
         }
-    </script>*@
 
+        function isSigWeb_1_7_0_0_Installed(sigWebVer) {
+            var minSigWebVersionGetDaysUntilCertificateExpiresSupport = "1.7.0.0";
 
-<script type="text/javascript">
-    $(document).ready(function () {
+            if (isOlderSigWebVersionInstalled(minSigWebVersionGetDaysUntilCertificateExpiresSupport, sigWebVer)) {
+                console.log("SigWeb version 1.7.0.0 or higher not installed.");
+                return false;
+            }
+            return true;
+        }
 
-        $("#EmployeeTypeId").change(function (evt) {
+        function isOlderSigWebVersionInstalled(cmprVer, sigWebVer) {
+            return isOlderVersion(cmprVer, sigWebVer);
+        }
 
-            //alert($("#EmployeeTypeId").val());
-            //alert($("#EmployeeTypeId option:selected").text());
+        function isOlderVersion(oldVer, newVer) {
+            const oldParts = oldVer.split('.')
+            const newParts = newVer.split('.')
+            for (var i = 0; i < newParts.length; i++) {
+                const a = parseInt(newParts[i]) || 0
+                const b = parseInt(oldParts[i]) || 0
+                if (a < b) return true
+                if (a > b) return false
+            }
+            return false;
+        }
 
-            var selectedText = $("#EmployeeTypeId option:selected").text();
+        function onSign() {
+            if (IsSigWebInstalled()) {
+                var ctx = document.getElementById('cnv').getContext('2d');
+                SetDisplayXSize(500);
+                SetDisplayYSize(100);
+                SetTabletState(0, tmr);
+                SetJustifyMode(0);
+                ClearTablet();
+                if (tmr == null) {
+                    tmr = SetTabletState(1, ctx, 50);
+                }
+                else {
+                    SetTabletState(0, tmr);
+                    tmr = null;
+                    tmr = SetTabletState(1, ctx, 50);
+                }
+            } else {
+                alert("Unable to communicate with SigWeb. Please confirm that SigWeb is installed and running on this PC.");
 
-            //alert(selectedText);
-            const employeeNo = document.getElementById("EmployeeNo");
-            const getOracleButton = document.getElementById("btnOracle");
-            const OracleSurname = document.getElementById("OracleSurName");
-            const OracleFirstName = document.getElementById("OracleFirstName");
-            const OracleMiddleName = document.getElementById("OracleMiddleName");
-            const ddlOracleGender = document.getElementById("OracleGender");
+            }
 
-            if (selectedText != "Oracle Staff") {
-                //document.getElementById("EmployeeNo").disabled = true;
-                //document.getElementById("btnOracle").disabled = true;
-                //document.getElementById("OracleSurName").disabled = false;
-                //document.getElementById("OracleFirstName").disabled = false;
-                //document.getElementById("OracleMiddleName").disabled = false;
-                //document.getElementById("ddlOracleGender").disabled = false;
-                getOracleButton.setAttribute('disabled', 'disabled');
-                employeeNo.setAttribute('disabled', 'disabled');
-                OracleSurname.removeAttribute('disabled');
-                OracleFirstName.removeAttribute('disabled');
-                OracleMiddleName.removeAttribute('disabled');
-                ddlOracleGender.removeAttribute('disabled');
+            // SetSignatureValue();
 
+        }
+
+        function onClear() {
+            ClearTablet();
+        }
+        function SetSignatureValue() {
+
+            if (NumberOfTabletPoints() == 0) {
+                alert("Please sign before continuing");
 
             }
             else {
-                //document.getElementById("EmployeeNo").disabled = false;
-                //document.getElementById("btnOracle").disabled = false;
-                //document.getElementById("OracleSurName").disabled = true;
-                //document.getElementById("OracleFirstName").disabled = true;
-                //document.getElementById("OracleMiddleName").disabled = true;
-                //document.getElementById("ddlOracleGender").disabled = true;
 
-                employeeNo.removeAttribute('disabled');
-                getOracleButton.removeAttribute('disabled');
-                OracleSurname.setAttribute('disabled', 'disabled');
-                OracleFirstName.setAttribute('disabled', 'disabled');
-                OracleMiddleName.setAttribute('disabled', 'disabled');
-                ddlOracleGender.setAttribute('disabled', 'disabled');
+                SetTabletState(0, tmr);
+                //RETURN TOPAZ-FORMAT SIGSTRING
+                SetSigCompressionMode(1);
+                //document.FORM1.bioSigData.value = GetSigString();
+                //document.getElementById("FORM1").bioSigData.value = GetSigString();
+                //alert(document.getElementById("FORM1").bioSigData.value);
+                ////document.FORM1.bioSigData.value = GetSigString();
+                //document.getElementById("FORM1").bioSigData.value = GetSigString();
+                ////document.getElementById("sigImageData").value = GetSigString();
+                //document.FORM1.sigStringData.value = GetSigString();
+                //this returns the signature in Topaz's own format, with biometric information
+                /*alert("i am here");*/
+
+                //RETURN BMP BYTE ARRAY CONVERTED TO BASE64 STRING
+                SetImageXSize(500);
+                SetImageYSize(100);
+                SetImagePenWidth(5);
+                GetSigImageB64(SigImageCallback);
             }
 
-        });
+        }
 
-    })
-</script>
+        function onDone() {
+            if (NumberOfTabletPoints() == 0) {
+                alert("Please sign before continuing");
+
+            }
+            else {
+
+                SetTabletState(0, tmr);
+                //RETURN TOPAZ-FORMAT SIGSTRING
+                SetSigCompressionMode(1);
+                //document.FORM1.bioSigData.value = GetSigString();
+                //document.getElementById("FORM1").bioSigData.value = GetSigString();
+                //alert(document.getElementById("FORM1").bioSigData.value);
+                ////document.FORM1.bioSigData.value = GetSigString();
+                //document.getElementById("FORM1").bioSigData.value = GetSigString();
+                ////document.getElementById("sigImageData").value = GetSigString();
+                //document.FORM1.sigStringData.value = GetSigString();
+                //this returns the signature in Topaz's own format, with biometric information
+                /*alert("i am here");*/
+
+                //RETURN BMP BYTE ARRAY CONVERTED TO BASE64 STRING
+                SetImageXSize(500);
+                SetImageYSize(100);
+                SetImagePenWidth(5);
+                GetSigImageB64(SigImageCallback);
+            }
+        }
+
+        function SigImageCallback(str) {
+            //document.FORM1.sigImageData.value = str;
+            // Step 1: Get the paragraph element by its ID
+            //var textarea = document.getElementById('sigImageData');
+            var sigInput = document.getElementById('SignatureUrl');
+            var Actualsignature = document.getElementById('Sig');
+            //alert("i got here");
+
+            //textarea.value = str;
+            sigInput.value = str;
+            Actualsignature.value = str;
+
+            //document.getElementById("sigImageData").value = str;
+            setImageFromBase64(str, "SigimgCapture");
+            /* alert(str)*/
+        }
+
+        function endDemo() {
+            ClearTablet();
+            SetTabletState(0, tmr);
+        }
+
+        function close() {
+            if (resetIsSupported) {
+                Reset();
+            } else {
+                endDemo();
+            }
+        }
+        //my function that sets the Signature image elemet
+        function setImageFromBase64(base64String, imgElementId) {
+            // Check if the base64String is not empty or null
+            if (base64String && base64String.trim() != "") {
+                // Get the image element by its ID
+                var imgElement = document.getElementById(imgElementId);
+
+                if (imgElement) {
+                    // Set the src property of the image element
+                    imgElement.src = "data:image/jpg;base64," + base64String;
+                } else {
+                    console.error("Image element with ID " + imgElementId + " not found.");
+                }
+            } else {
+                console.error("Base64 string is empty or null.");
+            }
+        }
+
+
+        //Perform the following actions on
+        //	1. Browser Closure
+        //	2. Tab Closure
+        //	3. Tab Refresh
+        window.onbeforeunload = function (evt) {
+            close();
+            clearInterval(tmr);
+            evt.preventDefault(); //For Firefox, needed for browser closure
+        };
+    </script>
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+}

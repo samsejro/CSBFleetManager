@@ -782,3 +782,13 @@ D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\ref\C
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\CSBFleetManager.pdb
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\CSBFleetManager.genruntimeconfig.cache
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Shared\_Notifications.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\Edit - Copy.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\Create2.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\_CardRequest.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\MDAIndexJQueryCardRequestDataTable.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\Detail - Copy.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\AdminEdit.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\AdminDetail.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\DetailCardRequest.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\_MDAEmployeeListJqueryDataTableUser.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Account\USerPasswordChangeAdmin.cshtml.g.cs

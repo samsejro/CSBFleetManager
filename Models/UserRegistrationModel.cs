@@ -31,6 +31,9 @@ namespace CSBFleetManager.Models
         public string ConfirmPassword { get; set; }
 
         public string ReturnUrl { get; set; }
+        public string? Status { get; set; }
+        public DateTime? DateCreated { get; set; }
+        public DateTime? DateLastModified { get; set; }
 
     }
 }

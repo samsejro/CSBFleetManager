@@ -17,12 +17,14 @@ namespace CSBFleetManager.Models
         public string MiddleName { get; set; }
         public string Gender { get; set; }
         public string ImageUrl { get; set; }
+        public string SignatureImageUrl { get; set; }
         public DateTime DOB { get; set; }
         public string Designation { get; set; }
         public DateTime DateofFirstAppointment { get; set; }
         public string LGA { get; set; }
-        public string EmploymentTypeName { get; set; }
+        public string EmployeeTypeName { get; set; }
         public string Ministry { get; set; }
+        public string MDAId { get; set; }
         public string Address { get; set; }
 
         public string NextofkinFullName { get; set; }

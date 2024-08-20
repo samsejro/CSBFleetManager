@@ -27,6 +27,9 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="~/Login_V18/css/util.css">
     <link rel="stylesheet" type="text/css" href="~/Login_V18/css/main.css">
+    @*<link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />*@
+    !-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <!--===============================================================================================-->
 </head>
 <body style="background-color: #666666;">
@@ -36,7 +39,7 @@
             <div class="wrap-login100">
                 @*<p class="login-box-msg">Sign in to start your session</p>*@
                 @*<form class="login100-form validate-form">*@
-                <form id="account" class="login100-form" method="post">
+                <form d="loginForm" class="login100-form" method="post">
                     <span class="login100-form-title p-b-43">
                         Sign in to start your session
                     </span>
@@ -68,34 +71,34 @@
                         </div>
 
                         @*<div>
-                    <a href="#" class="txt1">
-                        Forgot Password?
-                    </a>
-                </div>*@
+                                <a href="#" class="txt1">
+                                    Forgot Password?
+                                </a>
+                            </div>*@
                     </div>
 
 
                     <div class="container-login100-form-btn">
-                        <button class="login100-form-btn" type="submit">
+                        <button class="login100-form-btn" type="submit" id="Loginbtn">
                             Login
                         </button>
                     </div>
 
                     @*<div class="text-center p-t-46 p-b-20">
-                <span class="txt2">
-                    or sign up using
-                </span>
-            </div>*@
+                            <span class="txt2">
+                                or sign up using
+                            </span>
+                        </div>*@
 
                     @*<div class="login100-form-social flex-c-m">
-                <a href="#" class="login100-form-social-item flex-c-m bg1 m-r-5">
-                    <i class="fa fa-facebook-f" aria-hidden="true"></i>
-                </a>
+                            <a href="#" class="login100-form-social-item flex-c-m bg1 m-r-5">
+                                <i class="fa fa-facebook-f" aria-hidden="true"></i>
+                            </a>
 
-                <a href="#" class="login100-form-social-item flex-c-m bg2 m-r-5">
-                    <i class="fa fa-twitter" aria-hidden="true"></i>
-                </a>
-            </div>*@
+                            <a href="#" class="login100-form-social-item flex-c-m bg2 m-r-5">
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                        </div>*@
                     @*<div asp-validation-summary="All" class="text-danger small"></div>*@
                 </form>
 
@@ -112,6 +115,9 @@
 
     <!--===============================================================================================-->
     <script src="~/Login_V18/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
     <!--===============================================================================================-->
     <script src="~/Login_V18/vendor/animsition/js/animsition.min.js"></script>
     <!--===============================================================================================-->
@@ -124,10 +130,57 @@
     <script src="~/Login_V18/vendor/daterangepicker/daterangepicker.js"></script>
     <!--===============================================================================================-->
     <script src="~/Login_V18/vendor/countdowntime/countdowntime.js"></script>
+    <!-- SweetAlert JS -->
+    @*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+    <script src="~/lib/sweetalert/sweetalert.min.js"></script>
     <!--===============================================================================================-->
     <script src="~/Login_V18/js/main.js"></script>
+
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />
+        <script>
+                $(document).ready(function () {
+                    $("#loginForm").on("submit", function (event) {
+                        event.preventDefault();
+                        if (@ViewBag.Success != "") {
+                            Swal({
+                                title: 'Login Successful',
+                                text: ViewBag.Success,
+                                icon: 'success',
+                                buttons:true,
+                                timer: 2000
+                                /*showConfirmButton: false*/
+
+                            }).then((confirm) => {
+                                if (confirm) {
+                                    // alert('You said Yess');
+                                    var btn = $(this);
+                                    //var id = btn.data('id');
+                                    //$('#LeaveTypeIdAllocation').val(id);
+                                    $('#loginForm').submit();
+                                }
+                            });
+
+                        }
+                        else {
+                            Swal({
+
+                                icon: 'warning',
+                                title: 'Login Un-Successful',
+                                text: ViewBag.Failure,
+                                timer: 2000
+                               /* showConfirmButton: false*/
+
+                            });
+
+                        }
+
+
+                    });
+
+                });
+        </script>
     }
 </body>
+
 </html>

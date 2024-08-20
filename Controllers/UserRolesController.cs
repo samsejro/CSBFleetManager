@@ -157,5 +157,10 @@ namespace CSBFleetManager.Controllers
 
 
         }
+        public async Task<IActionResult>DeActivateUser(string userId)
+        {
+            
+            return View();
+        }
     }
 }

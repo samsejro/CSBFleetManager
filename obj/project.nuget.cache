@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "S+HKEmEyk5oXx6WUlP1/rhdBCw1SCnSLUlUyNilJU1U209vMvUk7u0Y0VPJOFjKf1K83GZrp3UoO75X5VXzIHA==",
+  "dgSpecHash": "Qtip3jA8JPAV0U52OsBj2gA7/rkIgCIP0jTNVd8t43GCaL+RcZ+Nvq1YyKGGmnWXDVg26vFeOzRKoPhMeTpMbA==",
   "success": true,
   "projectFilePath": "D:\\Visual Studio Projects\\CSBFleetManager\\CSBFleetManager\\CSBFleetManager.csproj",
   "expectedPackageFiles": [
@@ -150,6 +150,7 @@
     "C:\\Users\\Samsejro\\.nuget\\packages\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\Samsejro\\.nuget\\packages\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\Samsejro\\.nuget\\packages\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
+    "C:\\Users\\Samsejro\\.nuget\\packages\\sweetalert\\1.0.0\\sweetalert.1.0.0.nupkg.sha512",
     "C:\\Users\\Samsejro\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\Samsejro\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\Samsejro\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",

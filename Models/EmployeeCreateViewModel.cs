@@ -44,12 +44,19 @@ namespace CSBFleetManager.Models
                 return FirstName + (string.IsNullOrEmpty(MiddleName) ? " " : (" " + (char?)MiddleName[0] + ". ").ToUpper()) + LastName;
             }
         }
+        public string EmpSurname { get; set; }
+        public string EmpFirstname { get; set; }
+        public string EmpMiddleName { get; set; }
         public Image EmployeePhoto { get; set; }
-        public string Photo { get; set; }
         public string Gender { get; set; }
+        public string Photo { get; set; }
         [Display(Name = "Photo")]
         //public IFormFile ImageUrl { get; set; }
         public string ImageUrl { get; set; }
+        public string Signature { get; set; }
+        [Display(Name = "Signature")]
+        public string SignatureImageUrl { get; set; }
+
         [DataType(DataType.Date), Display(Name = "Date Of Birth")]
         public DateTime DOB { get; set; }
 

@@ -1,0 +1,404 @@
+﻿@model EmployeeEditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    //Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+
+    string[] Gender = { "Male", "Female" };
+}
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Employee List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Employee</li>
+                </ol>
+            </nav><br />
+            <form method="post" enctype="multipart/form-data" asp-action="Edit" id="EmployeeEditfrm">
+                <h3>Basic Details From LASRRA's DB</h3>
+                <hr style="background-color:crimson" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="LASRRAID"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="input-group">
+                            <input asp-for="LASRRAID" id="txtLASRRAID" class="form-control rounded-0" readonly />
+
+                            <div class="input-group-append">
+                                <button class="btn-sm btn-info btn-flat" type="button" id="btnValidateLASRRAID" disabled onclick="VerifyID()"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>
+                                <button class="btn-sm btn-success btn-flat" type="button" id="btnGetLASRRAIDInfo" disabled onclick="ApiCallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get ID Info</i></button>
+                            </div>
+                            <span asp-validation-for="LASRRAID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="LastName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="LastName" class="form-control" id="txtsurname" readonly />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="FirstName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="FirstName" class="form-control" id="txtfirst_name" readonly />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="MiddleName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="MiddleName" class="form-control" id="other_name" readonly />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span>
+                    </div>
+
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Phone"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Phone" class="form-control" id="phone_number" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="DOB"></label>
+                    </div>
+                    <div class="form-group col-md-4" style="text-align:right">
+                        <input asp-for="DOB" id="Birthdate" class="form-control" disabled />
+                        <span asp-validation-for="DOB" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Gender"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<select class="form-control" id="ddlGender" asp-for="Gender"}>
+                                <option selected>Select Gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>*@
+                        @Html.DropDownList("Gender", new SelectList(Gender), "Select Gender", new { @class = "form-control", @id = "ddlGender" })
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="LGA"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select class="form-control" asp-for="LGA" id="LGA">
+                            <option selected>Select LGA</option>
+                            <option>AGBADO-OKEODO</option>
+                            <option>AGBOYI-KETU</option>
+                            <option>AGEGE</option>
+                            <option>AJEROMI LGA</option>
+                            <option>ALIMOSHO LG</option>
+                            <option>AMUWO-ODOFIN</option>
+                            <option>APAPA</option>
+                            <option>APAPA-IGANMU</option>
+                            <option>AYOBO-IPAJA</option>
+                            <option>BADAGRY</option>
+                            <option>BADAGRY-WEST LCDA</option>
+                            <option>BARIGA</option>
+                            <option>COKER-AGUDA LCDA</option>
+                            <option>EGBE-IDIMU LCDA</option>
+                            <option>EJIGBO</option>
+                            <option>EPE</option>
+                            <option>EREDO</option>
+                            <option>ETI-OSA</option>
+                            <option>ETIOSA EAST</option>
+                            <option>IBA LCDA</option>
+                            <option>IBEJU-LEKKI</option>
+                            <option>IFAKOIJAIYE</option>
+                            <option>IFELODUN</option>
+                            <option>IGANDO IKOTUN</option>
+                            <option>IGBOGBO-BAIYEKU</option>
+                            <option>IJEDE</option>
+                            <option>IKEJA</option>
+                            <option>IKORODU</option>
+                            <option>IKORODU-NORTH LCDA</option>
+                            <option>IKORODU-WEST</option>
+                            <option>IKOSI-EJINRIN LCDA</option>
+                            <option>IKOSI-ISHERI</option>
+                            <option>IKOYI-OBALENDE</option>
+                            <option>IMOTA LCDA</option>
+                            <option>IRU-VICTORIA ISLAND</option>
+                            <option>ISOLO</option>
+                            <option>ITIRE-IKATE</option>
+                            <option>KOSOFE</option>
+                            <option>LAGOS-ISLAND EAST LCDA</option>
+                            <option>LAGOS-ISLAND LG</option>
+                            <option>LAGOS-MAINLAND</option>
+                            <option>LEKI LCDA</option>
+                            <option>MOSANOKUNOLA</option>
+                            <option>MUSHINLG</option>
+                            <option>ODI-OLOWO OJUWOYE LCDA</option>
+                            <option>OJO LG</option>
+                            <option>OJODU</option>
+                            <option>OJOKORO</option>
+                            <option>OLORUNDA LCDA</option>
+                            <option>ONIGBONGBO</option>
+                            <option>ORIADE LCDA</option>
+                            <option>ORILE-AGEGE LCDA</option>
+                            <option>OSHODI-ISOLO</option>
+                            <option>OTO-AWORI</option>
+                            <option>SOMOLU</option>
+                            <option>SURULERE</option>
+                            <option>YABA</option>
+
+                        </select>
+                        @*<input asp-for="LGA" id="LGA" />*@
+                        <span asp-validation-for="LGA" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Address"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <textarea asp-for="Address" id="address" cols="46" rows="3"></textarea>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="ImageUrl"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
+                        <img id="imgCapture" alt="Photo" />
+                        @*<input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />*@
+                        <img src="@Url.Content(Model.ImageUrl)" alt="" />
+                        @*<input class="form-control" id="Photo" />*@
+                        <input asp-for="Photo" class="form-control" id="Photo" type="hidden" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                </div><br /><br />
+                <h3>Next of Kin Details</h3>
+                <hr style="background-color:crimson" />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="NextofKinLastName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinLastName" class="form-control" />
+                        <span asp-validation-for="NextofKinLastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="NextofKinFirstName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinFirstName" class="form-control" />
+                        <span asp-validation-for="NextofKinFirstName" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="NextofKinPhone"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinPhone" class="form-control" />
+                        <span asp-validation-for="NextofKinPhone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="NextOfkinrelationship"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select asp-for="NextOfkinrelationship" class="form-control" asp-items="Html.GetEnumSelectList<CSBFleetManager.Entity.Relationship>()"></select>
+                        <span asp-validation-for="NextOfkinrelationship" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <h3>Employment Details</h3>
+                <hr style="background-color:crimson" />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="EmployeeTypeId"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*@Html.DropDownList("EmployeeTypeId", new SelectList(ViewBag.EmployeeType), "Select Gender", new { @class = "form-control", @id = "ddlGender" })*@
+
+                        <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
+                            @*<option selected>--- Select EmployeementType ---</option>*@
+                        </select>
+
+                        <span asp-validation-for="EmployeeTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <input asp-for="EmployeeNo" class="form-control rounded-0" readonly />
+                            @*<span class="input-group-append">
+                                    <button type="button" class="btn btn-info btn-flat">Validate ID!</button>
+                                    <button type="button" class="btn btn-info btn-flat">Get Info</button>
+                                </span>*@
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-flat" type="button" disabled>Validate ID!</button>
+                                <button class="btn btn-success btn-flat" type="button" disabled>Get ID Info</button>
+                            </div>
+                            <span asp-validation-for="EmployeeNo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="MDAId"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+
+                        <select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA " id="Ministry">
+                            @*<option selected>-----Select MDA-------</option>*@
+                        </select>
+                        <span asp-validation-for="MDAId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="Designation"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Designation" class="form-control" placeholder="Enter Designation.." />
+                        <span asp-validation-for="Designation" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="DateofFirstAppointment"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="DateofFirstAppointment" class="form-control" readonly />
+                        <span asp-validation-for="DateofFirstAppointment" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="Email"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                </div><br /><br />
+                @*<div class="form-group">
+
+                        <button type="submit" class="btn btn-rounded btn-primary float-right "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
+                        <a asp-action="index" class="btn btn-rounded btn-success float-left "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        <br />
+                        <br />
+                        <br />
+
+                    </div>*@
+                <div class="form-row">
+                    <div class="form-group col-md-6" style="text-align:right">
+                        <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Update</button>
+                    </div>
+                    @*<div class="form-group col-md-6" style="text-align:left">
+                            <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        </div>*@
+                    <div class="form-group col-md-6" style="text-align:left">
+                        @*<a asp-controller="Home" asp-action="IndexManager" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
+                        <a asp-controller="Employee" asp-action="Index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $(document).ready(() => {
+        alert(@Model.Gender);
+        $("#ddlGender").val('@Model.Gender');
+    });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Ministry").val('@Model.Ministry');
+
+        })
+        $(document).ready(function () {
+            $("#EmployeeTypeId").val('@Model.EmploymentType');
+
+        })
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#EmployeeTypeId").change(function (evt) {
+
+                //alert($("#EmployeeTypeId").val());
+                //alert($("#EmployeeTypeId option:selected").text());
+
+                var selectedText = $("#EmployeeTypeId option:selected").text();
+
+                //alert(selectedText);
+                const employeeNo = document.getElementById("EmployeeNo");
+                const getOracleButton = document.getElementById("btnOracle");
+                const OracleSurname = document.getElementById("OracleSurName");
+                const OracleFirstName = document.getElementById("OracleFirstName");
+                const OracleMiddleName = document.getElementById("OracleMiddleName");
+                const ddlOracleGender = document.getElementById("OracleGender");
+
+                if (selectedText != "Oracle Staff") {
+                    //document.getElementById("EmployeeNo").disabled = true;
+                    //document.getElementById("btnOracle").disabled = true;
+                    //document.getElementById("OracleSurName").disabled = false;
+                    //document.getElementById("OracleFirstName").disabled = false;
+                    //document.getElementById("OracleMiddleName").disabled = false;
+                    //document.getElementById("ddlOracleGender").disabled = false;
+                    getOracleButton.setAttribute('disabled', 'disabled');
+                    employeeNo.setAttribute('disabled', 'disabled');
+                    OracleSurname.removeAttribute('disabled');
+                    OracleFirstName.removeAttribute('disabled');
+                    OracleMiddleName.removeAttribute('disabled');
+                    ddlOracleGender.removeAttribute('disabled');
+
+
+                }
+                else {
+                    //document.getElementById("EmployeeNo").disabled = false;
+                    //document.getElementById("btnOracle").disabled = false;
+                    //document.getElementById("OracleSurName").disabled = true;
+                    //document.getElementById("OracleFirstName").disabled = true;
+                    //document.getElementById("OracleMiddleName").disabled = true;
+                    //document.getElementById("ddlOracleGender").disabled = true;
+
+                    employeeNo.removeAttribute('disabled');
+                    getOracleButton.removeAttribute('disabled');
+                    OracleSurname.setAttribute('disabled', 'disabled');
+                    OracleFirstName.setAttribute('disabled', 'disabled');
+                    OracleMiddleName.setAttribute('disabled', 'disabled');
+                    ddlOracleGender.setAttribute('disabled', 'disabled');
+                }
+
+            });
+
+        })
+    </script>
+
+
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+}

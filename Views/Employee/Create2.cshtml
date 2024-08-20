@@ -1,0 +1,728 @@
+﻿@model EmployeeCreateViewModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/AdminLTE/_Layout.cshtml";
+
+    string[] Gender = { "Male", "Female" };
+    var message = ViewBag.AlreadyExistingEmployee;
+}
+<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Employee List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">New Employee</li>
+                </ol>
+            </nav><br />
+            <form method="post" enctype="multipart/form-data" asp-action="Create" id="Employeefrm">
+                <h3>Basic Details From LASRRA's DB</h3>
+                <hr style="background-color:crimson" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="LASRRAID"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="input-group">
+                            <input asp-for="LASRRAID" id="txtLASRRAID" class="form-control rounded-0" placeholder="LASRRAID or LAGID" />
+
+                            <div class="input-group-append">
+                                <button class="btn-sm btn-info btn-flat" type="button" id="btnValidateLASRRAID" onclick="VerifyID()"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>
+                                <button class="btn-sm btn-success btn-flat" type="button" id="btnGetLASRRAIDInfo" onclick="ApiCallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get ID Info</i></button>
+                            </div>
+                            <span asp-validation-for="LASRRAID" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="LastName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="LastName" class="form-control" id="txtsurname" placeholder="Enter SurName.." />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="FirstName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="FirstName" class="form-control" id="txtfirst_name" placeholder="Enter First Name.." />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="MiddleName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="MiddleName" class="form-control" id="other_name" placeholder="Enter Middle Name.." />
+                        <span asp-validation-for="MiddleName" class="text-danger"></span>
+                    </div>
+
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Phone"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Phone" class="form-control" id="phone_number" placeholder="Contact Phone" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="DOB"></label>
+                    </div>
+                    <div class="form-group col-md-4" style="text-align:right">
+                        <input asp-for="DOB" id="Birthdate" class="form-control" />
+                        <span asp-validation-for="DOB" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Gender"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<select class="form-control" id="ddlGender" asp-for="Gender"}>
+                                <option selected>Select Gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>*@
+                        @Html.DropDownList("Gender", new SelectList(Gender), "Select Gender", new { @class = "form-control", @id = "ddlGender" })
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="LGA"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select class="form-control" asp-for="LGA" id="LGA">
+                            <option selected>Select LGA</option>
+                            <option>AGBADO-OKEODO</option>
+                            <option>AGBOYI-KETU</option>
+                            <option>AGEGE</option>
+                            <option>AJEROMI LGA</option>
+                            <option>ALIMOSHO LG</option>
+                            <option>AMUWO-ODOFIN</option>
+                            <option>APAPA</option>
+                            <option>APAPA-IGANMU</option>
+                            <option>AYOBO-IPAJA</option>
+                            <option>BADAGRY</option>
+                            <option>BADAGRY-WEST LCDA</option>
+                            <option>BARIGA</option>
+                            <option>COKER-AGUDA LCDA</option>
+                            <option>EGBE-IDIMU LCDA</option>
+                            <option>EJIGBO</option>
+                            <option>EPE</option>
+                            <option>EREDO</option>
+                            <option>ETI-OSA</option>
+                            <option>ETIOSA EAST</option>
+                            <option>IBA LCDA</option>
+                            <option>IBEJU-LEKKI</option>
+                            <option>IFAKOIJAIYE</option>
+                            <option>IFELODUN</option>
+                            <option>IGANDO IKOTUN</option>
+                            <option>IGBOGBO-BAIYEKU</option>
+                            <option>IJEDE</option>
+                            <option>IKEJA</option>
+                            <option>IKORODU</option>
+                            <option>IKORODU-NORTH LCDA</option>
+                            <option>IKORODU-WEST</option>
+                            <option>IKOSI-EJINRIN LCDA</option>
+                            <option>IKOSI-ISHERI</option>
+                            <option>IKOYI-OBALENDE</option>
+                            <option>IMOTA LCDA</option>
+                            <option>IRU-VICTORIA ISLAND</option>
+                            <option>ISOLO</option>
+                            <option>ITIRE-IKATE</option>
+                            <option>KOSOFE</option>
+                            <option>LAGOS-ISLAND EAST LCDA</option>
+                            <option>LAGOS-ISLAND LG</option>
+                            <option>LAGOS-MAINLAND</option>
+                            <option>LEKI LCDA</option>
+                            <option>MOSANOKUNOLA</option>
+                            <option>MUSHIN LG</option>
+                            <option>ODI-OLOWO OJUWOYE LCDA</option>
+                            <option>OJO LG</option>
+                            <option>OJODU</option>
+                            <option>OJOKORO</option>
+                            <option>OLORUNDA LCDA</option>
+                            <option>ONIGBONGBO</option>
+                            <option>ORIADE LCDA</option>
+                            <option>ORILE-AGEGE LCDA</option>
+                            <option>OSHODI-ISOLO</option>
+                            <option>OTO-AWORI</option>
+                            <option>SOMOLU</option>
+                            <option>SURULERE</option>
+                            <option>YABA</option>
+
+                        </select>
+                        @*<input asp-for="LGA" id="LGA" />*@
+                        <span asp-validation-for="LGA" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Address"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <textarea asp-for="Address" id="address" cols="50" rows="3"></textarea>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="ImageUrl"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<input typeof="file" type="HIDDEN" name="pictureUrl" id="pictureUrl">*@
+                        <img id="imgCapture" alt="Photo" />
+                        <input asp-for="ImageUrl" class="form-control" id="ImageUrl" name="PictureBase64" type="hidden" />
+                        @*<input class="form-control" id="Photo" />*@
+                        <input asp-for="Photo" class="form-control" id="Photo" type="hidden" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Signature"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="signature-container">
+                            <canvas id="sigCanvas" width="500" height="200" style="border:1px solid #000000;"></canvas>
+                            <br />
+                            <button type="button" id="startSigButton" class="btn btn-primary">Start Signature</button>
+                            <button type="button" id="clearSigButton" class="btn btn-secondary">Clear Signature</button>
+                            <input  id="SignatureData" name="SignatureData" />
+                        </div>
+                        <br />
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        @*<label asp-for="SignatureImageUrl"></label>*@
+                    </div>
+                    <div class="form-group col-md-4">
+                        <TEXTAREA asp-for="SignatureImageUrl" class="form-control" id="SignatureData" ROWS="15" COLS="45"></TEXTAREA>
+
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+
+                <h3>Next of Kin Details</h3>
+                <hr style="background-color:crimson" />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="NextofKinLastName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinLastName" class="form-control" id="NextofKinLastName" placeholder="Enter SurName.." />
+                        <span asp-validation-for="NextofKinLastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="NextofKinFirstName"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinFirstName" class="form-control" id="NextofKinFirstName" placeholder="Enter FirstName.." />
+                        <span asp-validation-for="NextofKinFirstName" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="NextofKinPhone"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="NextofKinPhone" class="form-control" placeholder="Next of kin Phone" />
+                        <span asp-validation-for="NextofKinPhone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="NextOfkinrelationship"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select asp-for="NextOfkinrelationship" class="form-control" asp-items="Html.GetEnumSelectList<CSBFleetManager.Entity.Relationship>()"></select>
+                        <span asp-validation-for="NextOfkinrelationship" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <h3>Employment Details</h3>
+                <hr style="background-color:crimson" />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="EmployeeTypeId"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        @*<input asp-for="EmploymentTypeName" class="form-control" placeholder="Select Employment Type.." />*@
+                        @*@if (ViewBag.EmployeeType != null)
+                            {
+                                <select asp-for="EmploymentType" class="form-control" asp-items="@ViewBag.EmployeeType"></select>
+                            }*@
+                        <select asp-for="EmployeeTypeId" class="form-control" id="EmployeeTypeId" name="EmployeeTypeId" asp-items="ViewBag.EmployeeType">
+                            <option selected>--- Select EmployeementType ---</option>
+                        </select>
+
+                        <span asp-validation-for="EmployeeTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group">
+                            <input asp-for="EmployeeNo" class="form-control rounded-0" id="EmployeeNo" placeholder="Enter Oracle No" />
+                            @*<span class="input-group-append">
+                                    <button type="button" class="btn btn-info btn-flat">Validate ID!</button>
+                                    <button type="button" class="btn btn-info btn-flat">Get Info</button>
+                                </span>*@
+                            <div class="input-group-append">
+                                <button class="btn btn-success btn-flat" type="button" onclick="OracleAPICallDetails()" id="btnOracle" name="btnOracle"><i class="fa fa-registered" style="margin-right:0.7em">Get Oracle Info</i></button>
+                                @*<button class="btn btn-primary btn-flat" type="button"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>*@
+
+                            </div>
+                            <span asp-validation-for="EmployeeNo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label a>Surname</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="EmployeeSurName" placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label a>First Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="EmployeeFirstName" placeholder=" " />
+                        @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label a>Middle Name</label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input class="form-control" id="EmployeeMiddleName" placeholder="" />
+                        @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
+                    </div>
+                    @*<div class="form-group col-md-2" style="text-align:right">
+                            <label a>Gender</label>
+                        </div>*@
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="MDAId"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select asp-for="MDAId" class="form-control" asp-items="ViewBag.MDA ">
+                            <option selected>-----Select MDA-------</option>
+                        </select>
+                        <span asp-validation-for="MDAId" class="text-danger"></span>
+                    </div>
+                    @*<div class="form-group col-md-4">
+                            @Html.DropDownList("Gender", new SelectList(Gender), "Select Gender", new { @class = "form-control", @id = "ddlOracleGender" })
+                        </div>*@
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="DateofFirstAppointment"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="DateofFirstAppointment" id="DateofFirstAppointment" class="form-control" />
+                        <span asp-validation-for="DateofFirstAppointment" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="DateofPresentAppointment"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="DateofPresentAppointment" id="DateofFirstAppointment" class="form-control" />
+                        <span asp-validation-for="DateofPresentAppointment" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label asp-for="Designation"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Designation" class="form-control" id="Designation" placeholder="Enter Designation.." />
+                        <span asp-validation-for="Designation" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align:right">
+                        <label asp-for="Email"></label>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input asp-for="Email" class="form-control" id="OfficialEmail" placeholder="Official Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                </div><br />
+
+                <hr style="background-color: crimson; border: 1px solid red" />
+                @*<div class="form-group">
+
+                        <button type="submit" class="btn btn-rounded btn-primary float-right "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
+                        <a asp-action="index" class="btn btn-rounded btn-success float-left "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        <br />
+                        <br />
+                        <br />
+
+                    </div>*@
+                <div class="form-row">
+                    <div class="form-group col-md-6" style="text-align:right">
+                        <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
+                    </div>
+                    <div class="form-group col-md-6" style="text-align:left">
+                        <a asp-action="index" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/Script/jquery-3.7.1.min.js"></script>
+    @section Scripts{
+
+        <script type="text/javascript">
+
+        function VerifyID() {
+
+            var ID = $("#txtLASRRAID").val()
+
+
+            /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/Employee/VerifyLASRRAId',
+                data: { LA: $("#txtLASRRAID").val() },
+                //url: '/Home/GetResidentsBasicDetails',
+                //data: { LASRRAID: $("#txtLASRRAID").val() },
+                contentType: 'application/json; charset=utf-8',
+                success: function (responseData) {
+                   // alert("VALID ID and Details returned");
+
+                    @*alert(@ViewBag.ValidationMessage);*@
+                    //alert(responseData.name6);
+                },
+                failure: function (response) {
+                    /* alert(response.responseText);*/
+                    alert("Unable to perform action");
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        </script>
+
+        <script type="text/javascript">
+            @*window.onload = function () {
+                alert("@ViewBag.ExistingStaffRecord");
+            };*@
+
+
+        function ApiCallDetails() {
+
+            var ID = $("#txtLASRRAID").val()
+
+
+            /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/Employee/GetDetailByLASRRAID',
+                data: { LA: $("#txtLASRRAID").val() },
+                //url: '/Home/GetResidentsBasicDetails',
+                //data: { LASRRAID: $("#txtLASRRAID").val() },
+                contentType: 'application/json; charset=utf-8',
+                success: function (responseData) {
+                    /*alert("VALID ID and Details returned");*/
+                    @*alert("@ViewBag.PictureString");*@
+                    //alert(response.surname);
+                    //alert(response.firstname);
+
+                    $("#txtsurname").val(responseData.surname)
+                    $("#txtfirst_name").val(responseData.firstname)
+                    $("#other_name").val(responseData.middlename )
+                    /*$("#txtfirst_name").val(response.firstname)*/
+                    $("#phone_number").val(responseData.phone )
+                    $("#address").val(responseData.address)
+                    //alert(response.gender)
+                    //alert(responseData.birtDate)
+                    $("#Birthdate").val(responseData.birtDate)
+                   /* $("#registrationDate").val(responseData.regDate)*/
+                    /*$("#txtfirst_name").val(response.regDate)*/
+                   /* $("#imgCapture").attr("src", responseData.name6);*/
+                    $("#ImageUrl").val(responseData.name6);
+                    $("#imgCapture").attr("src", $("#ImageUrl").val());
+                    if (responseData.gender =='M') {
+                        $('#ddlGender').val("Male");
+
+                    }
+                    else {
+                        $('#ddlGender').val("Female");
+                    }
+
+                    var text = responseData.name6;
+                    setTextarea(text);
+                    GetSelectedLG();
+
+
+                },
+                failure: function (response) {
+                    /* alert(response.responseText);*/
+                    alert(@ViewBag.WrongLASRRAID);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function setTextarea(text) {
+
+            document.getElementById("Photo").value = text.substring(22);
+            document.getElementById("ImageUrl").value = text.substring(22);
+
+        }
+        function GetSelectedLG() {
+
+            $("#dropdownID").change(function () {
+                alert($('option:selected', $(this)).text());
+            });
+            const select = document.getElementById("LGA");
+
+            const selectedIndex = select.selectedIndex;
+            const selectedValue = select.value;
+            const selectedText = select.options[selectedIndex].text;
+
+            document.getElementById("LGA").value = selectedText;
+        }
+        </script>
+        <script type="text/javascript">
+
+        function OracleAPICallDetails() {
+
+          /*  var ID = $("#EmployeeNo").val()*/
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                url: '/Employee/GetOracleStaffRecord',
+                data: { oracleNumber: $("#EmployeeNo").val() },
+                //url: '/Home/GetResidentsBasicDetails',
+                //data: { LASRRAID: $("#txtLASRRAID").val() },
+                contentType: 'application/json; charset=utf-8',
+                success: function (responseData) {
+                    /*alert("VALID ID and Details returned");*/
+                    @* alert("@ViewBag.PictureString");*@
+                    //alert(response.surname);
+                   // alert("Oracle details found");
+                    $("#OracleSurName").val(responseData.surname)
+                    $("#OracleFirstName").val(responseData.firstname)
+                    $("#OracleMiddleName").val(responseData.middlename)
+                    $("#OracleGender").val(responseData.gender)
+                    //alert(responseData.name8)
+                    $("#Designation").val(responseData.name6)
+                    $("#OfficialEmail").val(responseData.name7)
+                    $("#DateofFirstAppointment").val(responseData.name8)
+
+                    /*$("#txtfirst_name").val(response.firstname)*/
+                    //$("#phone_number").val(responseData.phone)
+                    //$("#address").val(responseData.address)
+                },
+
+                 failure: function (response) {
+                    /* alert(response.responseText);*/
+                    alert("Details on Oracle not found");
+                },
+                error: function (response) {
+                    alert("Error communicating to the backend");
+                }
+
+
+            });
+
+
+
+        }
+
+        </script>
+    </div>
+    <script>
+
+        var CreateEmployee = function () {
+            debugger
+            var EmployeeFormData = $("#Employeefrm").serialize();
+
+            $.ajax({
+                type: "Post",
+                url: "Employee/Creat",
+                data: EmployeeFormData,
+                success: function (response) {
+
+                    //alert(success);
+                    swal({
+                        title: "Employee Creation",
+                        text: "Employee Created Successfully",
+                        icon: "Success",
+                        buttons: true,
+                        dangerMode: false
+
+                    })
+                },
+                 failure: function (response) {
+                /* alert(response.responseText);*/
+                //alert("Details on Oracle not found");
+
+                    swal({
+                        title: "Employee Creation",
+                        text:@ViewBag.AlreadyExistingEmployee,
+                        icon: "Failure",
+                        buttons: true,
+                        dangerMode: true
+
+                    })
+                },
+                error: function (response) {
+                    alert("Error communicating to the backend");
+                }
+
+
+             })
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#EmployeeTypeId").change(function (evt) {
+
+                //alert($("#EmployeeTypeId").val());
+                //alert($("#EmployeeTypeId option:selected").text());
+
+                var selectedText = $("#EmployeeTypeId option:selected").text();
+
+                //alert(selectedText);
+                const employeeNo = document.getElementById("EmployeeNo");
+                const getOracleButton = document.getElementById("btnOracle");
+                const OracleSurname = document.getElementById("OracleSurName");
+                const OracleFirstName = document.getElementById("OracleFirstName");
+                const OracleMiddleName = document.getElementById("OracleMiddleName");
+                /*const ddlOracleGender = document.getElementById("ddlOracleGender");*/
+
+                if (selectedText != "Oracle Staff") {
+                    //document.getElementById("EmployeeNo").disabled = true;
+                    //document.getElementById("btnOracle").disabled = true;
+                    //document.getElementById("OracleSurName").disabled = false;
+                    //document.getElementById("OracleFirstName").disabled = false;
+                    //document.getElementById("OracleMiddleName").disabled = false;
+                    //document.getElementById("ddlOracleGender").disabled = false;
+                    getOracleButton.setAttribute('disabled', 'disabled');
+                    employeeNo.setAttribute('disabled', 'disabled');
+                    OracleSurname.removeAttribute('disabled');
+                    OracleFirstName.removeAttribute('disabled');
+                    OracleMiddleName.removeAttribute('disabled');
+                    ddlOracleGender.removeAttribute('disabled');
+
+
+                }
+                else {
+                    //document.getElementById("EmployeeNo").disabled = false;
+                    //document.getElementById("btnOracle").disabled = false;
+                    //document.getElementById("OracleSurName").disabled = true;
+                    //document.getElementById("OracleFirstName").disabled = true;
+                    //document.getElementById("OracleMiddleName").disabled = true;
+                    //document.getElementById("ddlOracleGender").disabled = true;
+
+                    employeeNo.removeAttribute('disabled');
+                    getOracleButton.removeAttribute('disabled');
+                    OracleSurname.setAttribute('disabled', 'disabled');
+                    OracleFirstName.setAttribute('disabled', 'disabled');
+                    OracleMiddleName.setAttribute('disabled', 'disabled');
+                    ddlOracleGender.setAttribute('disabled', 'disabled');
+                }
+
+            });
+
+        })
+
+
+
+
+    </script>
+    <script type="text/javascript">
+
+        function forceKeyPressUppercase(e) {
+            var charInput = e.keyCode;
+            if ((charInput >= 97) && (charInput <= 122)) { // lowercase
+                if (!e.ctrlKey && !e.metaKey && !e.altKey) { // no modifier key
+                    var newChar = charInput - 32;
+                    var start = e.target.selectionStart;
+                    var end = e.target.selectionEnd;
+                    e.target.value = e.target.value.substring(0, start) + String.fromCharCode(newChar) + e.target.value.substring(end);
+                    e.target.setSelectionRange(start + 1, start + 1);
+                    e.preventDefault();
+                }
+            }
+        }
+
+        document.getElementById("NextofKinFirstName").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("NextofKinLastName").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("Designation").addEventListener("keypress", forceKeyPressUppercase, false);
+        document.getElementById("txtLASRRAID").addEventListener("keypress", forceKeyPressUppercase, false);
+
+    </script>
+
+    <script type="text/javascript" src="~/lib/SigWeb/SigWebTablet.js"></script> 
+    <script>
+        var sigWeb = new SigWebTablet();
+
+        document.getElementById("startSigButton").addEventListener("click", function () {
+            sigWeb.SetTabletState(1);
+        });
+
+        document.getElementById("clearSigButton").addEventListener("click", function () {
+            sigWeb.ClearTablet();
+            document.getElementById("sigCanvas").getContext("2d").clearRect(0, 0, 500, 200);
+        });
+
+        document.getElementById("Employeefrm").addEventListener("submit", function (event) {
+            if (sigWeb.NumberOfTabletPoints() > 0) {
+                var canvas = document.getElementById("sigCanvas");
+                var context = canvas.getContext("2d");
+                sigWeb.SetImageXSize(500);
+                sigWeb.SetImageYSize(200);
+                sigWeb.SetImagePenWidth(5);
+                sigWeb.GetSigImageB64(function (imageData) {
+                    document.getElementById("SignatureData").value = imageData;
+                    // Submit the form after setting the signature data
+                    document.getElementById("Employeefrm").submit();
+                });
+                event.preventDefault(); // Prevent the form from submitting immediately
+            }
+        });
+
+        // Render the signature on canvas
+        function renderSignature() {
+            var canvas = document.getElementById("sigCanvas");
+            var context = canvas.getContext("2d");
+            sigWeb.DisplaySignature(context, 0, 0);
+        }
+
+        // Monitor the signature pad
+        setInterval(function () {
+            renderSignature();
+        }, 100);
+    </script>
+
+   
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+
+    }

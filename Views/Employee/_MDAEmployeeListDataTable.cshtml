@@ -1,8 +1,8 @@
 ﻿@model List<EmployeeIndexViewModel>
 
 <body>
-    @*<table class="table table-striped" id="tblEmployeeList" style="width:100%">*@
-    <table class="display" id="tblEmployeeList" style="width:100%">
+    @*<table class="display" id="tblEmployeeList" style="width:100%">*@
+    <table class="table table-striped" id="tblEmployeeList">
         <thead>
             <tr>
                 <th>LASRRA/LAGID</th>
@@ -37,11 +37,11 @@
                     @*<td>@item.Designation</td>*@
                     <td>@item.EmploymentTypeName</td>
                     <td>
-                        <a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">
+                        <a class="text-primary" asp-controller="Employee" asp-action="AdminEdit" asp-route-LasrraID="@item.LASRRAID">
                             <i class="fas fa-edit"></i> Edit
                         </a> |
                         @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
-                        <a class="text-success" asp-action="Detail" asp-route-LasrraID="@item.LASRRAID">
+                        <a class="text-success" asp-action="AdminDetail" asp-route-LasrraID="@item.LASRRAID">
                             <i class="fas fa-bars"></i> Detail
                         </a> |
                         <a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
@@ -82,30 +82,22 @@
 <script src="~/Script/jquery-3.7.1.min.js"></script>
 
 
-<link rel="stylesheet" href="~/DataTables/datatables.css" />
+@*<link rel="stylesheet" href="~/DataTables/datatables.css" />*@
 
 <script src="~/DataTables/datatables.js"></script>
 
 <script src="~/DataTables/DataTables-1.13.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="~/DataTables/DataTables-1.13.6/css/dataTables.jqueryui.min.css" />
 
 <script type="text/javascript">
-    //var js = jQuery.noConflict(true);
-
-    //js(document).ready(function () {
-
-    //    js("#tblEmployeeList").DataTable({
-
-    //        });
-
-    //    }
-
-
-    //));
-
     var js = jQuery.noConflict(true);
 
     js(document).ready(function () {
         js("#tblEmployeeList").DataTable({
+            "processing": true,
+            "serverside": false,
+            "filter": true,
+            "orderMulti": true
 
         });
 

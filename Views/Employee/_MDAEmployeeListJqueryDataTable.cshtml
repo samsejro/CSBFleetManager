@@ -36,10 +36,10 @@
                     @*<td>@item.Designation</td>*@
                     <td>@item.EmploymentTypeName</td>
                     <td>
-                        <a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">
+                        <a class="text-primary" asp-controller="Employee" asp-action="AdminEdit" asp-route-LasrraID="@item.LASRRAID">
                          @*<i class="fas fa-edit"></i>*@ <i class="fas fa-user-pen"></i> Edit</a> |
                         @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
-                        <a class="text-success" asp-action="Detail" asp-route-LasrraID="@item.LASRRAID">
+                        <a class="text-success" asp-action="AdminDetail" asp-route-LasrraID="@item.LASRRAID">
                             <i class="fas fa-bars"></i> Detail
                         </a> |
                         <a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">

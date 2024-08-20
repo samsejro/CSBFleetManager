@@ -21,20 +21,21 @@
                         <div class="form-group col-md-1">
                             @*<label class="control-label">Ministry</label>*@
                         </div>
-                        <div class="form-group col-md-5" style="text-align:right">
-                            <label class="control-label">Filter Output By Ministry</label>
+                        <div class="form-group col-md-3" style="text-align:right">
+                            <label class="control-label">Filter By MDA</label>
                         </div>
                         @*<select asp-for="MDAId" class="form-control" asp-items="@ViewBag.MDAList ">
                                 <option selected>-----Select MDA-------</option>
                             </select>*@
                         <div class="form-group col-md-4">
                             <select name="Ministry" id="ddMinistryFilter" class="form-control" asp-items="@ViewBag.MDAList">
-                                <option selected>-----Select MDA-------</option>
+                                <option selected>---Select MDA----</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-2" style="text-align:right">
+                        <div class="form-group col-md-4" style="text-align:left">
                             @*<button type="button" class="btn btn-rounded btn-primary" id="btnFilter"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Filter</button>*@
                             <button type="submit" class="btn btn-rounded btn-primary" id="btnFilter"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Filter</button>
+                            &nbsp<a asp-controller="Employee" asp-action="Index" class="btn btn-rounded btn-info" id="btnBackToList"><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back to List</a>
                         </div>
                         @*<div class="form-group col-md-2" style="text-align:right">
                                 <label asp-for="Designation"></label>
@@ -45,21 +46,23 @@
                             </div>*@
 
                     </div><br />
-                          <div class="col-md-12 table-responsive-md">
-                              @*<a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"><i class="fa-solid fa-user-plus"></i> New Employee</a>*@
-                              <a class="btn btn-success float-md-right" asp-action="Create"><i class="fa-solid fa-user-plus"></i> New Employee</a>
-                          </div>
+                    <div class="col-md-12 table-responsive-md">
+                        @*<a class="btn btn-xs btn-outline-success float-md-right" asp-action="Create"><i class="fa-solid fa-user-plus"></i> New Employee</a>*@
+                        <a class="btn btn-success float-md-right" asp-action="Create"><i class="fa-solid fa-user-plus"></i> New Employee</a>
+                    </div>
                 </div>
+                <br />
                 <div class="h-100 d-flex align-items-center justify-content-center" id="dvDisplayEmployeeList">
                     @*<p>I got here</p>*@
                 </div>
+
             </div>
         </div>
     </div>
 
 </div>
 
-<script src="~/lib/jquery/dist/jquery.js"></script> 
+<script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/Script/jquery-3.7.1.min.js"></script>
 
 
@@ -73,8 +76,8 @@
         /* $("#dvDisplayEmployeeList").load("/Employee/FilterByMDA?pageNumber=0&mdaID=" + AgencyId);*/
         //$("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeList?pageNumber=0&mdaID=" + AgencyId);
         //$("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeList?pageNumber=" + ViewBag.pageNumber + '&mdaID=' + ViewBag.mdaID);
-          $("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeListDataTable?mdaID=" + AgencyId);
-       
+        $("#dvDisplayEmployeeList").load("/Employee/MDAEmployeeListDataTable?mdaID=" + AgencyId);
+
 
 
     });
@@ -84,8 +87,8 @@
         var selectedIndex = $("#ddMinistryFilter").val();
         var selectedText = $("#ddMinistryFilter option:selected").text();
 
-        if (selectedText == "-----Select MDA-------") {
-            alert("No selection made yet.Make a selection and try again");
+        if (selectedText == "---Select MDA----") {
+            alert("No selection made yet.Select an MDA and try again");
             return;
         }
         else {
@@ -166,4 +169,28 @@
 
     }
 
+</script>
+<script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectMDA = document.getElementById("ddMinistryFilter");
+        const BackToListButton = document.getElementById("btnBackToList");
+
+        function toggleButton() {
+
+            if (selectMDA.selectedIndex == 0 || selectMDA.selectedText == "---Select MDA----") {
+                BackToListButton.disabled = true;
+
+            }
+            else {
+                BackToListButton.disabled = false;
+            }
+        }
+        // Initial check
+        toggleButton();
+
+        // Add event listener to the select element
+        selectMDA.addEventListener('change', toggleButton);
+
+    });
 </script>
