@@ -32,7 +32,7 @@
                     <th>Request Type</th>
                     <th>Employment Type</th>
                     @*<th class="text-warning">&nbsp;&nbsp;&nbsp;<button id="checkAll" class="btn btn-danger">Check All</button></th>
-                        <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
+                    <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
                     <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="checkAll" /></th>
                     <th>Validation(s)</th>
                     @*<th><button id="checkAll">Check All</button></th>*@
@@ -69,14 +69,14 @@
 
                             <!--<a class="text-primary" asp-controller="Employee" asp-action="Edit" asp-route-LasrraID="@item.LASRRAID">-->             @*<i class="fas fa-edit"></i>*@
                             <!--<i class="fas fa-user-pen"></i> Edit
-                            </a> |-->
+                        </a> |-->
                             @*@Html.ActionLink("Edit","Edit","Employee",  new { LasrraID=item.LASRRAID})*@
                             <a class="text-success" asp-controller="Employee" asp-action="DetailCardRequest" asp-route-LasrraID="@item.LASRRAID">
                                 <i class="fas fa-bars"></i> Detail
                             </a> |
                             @*<a class="text-danger" asp-action="Delete" asp-route-LasrraID="@item.LASRRAID">
-                                    <i class="far fa-trash-alt"></i> Delete
-                                </a>*@
+                                <i class="far fa-trash-alt"></i> Delete
+                            </a>*@
                             <i class="far fa-square-root-alt"></i>ID Request
                             <input type="checkbox" class="id-checkbox" data-employee-id="@item.LASRRAID" />
                             @*<input type="checkbox" class="id-checkbox" asp-route-LasrraID="@item.LASRRAID" />*@
@@ -88,20 +88,20 @@
             </tbody>
         </table>
         @*<th class="text-warning">&nbsp;&nbsp;&nbsp;<button id="checkAll" class="btn btn-danger">Check All</button></th>
-            <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
-        <div class="form-row">
-            <div class="form-group col-md-8">
+        <th class="text-warning">&nbsp;<button id="uncheckAllButton" class="btn btn-danger">Uncheck All</button></th>*@
+    <div class="form-row">
+        <div class="form-group col-md-8">
 
-            </div>
-            <div class="form-group col-md-2">
-                <button id="checkAllButton" class="btn btn-danger">Check All</button>
-                @*<button id="uncheckAllButton" class="btn btn-primary">Uncheck All</button>*@
-            </div>
-            <div class="form-group col-md-2">
-                @*<button id="checkAllButton" class="btn btn-danger">Check All</button>*@
-                <button id="uncheckAllButton" class="btn btn-primary">Uncheck All</button>
-            </div>
         </div>
+        <div class="form-group col-md-2">
+            <button id="checkAllButton" class="btn btn-danger">Check All</button>
+            @*<button id="uncheckAllButton" class="btn btn-primary">Uncheck All</button>*@
+        </div>
+        <div class="form-group col-md-2">
+            @*<button id="checkAllButton" class="btn btn-danger">Check All</button>*@
+            <button id="uncheckAllButton" class="btn btn-primary">Uncheck All</button>
+        </div>
+    </div>
 
         <br />
         <br />
@@ -157,78 +157,83 @@
 </script>
 <script>
     $(document).ready(function () {
-        $('#submitRequest').on('click', function () {
-            var selectedEmployees = [];
-            var validSelection = true;
+            // Initialize the DataTable
+            //$('#employeeTable').DataTable();
 
-            $('.id-checkbox:checked').each(function () {
-                var employeeId = $(this).data('employee-id');
-                var action = $(this).closest('tr').find('#RequesttypeCode').val();
-                var employeeNo = $(this).closest('tr').find('#EmployeeNo').val();
-                var lagId = $(this).closest('tr').find('#LAGID').val();
-                var mdaId = $(this).closest('tr').find('#MDAId').val();
+            // Handle the save button click
+            $('#submitRequest').on('click', function () {
+                var selectedEmployees = [];
+                var validSelection = true;
 
-                if (action === "0") {
-                    validSelection = false;
-                    alert("Please select a valid action for Employee ID: " + employeeId);
-                    return false;
+                // Loop through all checkboxes that are checked
+                $('.id-checkbox:checked').each(function () {
+                    var employeeId = $(this).data('employee-id');
+                    var action = $(this).closest('tr').find('#RequesttypeCode').val();
+                    //var employeeNo = $("#EmployeeNo").val();
+                    var employeeNo = $(this).closest('tr').find('#EmployeeNo').val();
+                    //var lagId = $("#LAGID").val();
+                    var lagId = $(this).closest('tr').find('#LAGID').val();
+                    var mdaId = $(this).closest('tr').find('#MDAId').val();
+
+
+                    // Check if an action other than "Select Action" is selected
+                    if (action === "0") {
+                        validSelection = false;
+                        alert("Please select a valid action for Employee ID: " + employeeId);
+                        return false; // Stop further processing in case of an invalid selection
+                    }
+
+                    // Build the employee object with ID and selected action
+                    selectedEmployees.push({
+                        LASRRAID: employeeId,
+                        CardRequestType: action,
+                        EmployeeNo: employeeNo,
+                        LAGID: lagId,
+                        MDAId: mdaId
+                    });
+                   
+                });
+                //alert(selectedEmployees.length);
+                //alert(JSON.stringify(selectedEmployees));
+
+                // Prevent submission if no valid selection
+                if (!validSelection || selectedEmployees.length === 0) {
+                    if (selectedEmployees.length === 0) {
+                        alert("No employees selected.");
+                    }
+                    return;
                 }
+                console.log(selectedEmployees);
 
-                selectedEmployees.push({
-                    LASRRAID: employeeId,
-                    CardRequestType: action,
-                    EmployeeNo: employeeNo,
-                    LAGID: lagId,
-                    MDAId: mdaId
+                // Send the data to the controller via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("MDAIndexJQueryCardRequestDataTable", "Employee")',
+                   /* url: "Employee/MDAIndexJQueryCardRequestDataTable",*/
+                    data: JSON.stringify(selectedEmployees),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Selected records have been saved successfully.");
+                           
+                        } else {
+                            alert("Error saving records.");
+                        }
+                    },
+                    error: function (response) {
+                        //alert(JSON.stringify(selectedEmployees));
+                        alert("Error occurred during request.");
+                        
+
+                    }
                 });
             });
-
-            if (!validSelection || selectedEmployees.length === 0) {
-                if (selectedEmployees.length === 0) {
-                    alert("No employees selected.");
-                }
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("MDAIndexJQueryCardRequestDataTable", "Employee")',
-                data: JSON.stringify(selectedEmployees),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: {
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                success: function (response) {
-                    if (response.success) {
-                        if (response.duplicates && response.duplicates.length > 0) {
-                            // Format duplicates into readable list
-                            var duplicateRecords = response.duplicates.map(function (item) {
-                                return item.LASRRAID + " - " + item.EmployeeNo;
-                            }).join(", ");
-                            alert(response.message + "\n\nDuplicates: " + duplicateRecords);
-                        } else {
-                            alert(response.message);
-                        }
-                    } else {
-                        if (response.duplicates && response.duplicates.length > 0) {
-                            var duplicateRecords = response.duplicates.map(function (item) {
-                                return item.LASRRAID + " - " + item.EmployeeNo;
-                            }).join(", ");
-                            alert(response.message + "\n\nDuplicates: " + duplicateRecords);
-                        } else {
-                            alert("Error: " + response.message);
-                        }
-                    }
-                },
-                error: function () {
-                    alert("An unexpected error occurred during request.");
-                }
-            });
         });
-    });
 </script>
-
 <script type="text/javascript">
 
     var CreateIDRequest = function () {

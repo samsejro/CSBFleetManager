@@ -6,18 +6,18 @@
     string[] Gender = { "Male", "Female" };
     var message = ViewBag.AlreadyExistingEmployee;
 }
-
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a asp-controller="Home" asp-action="IndexManager">Home</a></li>
+                    @*<li class="breadcrumb-item"><a asp-action="MDAIndex">Employee List</a></li>*@
                     <li class="breadcrumb-item"><a asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)">Employee List</a></li>
                     <li class="breadcrumb-item active" aria-current="page">New Employee</li>
                 </ol>
             </nav><br />
-            <form method="post" enctype="multipart/form-data" asp-action="CreatMDAEmployee" id="Employeefrm">
+            <form method="post" enctype="multipart/form-data" asp-action="CreatMDAEmployee " id="MDAEmployeefrm" name="MDAEmployeefrm">
                 <h3>Basic Details From LASRRA's DB</h3>
                 <hr style="background-color:crimson" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -40,7 +40,7 @@
 
                             <div class="input-group-append">
                                 <button class="btn-sm btn-info btn-flat" type="button" id="btnValidateLASRRAID" onclick="VerifyID()"><i class="fa fa-search-plus" style="margin-right:0.7em">Validate ID!</i></button>
-                                <button class="btn-sm btn-success btn-flat" type="button" id="btnGetLASRRAIDInfo" onclick="ApiCallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get Details</i></button>
+                                <button class="btn-sm btn-success btn-flat" type="button" id="btnGetLASRRAIDInfo" onclick="ApiCallDetails()"><i class="fa fa-registered" style="margin-right:0.7em">Get ID Info</i></button>
                             </div>
                             <span asp-validation-for="LASRRAID" class="text-danger"></span>
                         </div>
@@ -49,7 +49,7 @@
                         <label asp-for="LastName"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="LastName" class="form-control" id="txtsurname"   readonly/>
+                        <input asp-for="LastName" class="form-control" id="txtsurname" placeholder="Enter SurName.." />
                         <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
 
@@ -59,14 +59,14 @@
                         <label asp-for="FirstName"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="FirstName" class="form-control" id="txtfirst_name" readonly />
+                        <input asp-for="FirstName" class="form-control" id="txtfirst_name" placeholder="Enter First Name.." />
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="MiddleName"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="MiddleName" class="form-control" id="other_name" readonly />
+                        <input asp-for="MiddleName" class="form-control" id="other_name" placeholder="Enter Middle Name.." />
                         <span asp-validation-for="MiddleName" class="text-danger"></span>
                     </div>
 
@@ -77,14 +77,14 @@
                         <label asp-for="Phone"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="Phone" class="form-control" id="phone_number" readonly />
+                        <input asp-for="Phone" class="form-control" id="phone_number" placeholder="Contact Phone" />
                         <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="DOB"></label>
                     </div>
                     <div class="form-group col-md-4" style="text-align:right">
-                        <input asp-for="DOB" id="Birthdate" class="form-control" readonly />
+                        <input asp-for="DOB" id="Birthdate" class="form-control" />
                         <span asp-validation-for="DOB" class="text-danger"></span>
                     </div>
 
@@ -153,7 +153,7 @@
                             <option>LAGOS-MAINLAND</option>
                             <option>LEKI LCDA</option>
                             <option>MOSANOKUNOLA</option>
-                            <option>MUSHIN LG</option>
+                            <option>MUSHINLG</option>
                             <option>ODI-OLOWO OJUWOYE LCDA</option>
                             <option>OJO LG</option>
                             <option>OJODU</option>
@@ -179,7 +179,7 @@
                         <label asp-for="Address"></label>
                     </div>
                     <div class="form-group col-md-4">
-                        <textarea asp-for="Address" id="address" cols="50" rows="3" readonly></textarea>
+                        <textarea asp-for="Address" id="address" cols="50" rows="3"></textarea>
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label asp-for="ImageUrl"></label>
@@ -194,7 +194,6 @@
                     </div>
 
                 </div><br />
-
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label asp-for="Signature"></label>
@@ -249,7 +248,6 @@
                     </div>
 
                 </div><br />
-
                 <h3>Next of Kin Details</h3>
                 <hr style="background-color:crimson" />
                 <div class="form-row">
@@ -326,14 +324,14 @@
                         <label a>Surname</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="EmpSurname" class="form-control" id="EmpSurname" placeholder="" />
+                        <input class="form-control" id="EmployeeSurName" placeholder="" />
                         @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
                     </div>
                     <div class="form-group col-md-2" style="text-align:right">
                         <label a>First Name</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="EmpFirstname" class="form-control" id="EmpFirstname" placeholder=" " />
+                        <input class="form-control" id="EmployeeFirstName" placeholder=" " />
                         @*<span asp-validation-for="NextofKinFirstName" class="text-danger"></span>*@
                     </div>
 
@@ -343,7 +341,7 @@
                         <label a>Middle Name</label>
                     </div>
                     <div class="form-group col-md-4">
-                        <input asp-for="EmpMiddleName" class="form-control" id="EmpMiddleName" placeholder="" />
+                        <input class="form-control" id="EmployeeMiddleName" placeholder="" />
                         @*<span asp-validation-for="NextofKinLastName" class="text-danger"></span>*@
                     </div>
                     @*<div class="form-group col-md-2" style="text-align:right">
@@ -397,15 +395,27 @@
                     </div>
 
                 </div><br />
-
                 <hr style="background-color: crimson; border: 1px solid red" />
+                @*<div class="form-group">
+
+                        <button type="submit" class="btn btn-rounded btn-primary float-right "><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
+                        <a asp-action="index" class="btn btn-rounded btn-success float-left "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+                        <br />
+                        <br />
+                        <br />
+
+                    </div>*@
                 <div class="form-row">
                     <div class="form-group col-md-6" style="text-align:right">
+                        @*<button type="button" class="btn btn-rounded btn-primary" onclick="CreateEmployee()"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>*@
                         <button type="submit" class="btn btn-rounded btn-primary"><i class="fas fa-plus-square" style="margin-right:0.7em"></i>Save</button>
                     </div>
                     <div class="form-group col-md-6" style="text-align:left">
+                        @*<a asp-controller="Home" asp-action="IndexManager" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>*@
                         <a asp-controller="Employee" asp-action="MDAIndexJQueryDataTable" asp-route-mdaID="@(User.FindFirst("MDAId").Value)" class="btn btn-rounded btn-success "><i class="fas fa-caret-square-left" style="margin-right:0.7em"></i>Back</a>
+
                     </div>
+
 
                 </div>
 
@@ -413,41 +423,43 @@
         </div>
 
     </div>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/Script/jquery-3.7.1.min.js"></script>
+</div>
+ <script src="~/lib/jquery/dist/jquery.js"></script>
+ <script src="~/Script/jquery-3.7.1.min.js"></script>
     @section Scripts{
+
 
         <script type="text/javascript">
 
-        function VerifyID() {
+            function VerifyID() {
 
-            var ID = $("#txtLASRRAID").val()
+                var ID = $("#txtLASRRAID").val()
 
 
-            /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
-            $.ajax({
-                type: 'GET',
-                dataType: 'json',
-                url: '/Employee/VerifyLASRRAId',
-                data: { LA: $("#txtLASRRAID").val() },
-                //url: '/Home/GetResidentsBasicDetails',
-                //data: { LASRRAID: $("#txtLASRRAID").val() },
-                contentType: 'application/json; charset=utf-8',
-                success: function (responseData) {
-                   // alert("VALID ID and Details returned");
+                /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '/Employee/VerifyLASRRAId',
+                    data: { LA: $("#txtLASRRAID").val() },
+                    //url: '/Home/GetResidentsBasicDetails',
+                    //data: { LASRRAID: $("#txtLASRRAID").val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (responseData) {
+                       // alert("VALID ID and Details returned");
 
-                    @*alert(@ViewBag.ValidationMessage);*@
-                    //alert(responseData.name6);
-                },
-                failure: function (response) {
-                    /* alert(response.responseText);*/
-                    alert("Unable to perform action");
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
+                        @*alert(@ViewBag.ValidationMessage);*@
+                        alert(responseData.name6);
+                    },
+                    failure: function (response) {
+                        /* alert(response.responseText);*/
+                        alert("Unable to perform action");
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
         </script>
 
         <script type="text/javascript">
@@ -456,140 +468,140 @@
             };*@
 
 
-        function ApiCallDetails() {
+            function ApiCallDetails() {
 
-            var ID = $("#txtLASRRAID").val().trim();
+                var ID = $("#txtLASRRAID").val()
 
-            $('#loading').show();
-            /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
-            $.ajax({
-                type: 'GET',
-                dataType: 'json',
-                url: '/Employee/GetDetailByLASRRAID',
-                data: { LA: $("#txtLASRRAID").val() },
-                //url: '/Home/GetResidentsBasicDetails',
-                //data: { LASRRAID: $("#txtLASRRAID").val() },
-                contentType: 'application/json; charset=utf-8',
-                success: function (responseData) {
-                    /*alert("VALID ID and Details returned");*/
-                    @*alert("@ViewBag.PictureString");*@
-                    //alert(response.surname);
-                    //alert(response.firstname);
-                    $('#loading').hide();
+                $('#loading').show();
 
-                    $("#txtsurname").val(responseData.surname)
-                    $("#txtfirst_name").val(responseData.firstname)
-                    $("#other_name").val(responseData.middlename )
-                    /*$("#txtfirst_name").val(response.firstname)*/
-                    $("#phone_number").val(responseData.phone )
-                    $("#address").val(responseData.address)
-                    //alert(response.gender)
-                    //alert(responseData.birtDate)
-                    $("#Birthdate").val(responseData.birtDate)
-                   /* $("#registrationDate").val(responseData.regDate)*/
-                    /*$("#txtfirst_name").val(response.regDate)*/
-                   /* $("#imgCapture").attr("src", responseData.name6);*/
-                    $("#ImageUrl").val(responseData.name6);
-                    $("#imgCapture").attr("src", $("#ImageUrl").val());
-                    if (responseData.gender =='M') {
-                        $('#ddlGender').val("Male");
+                /*var endpointUrl = '/Home/GetDetailsOnLASRRAId?LAGID=' + ID.toString();*/
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '/Employee/GetDetailByLASRRAID',
+                    data: { LA: $("#txtLASRRAID").val().trim() },
+                    //url: '/Home/GetResidentsBasicDetails',
+                    //data: { LASRRAID: $("#txtLASRRAID").val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (responseData) {
+                        /*alert("VALID ID and Details returned");*/
+                        @*alert("@ViewBag.PictureString");*@
+                        //alert(response.surname);
+                        //alert(response.firstname);
+                        $('#loading').hide();
+                        $("#txtsurname").val(responseData.surname)
+                        $("#txtfirst_name").val(responseData.firstname)
+                        $("#other_name").val(responseData.middlename )
+                        /*$("#txtfirst_name").val(response.firstname)*/
+                        $("#phone_number").val(responseData.phone )
+                        $("#address").val(responseData.address)
+                        //alert(response.gender)
+                        //alert(responseData.birtDate)
+                        $("#Birthdate").val(responseData.birtDate)
+                       /* $("#registrationDate").val(responseData.regDate)*/
+                        /*$("#txtfirst_name").val(response.regDate)*/
+                       /* $("#imgCapture").attr("src", responseData.name6);*/
+                        $("#ImageUrl").val(responseData.name6);
+                        $("#imgCapture").attr("src", $("#ImageUrl").val());
+                        if (responseData.gender =='M') {
+                            $('#ddlGender').val("Male");
 
+                        }
+                        else {
+                            $('#ddlGender').val("Female");
+                        }
+
+                        var text = responseData.name6;
+                        setTextarea(text);
+                        GetSelectedLG();
+
+
+                    },
+                    failure: function (response) {
+                        /* alert(response.responseText);*/
+                        $('#loading').hide();
+                        alert(@ViewBag.WrongLASRRAID);
+                    },
+                    error: function (response) {
+                        $('#loading').hide();
+                        alert(response.responseText);
                     }
-                    else {
-                        $('#ddlGender').val("Female");
-                    }
+                });
+            }
+            function setTextarea(text) {
 
-                    var text = responseData.name6;
-                    setTextarea(text);
-                    GetSelectedLG();
+                document.getElementById("Photo").value = text.substring(22);
+                document.getElementById("ImageUrl").value = text.substring(22);
 
+            }
+            function GetSelectedLG() {
 
-                },
-                failure: function (response) {
-                    /* alert(response.responseText);*/
-                    $('#loading').hide();
-                    alert(@ViewBag.WrongLASRRAID);
-                },
-                error: function (response) {
-                    $('#loading').hide();
-                    alert(response.responseText);
-                }
-            });
-        }
-        function setTextarea(text) {
+                $("#dropdownID").change(function () {
+                    //alert($('option:selected', $(this)).text());
+                });
+                const select = document.getElementById("LGA");
 
-            document.getElementById("Photo").value = text.substring(22);
-            document.getElementById("ImageUrl").value = text.substring(22);
+                const selectedIndex = select.selectedIndex;
+                const selectedValue = select.value;
+                const selectedText = select.options[selectedIndex].text;
 
-        }
-        function GetSelectedLG() {
-
-            $("#dropdownID").change(function () {
-                alert($('option:selected', $(this)).text());
-            });
-            const select = document.getElementById("LGA");
-
-            const selectedIndex = select.selectedIndex;
-            const selectedValue = select.value;
-            const selectedText = select.options[selectedIndex].text;
-
-            document.getElementById("LGA").value = selectedText;
-        }
+                document.getElementById("LGA").value = selectedText;
+            }
         </script>
         <script type="text/javascript">
 
-        function OracleAPICallDetails() {
+            function OracleAPICallDetails() {
 
-          /*  var ID = $("#EmployeeNo").val()*/
+              /*  var ID = $("#EmployeeNo").val()*/
 
-            $.ajax({
-                type: 'GET',
-                dataType: 'json',
-                url: '/Employee/GetOracleStaffRecord',
-                data: { oracleNumber: $("#EmployeeNo").val() },
-                //url: '/Home/GetResidentsBasicDetails',
-                //data: { LASRRAID: $("#txtLASRRAID").val() },
-                contentType: 'application/json; charset=utf-8',
-                success: function (responseData) {
-                    /*alert("VALID ID and Details returned");*/
-                    @* alert("@ViewBag.PictureString");*@
-                    //alert(response.surname);
-                   // alert("Oracle details found");
-                    $("#EmpSurname").val(responseData.surname)
-                    $("#EmpFirstname").val(responseData.firstname)
-                    $("#EmpMiddleName").val(responseData.middlename)
-                   /* $("#OracleGender").val(responseData.gender)*/
-                    //alert(responseData.name8)
-                    $("#Designation").val(responseData.name6)
-                    $("#OfficialEmail").val(responseData.name7)
-                    $("#DateofFirstAppointment").val(responseData.name8)
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: '/Employee/GetOracleStaffRecord',
+                    data: { oracleNumber: $("#EmployeeNo").val().trim() },
+                    //url: '/Home/GetResidentsBasicDetails',
+                    //data: { LASRRAID: $("#txtLASRRAID").val() },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (responseData) {
+                        /*alert("VALID ID and Details returned");*/
+                        @* alert("@ViewBag.PictureString");*@
+                        //alert(response.surname);
+                       // alert("Oracle details found");
+                        $("#EmployeeSurName").val(responseData.surname)
+                        $("#EmployeeFirstName").val(responseData.firstname)
+                        $("#EmployeeMiddleName").val(responseData.middlename)
+                        /* $("#OracleGender").val(responseData.gender)*/
+                        //alert(responseData.name8)
+                        $("#Designation").val(responseData.name6)
+                        $("#OfficialEmail").val(responseData.name7)
+                        $("#DateofFirstAppointment").val(responseData.name8)
 
-                    //alert('I got here');
-                    /*$("#txtfirst_name").val(response.firstname)*/
-                    //$("#phone_number").val(responseData.phone)
-                    //$("#address").val(responseData.address)
-                },
+                        /*$("#txtfirst_name").val(response.firstname)*/
+                        //$("#phone_number").val(responseData.phone)
+                        //$("#address").val(responseData.address)
+                    },
 
-                 failure: function (response) {
-                    /* alert(response.responseText);*/
-                    alert("Details on Oracle not found");
-                },
-                error: function (response) {
-                    alert("Error communicating to the backend");
-                }
+                    failure: function (response) {
+                        /* alert(response.responseText);*/
+                        alert("Details on Oracle not found");
+                    },
+                    error: function (response) {
+                        alert("Error communicating to the backend");
+                    }
 
 
-            });
+                });
 
-        }
+
+
+            }
 
         </script>
-    </div>
-    <script>
+        <script type="text/javascript">
 
-        var CreateEmployee = function () {
-            debugger
-            var EmployeeFormData = $("#Employeefrm").serialize();
+        function CreateEmployee() {
+             debugger
+            var EmployeeFormData = $("#MDAEmployeefrm").serialize();
 
             $.ajax({
                 type: "Post",
@@ -597,37 +609,41 @@
                 data: EmployeeFormData,
                 success: function (response) {
 
-                    //alert(success);
-                    swal({
-                        title: "Employee Creation",
-                        text: "Employee Created Successfully",
-                        icon: "Success",
-                        buttons: true,
-                        dangerMode: false
+                    alert("Employee Created Successfully");
 
-                    })
+                    //swal({
+                    //    title: "Employee Creation",
+                    //    text: "Employee Created Successfully",
+                    //    icon: "Success",
+                    //    buttons: true,
+                    //    dangerMode: false
+
+                    //})
                 },
-                 failure: function (response) {
-                /* alert(response.responseText);*/
-                //alert("Details on Oracle not found");
+                failure: function (response) {
+                    /* alert(response.responseText);*/
+                    alert(@ViewBag.AlreadyExistingEmployee,);
 
-                    swal({
+                    @*swal({
                         title: "Employee Creation",
                         text:@ViewBag.AlreadyExistingEmployee,
                         icon: "Failure",
                         buttons: true,
                         dangerMode: true
 
-                    })
+                    })*@
                 },
                 error: function (response) {
                     alert("Error communicating to the backend");
                 }
 
+            })
 
-             })
         }
-    </script>
+    
+        </script>
+    
+
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -642,9 +658,9 @@
                 //alert(selectedText);
                 const employeeNo = document.getElementById("EmployeeNo");
                 const getOracleButton = document.getElementById("btnOracle");
-                const OracleSurname = document.getElementById("EmpSurname");
-                const OracleFirstName = document.getElementById("EmpFirstname");
-                const OracleMiddleName = document.getElementById("EmpMiddleName");
+                const OracleSurname = document.getElementById("EmployeeSurName");
+                const OracleFirstName = document.getElementById("EmployeeFirstName");
+                const OracleMiddleName = document.getElementById("EmployeeMiddleName");
                 /*const ddlOracleGender = document.getElementById("ddlOracleGender");*/
 
                 if (selectedText != "Oracle Staff") {
@@ -683,9 +699,6 @@
 
         })
 
-
-
-
     </script>
     <script type="text/javascript">
 
@@ -709,7 +722,6 @@
         document.getElementById("txtLASRRAID").addEventListener("keypress", forceKeyPressUppercase, false);
 
     </script>
-
     <script type="text/javascript" src="~/lib/SigWeb/SigWebTablet.js"></script> >
     <script type="text/javascript">
         var tmr;
@@ -864,8 +876,6 @@
                 //this returns the signature in Topaz's own format, with biometric information
                 /*alert("i am here");*/
 
-
-
                 //RETURN BMP BYTE ARRAY CONVERTED TO BASE64 STRING
                 SetImageXSize(500);
                 SetImageYSize(100);
@@ -895,8 +905,6 @@
                 //this returns the signature in Topaz's own format, with biometric information
                 /*alert("i am here");*/
 
-
-
                 //RETURN BMP BYTE ARRAY CONVERTED TO BASE64 STRING
                 SetImageXSize(500);
                 SetImageYSize(100);
@@ -918,9 +926,8 @@
             Actualsignature.value = str;
 
             //document.getElementById("sigImageData").value = str;
-
             setImageFromBase64(str, "SigimgCapture");
-            //alert(sigInput.value)
+            /* alert(str)*/
         }
 
         function endDemo() {
@@ -935,13 +942,11 @@
                 endDemo();
             }
         }
-
         //my function that sets the Signature image elemet
         function setImageFromBase64(base64String, imgElementId) {
             // Check if the base64String is not empty or null
             if (base64String && base64String.trim() != "") {
                 // Get the image element by its ID
-                alert("Signature Captured Successfully");
                 var imgElement = document.getElementById(imgElementId);
 
                 if (imgElement) {
@@ -972,4 +977,4 @@
     }
 
 
-    }
+  }

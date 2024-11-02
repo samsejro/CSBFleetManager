@@ -32,8 +32,8 @@ namespace CSBFleetManager.Controllers
         private readonly IMDAService _mdaService;
         private readonly IEmployeeTypeService _employeeTypeService;
         private readonly IValidationService _ivalidationService;
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IGetDetailsOnLASRRAIdService _getDetailsOnLASRRAIdService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IGetDetailsOnLASRRAIdService _getDetailsOnLASRRAIdService;
         private readonly IGetDetailsOnOracleNumberService _getDetailsOnOracleNumberService;
         private readonly IRegistrationStatistics _getRegistrationStatistics;
         private readonly IPrintReasonService _printReasonServices;
@@ -47,8 +47,8 @@ namespace CSBFleetManager.Controllers
         private readonly ApplicationDbContext _context;
         public EmployeeController(IEmployeeService employeeService, IEmployeeTypeService employeeTypeService,
             IMDAService mDAService, IValidationService validationService, UserManager<ApplicationUser> userManager,
-            IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService,IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,
-            IRegistrationStatistics getRegistrationStatistics,IPrintReasonService printReasonServices, ICardRequestService cardRequestService, IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
+            IGetDetailsOnLASRRAIdService getDetailsOnLASRRAIdService, IGetDetailsOnOracleNumberService getDetailsOnOracleNumberService,
+            IRegistrationStatistics getRegistrationStatistics, IPrintReasonService printReasonServices, ICardRequestService cardRequestService, IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
         {
             _employeeService = employeeService;
             _mdaService = mDAService;
@@ -56,13 +56,13 @@ namespace CSBFleetManager.Controllers
             _hostingEnvironment = hostingEnvironment;
             _ivalidationService = validationService;
             _userManager = userManager;
-			_getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
+            _getDetailsOnLASRRAIdService = getDetailsOnLASRRAIdService;
             _getDetailsOnOracleNumberService = getDetailsOnOracleNumberService;
             _getRegistrationStatistics = getRegistrationStatistics;
             _printReasonServices = printReasonServices;
             _cardRequestService = cardRequestService;
             context = _context;
-            
+
         }
         public static Image ResizeImage(Image image, Size size, bool preserveAspectRatio = true)
         {
@@ -112,7 +112,7 @@ namespace CSBFleetManager.Controllers
         //[Authorize(Roles = "SuperAdmin")]
         //[Authorize(Roles = "Admin")]
         //[Authorize]
-        public ActionResult Index(int pageNumber=0)
+        public ActionResult Index(int pageNumber = 0)
         {
             ////int TotalReg = 0;
             ////int TotalRegMale = 0;
@@ -189,7 +189,7 @@ namespace CSBFleetManager.Controllers
 
             int pageSize = 4;
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
-            return PartialView("_EmployeeListByMDA.cshtml", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber , pageSize));
+            return PartialView("_EmployeeListByMDA.cshtml", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
             //return View();
 
         }
@@ -208,7 +208,7 @@ namespace CSBFleetManager.Controllers
 
             ViewBag.TotalRegMale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Male", mdaID);
 
-            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Female",mdaID);
+            ViewBag.TotalRegeFemale = _getRegistrationStatistics.GetTotaRegistrationByGenderMDA("Female", mdaID);
 
             ViewBag.TotalRegToday = _getRegistrationStatistics.GetTotaRegistrationTodayByMDA(mdaID);
 
@@ -333,41 +333,103 @@ namespace CSBFleetManager.Controllers
         public async Task<ActionResult> MDAIndexJQueryCardRequestDataTable([FromBody] List<EmployeeCardRequestSubmissionVM> validSelections)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (validSelections != null && validSelections.Count > 0)
+            List<string> LASRRAIDs = validSelections.Select(cardRequest => cardRequest.LASRRAID).ToList();
+
+            if (LASRRAIDs.Count == 0)
             {
-                //return Json(new { success = false, message = "No employees selected." });
+                return Json(new { success = false, message = "No employees selected." });
+            }
+
+            try
+            {
+                List<CardRequest> existingRequests = _cardRequestService.GetExistingRequest(LASRRAIDs);
+
+                if (existingRequests != null && existingRequests.Count > 0)
+                {
+                    // Identify duplicates based on LASRRAID and prepare details for response
+                    var duplicateInfo = existingRequests
+                        .Select(r => new { LASRRAID = r.LASRRAID, EmployeeNo = r.EmployeeNo })
+                        .ToList();
+
+                    // Exclude duplicates from validSelections
+                    validSelections = validSelections
+                        .Where(vs => !existingRequests.Any(er => er.LASRRAID == vs.LASRRAID))
+                        .ToList();
+
+                    // Case 1: All records are duplicates; return message with duplicates only
+                    if (validSelections.Count == 0)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "All selected records are duplicates.",
+                            duplicates = duplicateInfo
+                        });
+                    }
+
+                    // Case 2: Some records are duplicates; save only non-duplicates
+                    foreach (var cardRequest in validSelections)
+                    {
+                        var request = new CardRequest()
+                        {
+                            LASRRAID = cardRequest.LASRRAID,
+                            PrintReasonId = cardRequest.CardRequestType,
+                            EmployeeNo = cardRequest.EmployeeNo,
+                            LAGID = cardRequest.LAGID,
+                            RequestDate = DateTime.Now.Date,
+                            UserName = user.UserName,
+                            MDAId = user.MDAId,
+                            CurrentStatus = "Request"
+                        };
+
+                        await _cardRequestService.CreateAsync(request);
+                    }
+                    // Return success with partial save message and duplicate info
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Some records were saved successfully; duplicates were skipped.",
+                        duplicates = duplicateInfo
+                    });
+                }
+
+                // Case 3: No duplicates, save all records
                 foreach (var cardRequest in validSelections)
                 {
                     var request = new CardRequest()
                     {
                         LASRRAID = cardRequest.LASRRAID,
-                        LAGID = cardRequest.LAGID,
-                        EmployeeNo = cardRequest.EmployeeNo,
                         PrintReasonId = cardRequest.CardRequestType,
+                        EmployeeNo = cardRequest.EmployeeNo,
+                        LAGID = cardRequest.LAGID,
                         RequestDate = DateTime.Now.Date,
                         UserName = user.UserName,
-                        MDAId = cardRequest.MDAId,
+                        MDAId = user.MDAId,
                         CurrentStatus = "Request"
-
-
-
                     };
+
                     await _cardRequestService.CreateAsync(request);
-                    return Ok(new { success = true, message = "Data inserted successfully." });
                 }
+
+                return Json(new { success = true, message = "All records saved successfully." });
             }
-            return BadRequest(new { success = false, message = "No valid selection found." });
-          
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
         }
 
-            [HttpGet]
+
+
+
+        [HttpGet]
         public IActionResult FilterByMDA(int pageNumber, string mdaID)
         {
-            var employees =new List<EmployeeIndexViewModel>();
+            var employees = new List<EmployeeIndexViewModel>();
 
             if (!string.IsNullOrEmpty(mdaID))
             {
-                 employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
+                employees = _employeeService.GetAllForMDAIndexView(mdaID).Select(employee => new EmployeeIndexViewModel
                 {
                     LASRRAID = employee.LASRRAID,
                     FullName = employee.FullName,
@@ -387,7 +449,7 @@ namespace CSBFleetManager.Controllers
             }
             else
             {
-                 employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
+                employees = _employeeService.GetAllForIndexView().Select(employee => new EmployeeIndexViewModel
                 {
                     LASRRAID = employee.LASRRAID,
                     FullName = employee.FullName,
@@ -407,18 +469,18 @@ namespace CSBFleetManager.Controllers
 
             }
 
-           // _testpartial.cshtml
+            // _testpartial.cshtml
 
             int pageSize = 8;
             //return View(EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber ?? 1, pageSize));
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
-            return PartialView("_EmployeeListByMDA", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber , pageSize));
+            return PartialView("_EmployeeListByMDA", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
             //return View();
-            
+
             //return PartialView("@~/Views/Employee/_testpartial.cshtml");
         }
-        
-        
+
+
         public PartialViewResult MDAEmployeeList(int pageNumber, string mdaID)
         {
             var employees = new List<EmployeeIndexViewModel>();
@@ -527,7 +589,7 @@ namespace CSBFleetManager.Controllers
             //ViewBag.pageNumber = pageNumber;
             ViewBag.mdaID = mdaID;
             //return PartialView("_MDAEmployeeList", EmployeeListPagination<EmployeeIndexViewModel>.Create(employees, pageNumber, pageSize));
-            return PartialView("_MDAEmployeeListJqueryDataTable",employees);
+            return PartialView("_MDAEmployeeListJqueryDataTable", employees);
 
 
 
@@ -653,12 +715,6 @@ namespace CSBFleetManager.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            //List<MDA> mdaList = _mdaService.GetAll().ToList();
-            //List<EmployeeType> EmpTypeList = _employeeTypeService.GetAll().ToList();
-
-            //ViewBag.MDA = new SelectList(mdaList, "MDAId", "MDAname");
-            //ViewBag.EmployeeType = new SelectList(EmpTypeList, "EmployeeTypeId", "EmployeeTypeName");
-
             ViewBag.MDA = _mdaService.GetAllMDAforEmployee();
             ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
@@ -672,12 +728,14 @@ namespace CSBFleetManager.Controllers
             //string val = "I am here";
             var user = await _userManager.GetUserAsync(User);
 
-            Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+            // Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+            Employee employeeExist = _employeeService.GetByLASRRAIdMDA(model.LASRRAID);
 
             if (employeeExist != null)
             {
-                ModelState.AddModelError("", "Duplicate entry for an employee not allowed. Emplyee already exist");
-                ViewBag.AlreadyExistingEmployee = "Duplicate entry for an employee not allowed. Emplyee already exist";
+                string msg = "Duplicate entry for an employee not allowed. Employee already exist and active in" + " " + employeeExist.MDAId;
+                ModelState.AddModelError("", msg);
+                ViewBag.AlreadyExistingEmployee = msg;
                 return View();
             }
 
@@ -698,9 +756,9 @@ namespace CSBFleetManager.Controllers
                     // MiddleName = model.MiddleName,
                     MiddleName = (string.IsNullOrEmpty(model.MiddleName) ? " " : char.ToUpper(model.MiddleName[0]) + model.MiddleName.Substring(1)),
                     FullName = model.FullName,
-                    EmpSurname=model.EmpSurname,
-                    EmpFirstname=model.EmpFirstname,
-                    EmpMiddleName=model.EmpMiddleName,
+                    EmpSurname = model.EmpSurname,
+                    EmpFirstname = model.EmpFirstname,
+                    EmpMiddleName = model.EmpMiddleName,
                     DOB = model.DOB,
                     Gender = model.Gender,
                     Phone = model.Phone,
@@ -808,14 +866,14 @@ namespace CSBFleetManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreatMDAEmployee(string MDAId)
+        public IActionResult CreatMDAEmployee(string mdaID)
         {
-            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(MDAId);
+            ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(mdaID);
             ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
             var model = new EmployeeCreateViewModel();
             return View(model);
-            
+
         }
 
         [HttpPost]
@@ -825,13 +883,16 @@ namespace CSBFleetManager.Controllers
             var user = await _userManager.GetUserAsync(User);
             string val = "I am here";
 
-            Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+            //Employee employeeExist = _employeeService.GetByLASRRAId(model.LASRRAID);
+            Employee employeeExist = _employeeService.GetByLASRRAIdMDA(model.LASRRAID);
 
-			if (employeeExist != null)
-			{
-                ModelState.AddModelError("", "Duplicate entry for an employee not allowed. Emplyee already exist");
+            if (employeeExist != null)
+            {
+                string msg = "Duplicate entry for an employee not allowed. Employee already exist and active in" + " " + employeeExist.MDAId;
+                ModelState.AddModelError("", msg);
+                ViewBag.AlreadyExistingEmployee = msg;
                 return View();
-			}
+            }
 
             if (ModelState.IsValid)
             {
@@ -869,8 +930,6 @@ namespace CSBFleetManager.Controllers
                     Email = model.Email,
                     DateUploaded = DateTime.Now.Date,
                     UploadedBy = user.UserName
-                    
-
                 };
 
                 if (!string.IsNullOrEmpty(model.EmployeeNo))
@@ -946,23 +1005,21 @@ namespace CSBFleetManager.Controllers
                 await _employeeService.CreateAsync(employee);
                 //return RedirectToAction(nameof(MDAIndex));
                 //return RedirectToAction(nameof(MDAIndexJQueryDataTable));
-                return RedirectToAction("MDAIndexJQueryDataTable", "Employee", new { mdaID = model.MDAId });
+                return RedirectToAction("MDAIndexJQueryDataTable", "Employee", new { mdaID = user.MDAId });
 
             }
-            else
-            {
-                ModelState.AddModelError("", "You have provided Invalid Data");
-                return View(model);
-            }
+            ModelState.AddModelError("", "You have provided Invalid Data");
             ViewBag.MDA = _mdaService.GetSpecificMDAforEmployee(model.MDAId);
             ViewBag.EmployeeType = _employeeTypeService.GetAllEmploymentTypeforEmployee();
 
+            return View(model);
+
             //string last = "I got here";
 
-            return View();
+            //return View();
 
         }
-       
+
         public async Task<JsonResult> VerifyLASRRAId(string LA)
         {
             //string ResponseMessage = "";
@@ -1004,7 +1061,7 @@ namespace CSBFleetManager.Controllers
             return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
 
         }
-        public async Task<JsonResult>GetImagesByLASRRAID()
+        public async Task<JsonResult> GetImagesByLASRRAID()
         {
             GetInfoPictureModel gpi = new GetInfoPictureModel();
 
@@ -1042,8 +1099,8 @@ namespace CSBFleetManager.Controllers
 
             return Json(new { Id = gpi.Id, surname = gpi.surname, firstname = gpi.firstname, middlename = gpi.middlename, gender = gpi.gender, phone = gpi.phone, birtDate = gpi.birtDate, address = gpi.Address, regDate = gpi.regDate, name6 = gpi.name6 });
         }
-        
-        
+
+
         public JsonResult GetOracleStaffRecord(string oracleNumber)
         {
             OracleStaffData oracleStaffObject = new OracleStaffData();
@@ -1107,8 +1164,8 @@ namespace CSBFleetManager.Controllers
                 //EmploymentTypeName = employee.EmployeeTypeName,
                 EmployeeTypeName = employee.EmployeeTypeName,
                 Designation = employee.Designation,
-                //Ministry = employee.Ministryname,
-                MDAId = employee.MDAID,
+                Ministry = employee.Ministry,
+                //MDAId = employee.MDAID,
                 EmployeeNo = employee.EmployeeNo,
                 DateofFirstAppointment = employee.DateofFirstAppointment,
                 NextofkinFullName = employee.NextofkinFullName,
@@ -1153,7 +1210,7 @@ namespace CSBFleetManager.Controllers
                 ImageUrl = employee.ImageUrl,
                 SignatureImageUrl = employee.SignatureImageUrl,
                 //EmploymentTypeName = employee.EmployeeTypeId,
-                EmployeeTypeName=employee.EmployeeTypeName,
+                EmployeeTypeName = employee.EmployeeTypeName,
                 Designation = employee.Designation,
                 Ministry = employee.Ministry,
                 EmployeeNo = employee.EmployeeNo,
@@ -1201,10 +1258,10 @@ namespace CSBFleetManager.Controllers
                 ImageUrl = employee.ImageUrl,
                 SignatureImageUrl = employee.SignatureImageUrl,
                 //EmploymentTypeName = employee.EmployeeTypeName,
-                EmployeeTypeName=employee.EmployeeTypeName,
+                EmployeeTypeName = employee.EmployeeTypeName,
                 Designation = employee.Designation,
-                //Ministry = employee.Ministryname,
-                MDAId=employee.MDAID,
+                Ministry = employee.Ministry,
+                //MDAId = employee.MDAID,
                 EmployeeNo = employee.EmployeeNo,
                 DateofFirstAppointment = employee.DateofFirstAppointment,
                 NextofkinFullName = employee.NextofkinFullName,
@@ -1221,13 +1278,13 @@ namespace CSBFleetManager.Controllers
         {
             //ViewBag.mdaID = mdaID;
 
-            if (LASRRAID==null || LASRRAID==string.Empty)
-			{
+            if (LASRRAID == null || LASRRAID == string.Empty)
+            {
                 return NotFound();
-			}
+            }
             Employee employee = _employeeService.GetByLASRRAIDEditlView(LASRRAID);
 
-            if (employee == null )
+            if (employee == null)
             {
                 return NotFound();
             }
@@ -1244,11 +1301,11 @@ namespace CSBFleetManager.Controllers
                 FirstName = employee.FirstName,
                 MiddleName = (string.IsNullOrEmpty(employee.MiddleName) ? "" : employee.MiddleName),
                 LastName = employee.LastName,
-                EmpSurname=employee.EmpSurname,
-                EmpFirstname=employee.EmpFirstname,
-                EmpMiddleName=employee.EmpMiddleName,
+                EmpSurname = employee.EmpSurname,
+                EmpFirstname = employee.EmpFirstname,
+                EmpMiddleName = employee.EmpMiddleName,
                 DOB = employee.DOB,
-                Gender=employee.Gender,
+                Gender = employee.Gender,
                 Address = employee.Address,
                 LGA = employee.LGA,
                 ImageUrl = employee.ImageUrl,
@@ -1257,20 +1314,20 @@ namespace CSBFleetManager.Controllers
                 //EmploymentType = employee.EmployeeTypeId,
                 Designation = employee.Designation,
                 //Ministry = employee.MDAId,
-               EmployeeTypeId = employee.EmployeeTypeId,
+                EmployeeTypeId = employee.EmployeeTypeId,
                 NextofKinLastName = employee.NextofKinLastName,
                 NextofKinFirstName = employee.NextofKinFirstName,
                 NextofKinPhone = employee.NextofKinPhone,
                 NextOfkinrelationship = employee.NextOfkinrelationship,
-                Email=employee.Email,
-                Phone=employee.Phone,
-                DateofFirstAppointment=employee.DateofFirstAppointment.Date,
-                DateofPresentAppointment=employee.DateofPresentAppointment.Date,
+                Email = employee.Email,
+                Phone = employee.Phone,
+                DateofFirstAppointment = employee.DateofFirstAppointment.Date,
+                DateofPresentAppointment = employee.DateofPresentAppointment.Date,
                 SignatureImageUrl = employee.SignatureImageUrl
 
             };
             return View(model);
-           
+
         }
         public IActionResult AdminEdit(string LASRRAID)
         {
@@ -1321,7 +1378,7 @@ namespace CSBFleetManager.Controllers
                 Phone = employee.Phone,
                 DateofFirstAppointment = employee.DateofFirstAppointment.Date,
                 DateofPresentAppointment = employee.DateofPresentAppointment.Date,
-                SignatureImageUrl=employee.SignatureImageUrl
+                SignatureImageUrl = employee.SignatureImageUrl
 
             };
             return View(model);
@@ -1333,7 +1390,7 @@ namespace CSBFleetManager.Controllers
         public async Task<IActionResult> Edit(EmployeeEditViewModel model)
         {
             var employee = _employeeService.GetByLASRRAId(model.LASRRAID);
-            
+
 
             if (ModelState.IsValid)
             {

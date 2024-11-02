@@ -792,3 +792,5 @@ D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\DetailCardRequest.cshtml.g.cs
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\_MDAEmployeeListJqueryDataTableUser.cshtml.g.cs
 D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Account\USerPasswordChangeAdmin.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\CreatMDAEmployee - Copy.cshtml.g.cs
+D:\Visual Studio Projects\CSBFleetManager\CSBFleetManager\obj\Debug\net5.0\Razor\Views\Employee\MDAIndexJQueryCardRequestDataTable - Copy.cshtml.g.cs

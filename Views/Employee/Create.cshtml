@@ -215,7 +215,7 @@
                                     <p id="FORM1">
                                         <input id="SignBtn" name="SignBtn" type="button" class="btn btn-primary" value="Start Signature" onclick="javascript:onSign()" />&nbsp;&nbsp;&nbsp;
                                         <input id="button1" name="ClearBtn" type="button" class="btn btn-secondary" value="Clear Signature" onclick="javascript:onClear()" />&nbsp;&nbsp;&nbsp;
-                                        <input id="button2" name="DoneBtn" type="button" value="Capture" class="btn btn-default" onclick="javascript:onDone()" />&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input id="button2" name="DoneBtn" type="button" value="Capture" class="btn btn-danger" onclick="javascript:onDone()" />&nbsp;&nbsp;&nbsp;&nbsp;
                                         <INPUT type="hidden" NAME="bioSigData">
                                         <br /><br />
                                         <INPUT type="hidden" NAME="sigImgData">
@@ -554,9 +554,9 @@
                     @* alert("@ViewBag.PictureString");*@
                     //alert(response.surname);
                    // alert("Oracle details found");
-                    $("#EmployeeSurName").val(responseData.surname)
-                    $("#EmployeeFirstName").val(responseData.firstname)
-                    $("#EmployeeMiddleName").val(responseData.middlename)
+                    $("#EmpSurname").val(responseData.surname)
+                    $("#EmpFirstname").val(responseData.firstname)
+                    $("#EmpMiddleName").val(responseData.middlename)
                    /* $("#OracleGender").val(responseData.gender)*/
                     //alert(responseData.name8)
                     $("#Designation").val(responseData.name6)
@@ -641,9 +641,9 @@
                 //alert(selectedText);
                 const employeeNo = document.getElementById("EmployeeNo");
                 const getOracleButton = document.getElementById("btnOracle");
-                const OracleSurname = document.getElementById("EmployeeSurName");
-                const OracleFirstName = document.getElementById("EmployeeFirstName");
-                const OracleMiddleName = document.getElementById("EmployeeMiddleName");
+                const OracleSurname = document.getElementById("EmpSurname");
+                const OracleFirstName = document.getElementById("EmpFirstname");
+                const OracleMiddleName = document.getElementById("EmpMiddleName");
                 /*const ddlOracleGender = document.getElementById("ddlOracleGender");*/
 
                 if (selectedText != "Oracle Staff") {
@@ -917,6 +917,7 @@
             Actualsignature.value = str;
 
             //document.getElementById("sigImageData").value = str;
+            
             setImageFromBase64(str, "SigimgCapture");
             //alert(sigInput.value)
         }
@@ -939,6 +940,7 @@
             // Check if the base64String is not empty or null
             if (base64String && base64String.trim() != "") {
                 // Get the image element by its ID
+                alert("Signature Captured Successfully");
                 var imgElement = document.getElementById(imgElementId);
 
                 if (imgElement) {
